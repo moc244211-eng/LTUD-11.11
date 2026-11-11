@@ -768,18 +768,32 @@ function initAuthUI() {
   if (!area) return;
 
   if (currentUser && authToken) {
+    const firstName = currentUser.name ? currentUser.name.split(" ").pop() : "Khách";
     area.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 4px;">
-        <button class="btn-header-icon" onclick="openMyOrdersModal()" title="Lịch sử đơn hàng: ${currentUser.name}">
-          👤
+      <div class="user-profile-chip" onclick="openMyOrdersModal()" title="Xem đơn hàng của ${currentUser.name}">
+        <span class="user-chip-avatar">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        </span>
+        <span class="user-chip-name">${firstName}</span>
+        <button type="button" class="user-chip-logout" onclick="event.stopPropagation(); handleLogout();" title="Đăng xuất tài khoản">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
         </button>
-        <button class="btn-close" style="font-size: 15px;" onclick="handleLogout()" title="Đăng xuất">⏻</button>
       </div>
     `;
   } else {
     area.innerHTML = `
       <button class="btn-header-icon" onclick="openAuthModal()" title="Đăng nhập tài khoản">
-        👤
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
       </button>
     `;
   }
