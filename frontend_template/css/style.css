@@ -232,47 +232,74 @@ header {
   padding-left: 15px;
 }
 
-/* Search Box Pill (Rộng rãi & Rõ nét) */
+/* Search Box Pill (Nổi Bật, Tương Phản Cao & Hiện Đại) */
 .search-box {
   flex: 1;
-  max-width: 340px;
-  min-width: 240px;
+  max-width: 360px;
+  min-width: 250px;
   position: relative;
 }
 
 .search-input {
   width: 100%;
-  padding: 11px 44px 11px 20px;
-  border: 1.5px solid #e5e7eb;
+  padding: 11px 50px 11px 20px;
+  border: 1.5px solid #cbd5e1;
   border-radius: var(--radius-pill);
-  font-size: 13.5px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 600;
   outline: none;
-  background: #ffffff;
-  color: #111827;
-  transition: all 0.25s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  background: #f1f5f9;
+  color: #0b0b0b;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
 .search-input::placeholder {
-  color: #9ca3af;
+  color: #475569;
   font-weight: 500;
+}
+
+.search-input:hover {
+  background: #ffffff;
+  border-color: #0b0b0b;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
 }
 
 .search-input:focus {
   background: #ffffff;
   border-color: #0b0b0b;
-  box-shadow: 0 0 0 3px rgba(11, 11, 11, 0.1);
+  box-shadow: 0 0 0 3.5px rgba(11, 11, 11, 0.12), 0 4px 14px rgba(0, 0, 0, 0.08);
 }
 
 .search-icon {
   position: absolute;
-  right: 16px;
+  right: 6px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 16px;
-  color: #6b7280;
-  pointer-events: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #0b0b0b;
+  color: #ffffff;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(11, 11, 11, 0.25);
+}
+
+.search-icon:hover {
+  background: #1f2937;
+  transform: translateY(-50%) scale(1.08);
+}
+
+.search-icon svg {
+  width: 15px;
+  height: 15px;
+  stroke: #ffffff;
+  stroke-width: 2.2;
 }
 
 /* Header Action Icons (Nổi bật, Tròn nổi khối cao cấp) */
