@@ -438,13 +438,101 @@ function closeCartDrawer() {
   }
 }
 
-// ================= 6. ĐẶT HÀNG & SINH MÃ VIETQR ĐỘNG =================
+// ================= 6. ĐẶT HÀNG, ÁP MÃ GIẢM GIÁ & SINH MÃ VIETQR ĐỘNG =================
+let currentAppliedCoupon = null;
+
+function updateCheckoutSummaryUI() {
+  const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const shippingFee = subtotal >= 500000 ? 0 : 25000;
+  let discountAmount = 0;
+
+  if (currentAppliedCoupon) {
+    if (currentAppliedCoupon.discountType === "PERCENT") {
+      discountAmount = Math.round((subtotal * currentAppliedCoupon.discountValue) / 100);
+    } else {
+      discountAmount = currentAppliedCoupon.discountValue;
+    }
+  }
+
+  const finalTotal = Math.max(0, subtotal - discountAmount + shippingFee);
+
+  const subtotalEl = document.getElementById("chkSummarySubtotal");
+  const shippingEl = document.getElementById("chkSummaryShipping");
+  const discountRow = document.getElementById("chkSummaryDiscountRow");
+  const discountEl = document.getElementById("chkSummaryDiscount");
+  const finalTotalEl = document.getElementById("chkSummaryFinalTotal");
+
+  if (subtotalEl) subtotalEl.innerText = `${subtotal.toLocaleString("vi-VN")} đ`;
+  if (shippingEl) {
+    shippingEl.innerText = shippingFee === 0 ? "0 đ (Miễn phí đơn > 500k)" : `${shippingFee.toLocaleString("vi-VN")} đ`;
+  }
+
+  if (discountRow) {
+    if (discountAmount > 0) {
+      discountRow.style.display = "flex";
+      if (discountEl) discountEl.innerText = `-${discountAmount.toLocaleString("vi-VN")} đ`;
+    } else {
+      discountRow.style.display = "none";
+    }
+  }
+
+  if (finalTotalEl) finalTotalEl.innerText = `${finalTotal.toLocaleString("vi-VN")} đ`;
+  return { subtotal, shippingFee, discountAmount, finalTotal };
+}
+
+async function handleApplyCheckoutCoupon() {
+  const codeInput = document.getElementById("chkCouponCode");
+  const feedback = document.getElementById("chkCouponFeedback");
+  if (!codeInput) return;
+
+  const code = codeInput.value.trim().toUpperCase();
+  if (!code) {
+    if (feedback) {
+      feedback.style.color = "#dc2626";
+      feedback.innerText = "Vui lòng nhập mã giảm giá!";
+    }
+    return;
+  }
+
+  const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  if (feedback) {
+    feedback.style.color = "#2563eb";
+    feedback.innerText = "⏳ Đang kiểm tra mã ưu đãi...";
+  }
+
+  const res = await API.validateCoupon(code, subtotal);
+  if (res && res.success && res.data) {
+    currentAppliedCoupon = res.data;
+    if (feedback) {
+      feedback.style.color = "#16a34a";
+      const discText = res.data.discountType === "PERCENT" ? `${res.data.discountValue}%` : `${Number(res.data.discountValue).toLocaleString("vi-VN")} đ`;
+      feedback.innerText = `✓ Áp dụng mã "${res.data.code}" thành công! Giảm ${discText}`;
+    }
+    updateCheckoutSummaryUI();
+  } else {
+    currentAppliedCoupon = null;
+    if (feedback) {
+      feedback.style.color = "#dc2626";
+      feedback.innerText = "✕ " + (res.message || "Mã giảm giá không hợp lệ hoặc đã hết hạn!");
+    }
+    updateCheckoutSummaryUI();
+  }
+}
+
 function openCheckoutModal() {
   if (cart.length === 0) {
     alert("Túi đồ của bạn đang trống! Vui lòng chọn sản phẩm trước khi đặt hàng.");
     return;
   }
   closeCartDrawer();
+
+  // Reset coupon & tính toán lại hóa đơn
+  currentAppliedCoupon = null;
+  const cpInput = document.getElementById("chkCouponCode");
+  const cpFeedback = document.getElementById("chkCouponFeedback");
+  if (cpInput) cpInput.value = "";
+  if (cpFeedback) cpFeedback.innerText = "";
+  updateCheckoutSummaryUI();
 
   // Tự động điền thông tin nếu đã đăng nhập
   if (currentUser) {
@@ -482,6 +570,8 @@ async function handleCheckoutSubmit(e) {
   const paymentMethod = form.paymentMethod.value;
   const note = form.note ? form.note.value.trim() : "";
 
+  const { subtotal, shippingFee, discountAmount, finalTotal } = updateCheckoutSummaryUI();
+
   const orderData = {
     customerName,
     customerPhone,
@@ -489,16 +579,16 @@ async function handleCheckoutSubmit(e) {
     shippingAddress,
     paymentMethod,
     note,
+    couponCode: currentAppliedCoupon ? currentAppliedCoupon.code : undefined,
+    discountAmount: currentAppliedCoupon ? discountAmount : 0,
     items: cart.map((i) => ({
       productId: i.id,
       name: i.name,
       quantity: i.quantity,
       size: i.size,
     })),
-    shippingFee: 25000,
+    shippingFee,
   };
-
-  const totalCartAmount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0) + 25000;
 
   let createdOrder = null;
   try {
@@ -515,9 +605,14 @@ async function handleCheckoutSubmit(e) {
     createdOrder = {
       _id: "order_" + Date.now(),
       orderCode: "MS" + Date.now().toString().slice(-8),
-      totalAmount: totalCartAmount,
+      totalAmount: finalTotal,
       customerName,
       customerPhone,
+      customerEmail,
+      shippingAddress,
+      paymentMethod,
+    };
+  }
       customerEmail,
       shippingAddress,
       paymentMethod,

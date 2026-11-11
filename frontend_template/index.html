@@ -226,6 +226,42 @@
             <label class="form-label">Ghi Chú Đơn Hàng (Tùy chọn)</label>
             <input type="text" name="note" class="form-input" placeholder="Ví dụ: Giao giờ hành chính, gọi trước khi giao...">
           </div>
+
+          <!-- Khu vực Áp Dụng Mã Giảm Giá Khuyến Mãi -->
+          <div class="form-group" style="background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px dashed #cbd5e1; margin-bottom: 16px;">
+            <label class="form-label" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <span>🎟️ Mã Giảm Giá Khuyến Mãi</span>
+              <span style="font-size: 11.5px; color: #64748b;">Gợi ý: <code>MENSTYLE10</code>, <code>VIP50K</code>, <code>FREESHIP</code></span>
+            </label>
+            <div style="display: flex; gap: 8px;">
+              <input type="text" id="chkCouponCode" class="form-input" placeholder="Nhập mã ưu đãi..." style="text-transform: uppercase;">
+              <button type="button" class="btn-action btn-act-ship" style="padding: 0 16px; white-space: nowrap; font-size: 13px;" onclick="handleApplyCheckoutCoupon()">
+                Áp Dụng
+              </button>
+            </div>
+            <div id="chkCouponFeedback" style="font-size: 12px; margin-top: 6px; font-weight: 600;"></div>
+          </div>
+
+          <!-- Bảng Tóm Tắt Chi Phí -->
+          <div style="background: #f1f5f9; padding: 14px 16px; border-radius: 8px; margin-bottom: 18px; font-size: 13.5px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+              <span>Tạm tính tiền hàng:</span>
+              <strong id="chkSummarySubtotal">0 đ</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+              <span>Phí vận chuyển:</span>
+              <strong id="chkSummaryShipping">25.000 đ</strong>
+            </div>
+            <div id="chkSummaryDiscountRow" style="display: none; justify-content: space-between; margin-bottom: 6px; color: #16a34a; font-weight: 700;">
+              <span id="chkSummaryDiscountLabel">Giảm giá voucher:</span>
+              <strong id="chkSummaryDiscount">-0 đ</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; border-top: 1px solid #cbd5e1; padding-top: 8px; font-size: 16px; font-weight: 800;">
+              <span>Tổng thanh toán:</span>
+              <span id="chkSummaryFinalTotal" style="color: var(--danger);">0 đ</span>
+            </div>
+          </div>
+
           <button type="submit" id="btnSubmitOrder" class="btn-checkout-start">
             Xác Nhận Đặt Hàng
           </button>

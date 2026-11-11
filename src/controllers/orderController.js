@@ -14,6 +14,7 @@ exports.createOrder = async (req, res) => {
       items,
       shippingFee,
       note,
+      couponCode,
     } = req.body;
 
     if (!items || !Array.isArray(items) || items.length === 0) {
@@ -95,9 +96,38 @@ exports.createOrder = async (req, res) => {
       });
     }
 
+    // 2. Kiểm tra & Áp dụng mã giảm giá (Coupons) nếu có
+    let discountAmount = 0;
+    let appliedCouponCode = "";
+
+    if (couponCode) {
+      try {
+        const Coupon = require("../models/Coupon");
+        const coupon = await Coupon.findOne({
+          code: couponCode.toUpperCase().trim(),
+          isActive: true,
+        });
+
+        if (coupon && new Date() <= new Date(coupon.expiryDate) && coupon.usageCount < coupon.maxUsage) {
+          if (subtotal >= coupon.minOrderValue) {
+            if (coupon.discountType === "PERCENT") {
+              discountAmount = Math.round((subtotal * coupon.discountValue) / 100);
+            } else {
+              discountAmount = coupon.discountValue;
+            }
+            appliedCouponCode = coupon.code;
+            coupon.usageCount += 1;
+            await coupon.save();
+          }
+        }
+      } catch (cpErr) {
+        console.warn("Lỗi xác thực coupon khi đặt hàng:", cpErr.message);
+      }
+    }
+
     const finalShippingFee =
-      shippingFee !== undefined ? Number(shippingFee) : 25000;
-    const totalAmount = subtotal + finalShippingFee;
+      shippingFee !== undefined ? Number(shippingFee) : (subtotal >= 500000 ? 0 : 25000);
+    const totalAmount = Math.max(0, subtotal - discountAmount + finalShippingFee);
     const orderCode = "MS" + Date.now().toString().slice(-8);
 
     // Lưu snapshot đơn hàng vào MongoDB
@@ -110,6 +140,8 @@ exports.createOrder = async (req, res) => {
       shippingAddress,
       items: verifiedItems,
       shippingFee: finalShippingFee,
+      discountAmount,
+      couponCode: appliedCouponCode,
       totalAmount,
       paymentMethod: paymentMethod || "COD",
       paymentStatus: "UNPAID",
