@@ -50,24 +50,28 @@ QUY TẮC TƯ VẤN CỦA STYLIST:
 
     // 2. Gọi Google Gemini AI Model
     if (apiKey && apiKey !== "AIzaSyDemoKeyYourGeminiApiKeyHere12345") {
-      try {
-        const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({
-          model: "gemini-1.5-flash",
-          systemInstruction,
-        });
+      const modelsToTry = ["gemini-3.5-flash", "gemini-3.5-flash-lite"];
+      const genAI = new GoogleGenerativeAI(apiKey);
 
-        const result = await model.generateContent(
-          `Khách hàng hỏi: "${message}". Hãy tư vấn chi tiết, lịch lãm và gợi ý combo sản phẩm phù hợp.`
-        );
+      for (const modelName of modelsToTry) {
+        try {
+          const model = genAI.getGenerativeModel({
+            model: modelName,
+            systemInstruction,
+          });
 
-        return res.status(200).json({
-          success: true,
-          provider: "Google Gemini 1.5 Flash (RAG)",
-          reply: result.response.text(),
-        });
-      } catch (err) {
-        console.warn("Lỗi Gemini API, tự động kích hoạt Fallback AI:", err.message);
+          const result = await model.generateContent(
+            `Khách hàng hỏi: "${message}". Hãy tư vấn chi tiết, lịch lãm và gợi ý combo sản phẩm phù hợp.`
+          );
+
+          return res.status(200).json({
+            success: true,
+            provider: `Google Gemini AI (${modelName}) [RAG Live]`,
+            reply: result.response.text(),
+          });
+        } catch (err) {
+          console.warn(`Thử model ${modelName} không thành công:`, err.message);
+        }
       }
     }
 
