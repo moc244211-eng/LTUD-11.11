@@ -4,6 +4,7 @@ const Category = require("./models/Category");
 const Product = require("./models/Product");
 const User = require("./models/User");
 const Order = require("./models/Order");
+const Coupon = require("./models/Coupon");
 
 const seedData = async () => {
   try {
@@ -17,8 +18,9 @@ const seedData = async () => {
     await Category.deleteMany({});
     await Product.deleteMany({});
     await Order.deleteMany({});
+    await Coupon.deleteMany({});
 
-    // 2. Tạo tài khoản mẫu (Admin & Customer)
+    // 2. Tạo tài khoản mẫu (Admin & Customers)
     console.log("👥 Đang tạo tài khoản mẫu...");
     const adminUser = await User.create({
       name: "Quản Trị Viên MENSTYLE",
@@ -28,17 +30,37 @@ const seedData = async () => {
       role: "admin",
     });
 
-    const customerUser = await User.create({
+    const customerUser1 = await User.create({
       name: "Nguyễn Văn Hùng",
       email: "hung.nguyen@gmail.com",
       password: "KhachPassword123@",
       phone: "0987654321",
       role: "customer",
+      address: "123 Huỳnh Thúc Kháng, TP. Biên Hòa, Đồng Nai",
+    });
+
+    const customerUser2 = await User.create({
+      name: "Lê Hoàng Nam",
+      email: "nam.le@gmail.com",
+      password: "KhachPassword123@",
+      phone: "0934567890",
+      role: "customer",
+      address: "88 Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh",
+    });
+
+    const customerUser3 = await User.create({
+      name: "Đặng Quốc Anh",
+      email: "quocanh.dang@gmail.com",
+      password: "KhachPassword123@",
+      phone: "0918765432",
+      role: "customer",
+      address: "15 Cầu Giấy, Hà Nội",
     });
 
     console.log("✅ Tạo tài khoản thành công:");
     console.log(" 👑 Admin: admin@menstyle.vn / AdminPassword123@");
-    console.log(" 👤 Khách: hung.nguyen@gmail.com / KhachPassword123@");
+    console.log(" 👤 Khách 1: hung.nguyen@gmail.com / KhachPassword123@");
+    console.log(" 👤 Khách 2: nam.le@gmail.com / KhachPassword123@");
 
     // 3. Tạo danh mục Thời Trang Nam
     console.log("📁 Đang nạp danh mục Thời Trang Nam...");
@@ -274,11 +296,11 @@ const seedData = async () => {
     const createdProds = await Product.insertMany(productsData);
     console.log(`✅ Đã nạp ${createdProds.length} sản phẩm Thời Trang Nam.`);
 
-    // 5. Tạo 2 đơn hàng mẫu để Admin Dashboard hiển thị thống kê
+    // 5. Tạo các đơn hàng mẫu để Admin Dashboard hiển thị thống kê
     console.log("📦 Đang tạo đơn hàng mẫu cho Admin...");
     await Order.create({
       orderCode: "MS10023456",
-      user: customerUser._id,
+      user: customerUser1._id,
       customerName: "Nguyễn Văn Hùng",
       customerPhone: "0987654321",
       customerEmail: "hung.nguyen@gmail.com",
@@ -332,6 +354,97 @@ const seedData = async () => {
       orderStatus: "PENDING",
       note: "Gọi trước khi giao hàng 15 phút",
     });
+
+    await Order.create({
+      orderCode: "MS10023458",
+      user: customerUser2._id,
+      customerName: "Lê Hoàng Nam",
+      customerPhone: "0934567890",
+      customerEmail: "nam.le@gmail.com",
+      shippingAddress: "88 Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh",
+      items: [
+        {
+          productId: createdProds[4]._id,
+          name: createdProds[4].name,
+          quantity: 1,
+          price: createdProds[4].salePrice,
+          size: "L",
+          image: createdProds[4].image,
+        },
+        {
+          productId: createdProds[12]._id,
+          name: createdProds[12].name,
+          quantity: 1,
+          price: createdProds[12].salePrice,
+          size: "Tiêu chuẩn",
+          image: createdProds[12].image,
+        },
+      ],
+      shippingFee: 0,
+      totalAmount: createdProds[4].salePrice + createdProds[12].salePrice,
+      paymentMethod: "VIETQR",
+      paymentStatus: "PAID",
+      orderStatus: "COMPLETED",
+      note: "Đóng gói hộp quà tặng sang trọng",
+    });
+
+    await Order.create({
+      orderCode: "MS10023459",
+      user: customerUser3._id,
+      customerName: "Đặng Quốc Anh",
+      customerPhone: "0918765432",
+      customerEmail: "quocanh.dang@gmail.com",
+      shippingAddress: "15 Cầu Giấy, Hà Nội",
+      items: [
+        {
+          productId: createdProds[2]._id,
+          name: createdProds[2].name,
+          quantity: 2,
+          price: createdProds[2].salePrice,
+          size: "M",
+          image: createdProds[2].image,
+        },
+      ],
+      shippingFee: 25000,
+      totalAmount: createdProds[2].salePrice * 2 + 25000,
+      paymentMethod: "COD",
+      paymentStatus: "PAID",
+      orderStatus: "SHIPPING",
+      note: "Giao giờ hành chính",
+    });
+
+    // 6. Nạp Mã Giảm Giá (Coupons)
+    console.log("🎟️ Đang nạp mã giảm giá mẫu...");
+    await Coupon.create([
+      {
+        code: "MENSTYLE10",
+        discountType: "PERCENT",
+        discountValue: 10,
+        minOrderValue: 300000,
+        maxUsage: 100,
+        expiryDate: new Date("2026-12-31"),
+        isActive: true,
+      },
+      {
+        code: "VIP50K",
+        discountType: "FIXED",
+        discountValue: 50000,
+        minOrderValue: 500000,
+        maxUsage: 50,
+        expiryDate: new Date("2026-12-31"),
+        isActive: true,
+      },
+      {
+        code: "FREESHIP",
+        discountType: "FIXED",
+        discountValue: 25000,
+        minOrderValue: 250000,
+        maxUsage: 200,
+        expiryDate: new Date("2026-12-31"),
+        isActive: true,
+      },
+    ]);
+    console.log("✅ Đã nạp 3 mã giảm giá mẫu.");
 
     console.log("====================================================");
     console.log("🎉 NẠP TOÀN BỘ DỮ LIỆU THỜI TRANG NAM THÀNH CÔNG!");

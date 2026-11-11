@@ -306,4 +306,148 @@ const API = {
       };
     }
   },
+
+  // ================= 7. QUẢN LÝ KHÁCH HÀNG (USERS & CUSTOMERS) =================
+  async getUsers(params = {}, token) {
+    try {
+      const query = new URLSearchParams();
+      if (params.keyword) query.append('keyword', params.keyword);
+      if (params.role) query.append('role', params.role);
+      if (params.status) query.append('status', params.status);
+
+      const url = `${API_BASE_URL}/users${query.toString() ? '?' + query.toString() : ''}`;
+      const res = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return await res.json();
+    } catch (err) {
+      console.error('Lỗi API Lấy danh sách khách hàng:', err);
+      return { success: false, data: [] };
+    }
+  },
+
+  async getUserById(id, token) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/users/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return await res.json();
+    } catch (err) {
+      return { success: false, message: err.message };
+    }
+  },
+
+  async toggleBlockUser(id, token) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/users/${id}/toggle-block`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return await res.json();
+    } catch (err) {
+      return { success: false, message: err.message };
+    }
+  },
+
+  async deleteUser(id, token) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/users/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return await res.json();
+    } catch (err) {
+      return { success: false, message: err.message };
+    }
+  },
+
+  // ================= 8. MÃ GIẢM GIÁ (COUPONS) =================
+  async getCoupons(token) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/coupons`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return await res.json();
+    } catch (err) {
+      return { success: false, data: [] };
+    }
+  },
+
+  async createCoupon(data, token) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/coupons`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(data),
+      });
+      return await res.json();
+    } catch (err) {
+      return { success: false, message: err.message };
+    }
+  },
+
+  async deleteCoupon(id, token) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/coupons/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return await res.json();
+    } catch (err) {
+      return { success: false, message: err.message };
+    }
+  },
+
+  async toggleCoupon(id, token) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/coupons/${id}/toggle`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return await res.json();
+    } catch (err) {
+      return { success: false, message: err.message };
+    }
+  },
+
+  async validateCoupon(code, orderTotal) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/coupons/validate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, orderTotal }),
+      });
+      return await res.json();
+    } catch (err) {
+      return { success: false, message: err.message };
+    }
+  },
+
+  // ================= 9. BÁO CÁO & THỐNG KÊ DASHBOARD =================
+  async getDashboardAnalytics(token) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/orders/analytics/summary`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return await res.json();
+    } catch (err) {
+      console.error('Lỗi API Dashboard Analytics:', err);
+      return { success: false, message: err.message };
+    }
+  },
+
+  async cancelOrder(id, token) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/orders/${id}/cancel`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return await res.json();
+    } catch (err) {
+      return { success: false, message: err.message };
+    }
+  },
 };

@@ -11,6 +11,8 @@ const orderRoutes = require("./routes/orderRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
 const aiRoutes = require("./routes/aiRoutes");
 const shippingRoutes = require("./routes/shippingRoutes");
+const userRoutes = require("./routes/userRoutes");
+const couponRoutes = require("./routes/couponRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -44,6 +46,8 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/shipping", shippingRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/coupons", couponRoutes);
 
 // 6. Xử lý fallback cho SPA / Giao diện Frontend
 app.get("/admin", (req, res) => {

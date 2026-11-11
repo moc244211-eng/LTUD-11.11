@@ -271,3 +271,167 @@ exports.updateOrderStatus = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+// [PUT] /api/orders/:id/cancel - Hủy đơn hàng an toàn (Hoàn trả số lượng tồn kho)
+exports.cancelOrder = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) {
+      return res.status(404).json({ success: false, message: "Không tìm thấy đơn hàng!" });
+    }
+
+    if (order.orderStatus === "CANCELLED") {
+      return res.status(400).json({ success: false, message: "Đơn hàng này đã bị hủy trước đó!" });
+    }
+
+    // Hoàn lại tồn kho cho các sản phẩm
+    for (const item of order.items) {
+      await Product.findByIdAndUpdate(item.productId, {
+        $inc: { stock: item.quantity },
+      });
+    }
+
+    order.orderStatus = "CANCELLED";
+    await order.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Đã hủy đơn hàng và hoàn trả tồn kho thành công!",
+      data: order,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// [GET] /api/orders/analytics/summary - Báo cáo số liệu toàn diện cho Dashboard
+exports.getDashboardAnalytics = async (req, res) => {
+  try {
+    const User = require("../models/User");
+    const Category = require("../models/Category");
+
+    const orders = await Order.find().sort({ createdAt: -1 });
+    const products = await Product.find().populate("category", "name");
+    const totalCustomers = await User.countDocuments({ role: "customer" });
+
+    // 1. Doanh thu & Tình trạng đơn
+    let totalRevenue = 0;
+    const ordersByStatus = {
+      PENDING: 0,
+      CONFIRMED: 0,
+      SHIPPING: 0,
+      COMPLETED: 0,
+      CANCELLED: 0,
+    };
+
+    orders.forEach((o) => {
+      if (ordersByStatus[o.orderStatus] !== undefined) {
+        ordersByStatus[o.orderStatus]++;
+      }
+      if (o.paymentStatus === "PAID" || o.orderStatus === "COMPLETED") {
+        totalRevenue += o.totalAmount || 0;
+      }
+    });
+
+    // 2. Tồn kho
+    const lowStockProducts = products.filter((p) => p.stock > 0 && p.stock <= 10);
+    const outOfStockProducts = products.filter((p) => p.stock === 0);
+
+    // 3. Top sản phẩm bán chạy (Tổng hợp từ Order items)
+    const productSalesMap = {};
+    orders.forEach((o) => {
+      if (o.orderStatus !== "CANCELLED") {
+        (o.items || []).forEach((item) => {
+          const pId = item.productId ? item.productId.toString() : item.name;
+          if (!productSalesMap[pId]) {
+            productSalesMap[pId] = {
+              name: item.name,
+              price: item.price,
+              image: item.image,
+              totalQty: 0,
+              totalSales: 0,
+            };
+          }
+          productSalesMap[pId].totalQty += item.quantity || 1;
+          productSalesMap[pId].totalSales += (item.price || 0) * (item.quantity || 1);
+        });
+      }
+    });
+
+    const topSellingProducts = Object.values(productSalesMap)
+      .sort((a, b) => b.totalQty - a.totalQty)
+      .slice(0, 5);
+
+    // 4. Top khách hàng chi tiêu nhiều nhất
+    const customerSpendingMap = {};
+    orders.forEach((o) => {
+      const email = o.customerEmail || "anonymous@menstyle.vn";
+      if (!customerSpendingMap[email]) {
+        customerSpendingMap[email] = {
+          name: o.customerName || "Khách mua hàng",
+          email,
+          phone: o.customerPhone,
+          orderCount: 0,
+          totalSpent: 0,
+        };
+      }
+      customerSpendingMap[email].orderCount++;
+      if (o.paymentStatus === "PAID" || o.orderStatus === "COMPLETED") {
+        customerSpendingMap[email].totalSpent += o.totalAmount || 0;
+      }
+    });
+
+    const topCustomers = Object.values(customerSpendingMap)
+      .sort((a, b) => b.totalSpent - a.totalSpent)
+      .slice(0, 5);
+
+    // 5. Thống kê theo 6 tháng gần nhất để vẽ biểu đồ
+    const monthNames = ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11", "T12"];
+    const now = new Date();
+    const monthlyStats = [];
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const mIdx = d.getMonth();
+      const label = `${monthNames[mIdx]}/${d.getFullYear()}`;
+      
+      const ordersInMonth = orders.filter((o) => {
+        const orderDate = new Date(o.createdAt);
+        return orderDate.getFullYear() === d.getFullYear() && orderDate.getMonth() === mIdx;
+      });
+
+      const revInMonth = ordersInMonth
+        .filter((o) => o.paymentStatus === "PAID" || o.orderStatus === "COMPLETED")
+        .reduce((sum, o) => sum + (o.totalAmount || 0), 0);
+
+      monthlyStats.push({
+        label,
+        revenue: revInMonth,
+        orderCount: ordersInMonth.length,
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: {
+        totalRevenue,
+        totalOrders: orders.length,
+        totalProducts: products.length,
+        totalCustomers,
+        ordersByStatus,
+        stockSummary: {
+          totalProducts: products.length,
+          lowStockCount: lowStockProducts.length,
+          outOfStockCount: outOfStockProducts.length,
+          lowStockProducts,
+          outOfStockProducts,
+        },
+        topSellingProducts,
+        topCustomers,
+        monthlyStats,
+        recentOrders: orders.slice(0, 6),
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

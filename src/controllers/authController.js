@@ -75,6 +75,13 @@ exports.login = async (req, res) => {
       });
     }
 
+    if (user.isBlocked) {
+      return res.status(403).json({
+        success: false,
+        message: "Tài khoản của bạn đã bị khóa bởi Quản trị viên. Vui lòng liên hệ hỗ trợ!",
+      });
+    }
+
     const token = generateToken(user._id);
 
     res.status(200).json({
