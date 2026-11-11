@@ -2,9 +2,16 @@
  * MODULE KẾT NỐI TOÀN DIỆN BACKEND RESTFUL API
  * Phục vụ cả Storefront (Khách hàng) và Admin Dashboard (Quản trị viên)
  */
-const API_BASE_URL = window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1')
-  ? 'http://localhost:5000/api'
-  : `${window.location.origin}/api`;
+const API_BASE_URL =
+  typeof window !== 'undefined' &&
+  (window.location.protocol === 'file:' ||
+   !window.location.origin ||
+   window.location.origin === 'null' ||
+   window.location.hostname === 'localhost' ||
+   window.location.hostname === '127.0.0.1' ||
+   window.location.port !== '5000')
+    ? 'http://localhost:5000/api'
+    : `${window.location.origin}/api`;
 
 const API = {
   // ================= 1. XÁC THỰC & NGƯỜI DÙNG =================

@@ -23,6 +23,11 @@
 
       <!-- Khu vực Tài khoản & Giỏ hàng -->
       <div class="header-actions">
+        <!-- Nút Xem nhanh VietQR MB Bank -->
+        <button class="btn-user-auth" onclick="previewMyVietQR()" style="background:#eff6ff; color:#1e3a8a; border-color:#bfdbfe; font-weight:700;" title="Xem mã VietQR MB Bank chính chủ">
+          📲 QR MB Bank
+        </button>
+
         <!-- Nút Giỏ hàng -->
         <button class="btn-cart-toggle" onclick="openCartDrawer()">
           🛒 Giỏ hàng <span class="cart-badge" id="cartBadge">0</span>
@@ -234,12 +239,15 @@
       </div>
       <div class="modal-body">
         <div class="qr-preview-box">
-          <img id="qrImage" src="" alt="Mã VietQR Thanh Toán" class="qr-img">
+          <img id="qrImage" src="https://img.vietqr.io/image/MB-0862583284-compact2.png?amount=289000&addInfo=DH%20THANHTOAN&accountName=M%C3%80N%20M%E1%BB%98C%20S%C3%81NG" alt="Mã VietQR Thanh Toán" class="qr-img">
           <p style="font-size: 13px; color: #64748b; margin-bottom: 8px;">Mở ứng dụng Ngân hàng (MB, Vietcombank, Techcombank...) để quét mã</p>
-          <div style="font-size: 14px; margin-bottom: 4px;">Mã đơn: <strong id="qrOrderCode">#...</strong></div>
-          <div style="font-size: 19px; font-weight: 800; color: var(--danger); margin-bottom: 8px;">Số tiền: <span id="qrTotalAmount">0 đ</span></div>
-          <div style="font-size: 12.5px; background: #eff6ff; color: #1e3a8a; padding: 8px; border-radius: 8px; font-weight: 600;" id="qrNoteInfo">
-            Nội dung CK: DH ...
+          <div style="font-size: 14px; margin-bottom: 4px;">Mã đơn hàng: <strong id="qrOrderCode">#...</strong></div>
+          <div style="font-size: 20px; font-weight: 800; color: var(--danger); margin-bottom: 10px;">Số tiền: <span id="qrTotalAmount">0 đ</span></div>
+          <div style="font-size: 13px; background: #eff6ff; color: #1e3a8a; padding: 10px; border-radius: 8px; line-height: 1.6; text-align: left; margin-bottom: 6px;">
+            🏦 <strong>Ngân hàng:</strong> MB Bank (Quân Đội)<br>
+            🔢 <strong>Số tài khoản:</strong> <span style="font-family: monospace; font-size: 14px; font-weight: bold; color: #2563eb;">0862583284</span><br>
+            👤 <strong>Chủ tài khoản:</strong> <strong>MÀN MỘC SÁNG</strong><br>
+            📝 <span id="qrNoteInfo">Nội dung CK: DH ...</span>
           </div>
         </div>
         <button class="btn-checkout-start" onclick="closeQRModal()">
