@@ -975,7 +975,36 @@ function showToast(msg) {
   }, 3000);
 }
 
-// ================= 13. EVENT LISTENERS & TIỆN ÍCH =================
+// ================= 13. ĐIỀU HƯỚNG MENU ACTIVE (NỀN ĐEN DI CHUYỂN THEO TAB) =================
+function handleNavClick(el, target) {
+  // Bỏ active của tất cả các tab
+  document.querySelectorAll(".nav-menu .nav-link").forEach((link) => {
+    link.classList.remove("active");
+  });
+
+  // Chuyển active (nền đen chữ trắng) sang tab vừa bấm
+  if (el) {
+    el.classList.add("active");
+  }
+
+  // Điều hướng tương ứng
+  if (target === "home") {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  } else if (target === "catalog") {
+    const catSection = document.getElementById("catalogSection") || document.getElementById("productsMain");
+    if (catSection) catSection.scrollIntoView({ behavior: "smooth" });
+  } else if (target === "promo") {
+    const promoSection = document.getElementById("promoSection");
+    if (promoSection) promoSection.scrollIntoView({ behavior: "smooth" });
+  } else if (target === "news") {
+    const newsSection = document.getElementById("commitmentsSection");
+    if (newsSection) newsSection.scrollIntoView({ behavior: "smooth" });
+  } else if (target === "contact") {
+    openContactModal();
+  }
+}
+
+// ================= 14. EVENT LISTENERS & TIỆN ÍCH =================
 function setupEventListeners() {
   // Tìm kiếm Debounce 350ms
   const searchInput = document.getElementById("searchInput");
@@ -1000,6 +1029,35 @@ function setupEventListeners() {
       loadProducts();
     });
   }
+
+  // Scroll Spy: Nền đen tự động bám theo khu vực người dùng đang xem khi cuộn trang
+  window.addEventListener("scroll", () => {
+    // Nếu modal liên hệ đang mở thì không can thiệp active
+    const contactModal = document.getElementById("contactModal");
+    if (contactModal && !contactModal.classList.contains("hidden")) return;
+
+    const scrollPos = window.scrollY + 220;
+    const promoEl = document.getElementById("promoSection");
+    const newsEl = document.getElementById("commitmentsSection");
+    const catalogEl = document.getElementById("catalogSection");
+
+    let currentNav = "home";
+    if (newsEl && scrollPos >= newsEl.offsetTop) {
+      currentNav = "news";
+    } else if (catalogEl && scrollPos >= catalogEl.offsetTop) {
+      currentNav = "catalog";
+    } else if (promoEl && scrollPos >= promoEl.offsetTop) {
+      currentNav = "promo";
+    }
+
+    document.querySelectorAll(".nav-menu .nav-link:not([data-nav='contact'])").forEach((l) => {
+      if (l.getAttribute("data-nav") === currentNav) {
+        l.classList.add("active");
+      } else {
+        l.classList.remove("active");
+      }
+    });
+  }, { passive: true });
 }
 
 function escapeQuotes(str) {

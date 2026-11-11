@@ -37,12 +37,12 @@
         </div>
       </a>
 
-      <!-- Menu Điều Hướng Dạng Pill Đen / Trắng -->
+      <!-- Menu Điều Hướng Dạng Pill Đen / Trắng (Nền đen di chuyển theo click) -->
       <nav>
-        <ul class="nav-menu">
-          <li><a href="index.html" class="nav-link active">Trang chủ</a></li>
+        <ul class="nav-menu" id="mainNavMenu">
+          <li><a href="javascript:void(0)" onclick="handleNavClick(this, 'home')" data-nav="home" class="nav-link active">Trang chủ</a></li>
           <li class="nav-dropdown">
-            <a href="#catalogSection" class="nav-link">Danh mục ▾</a>
+            <a href="javascript:void(0)" onclick="handleNavClick(this, 'catalog')" data-nav="catalog" class="nav-link">Danh mục ▾</a>
             <div class="nav-dropdown-content" id="headerDropdownCategories">
               <a href="javascript:void(0)" onclick="filterByCategoryName('Áo Thun')" class="dropdown-item">Áo Thun Nam</a>
               <a href="javascript:void(0)" onclick="filterByCategoryName('Áo Sơ Mi')" class="dropdown-item">Áo Sơ Mi Oxford</a>
@@ -53,9 +53,9 @@
               <a href="javascript:void(0)" onclick="filterByCategoryName('Phụ Kiện')" class="dropdown-item">Phụ Kiện Nam</a>
             </div>
           </li>
-          <li><a href="#promoSection" class="nav-link">Khuyến mãi</a></li>
-          <li><a href="#commitmentsSection" class="nav-link">Tin tức</a></li>
-          <li><a href="javascript:void(0)" onclick="openContactModal()" class="nav-link">Liên hệ</a></li>
+          <li><a href="#promoSection" onclick="handleNavClick(this, 'promo')" data-nav="promo" class="nav-link">Khuyến mãi</a></li>
+          <li><a href="#commitmentsSection" onclick="handleNavClick(this, 'news')" data-nav="news" class="nav-link">Tin tức</a></li>
+          <li><a href="javascript:void(0)" onclick="handleNavClick(this, 'contact')" data-nav="contact" class="nav-link">Liên hệ</a></li>
         </ul>
       </nav>
 
