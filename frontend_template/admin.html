@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bảng Điều Khiển Quản Trị - MENSTYLE Admin Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Styling chuyên biệt cho Admin Dashboard */
+    body { background-color: #f1f5f9; }
+    .admin-layout { display: flex; min-height: 100vh; }
+    
+    /* Sidebar */
+    .admin-sidebar {
+      width: 260px;
+      background: #0f172a;
+      color: #94a3b8;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      border-right: 1px solid #1e293b;
+    }
+    .admin-brand {
+      padding: 24px 20px;
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      border-bottom: 1px solid #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .admin-menu {
+      list-style: none;
+      padding: 20px 12px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .admin-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      color: #cbd5e1;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .admin-menu-item:hover, .admin-menu-item.active {
+      background: var(--primary);
+      color: #ffffff;
+    }
+    .admin-sidebar-footer {
+      padding: 20px;
+      border-top: 1px solid #1e293b;
+      font-size: 13px;
+    }
+
+    /* Main Content */
+    .admin-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+    .admin-topbar {
+      height: 72px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      padding: 0 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .admin-body {
+      padding: 30px;
+      flex: 1;
+    }
+
+    /* Stat Cards */
+    .stat-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .stat-card-box {
+      background: #ffffff;
+      padding: 22px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+    .stat-card-title { font-size: 13px; font-weight: 700; color: #64748b; text-transform: uppercase; }
+    .stat-card-num { font-size: 28px; font-weight: 800; color: var(--secondary); margin: 8px 0; }
+    .stat-card-badge { font-size: 12px; font-weight: 600; }
+
+    /* Tables */
+    .table-container {
+      background: #ffffff;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      overflow-x: auto;
+    }
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    .admin-table th {
+      background: #f8fafc;
+      padding: 14px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #475569;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .admin-table td {
+      padding: 14px 18px;
+      font-size: 13.5px;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+    }
+    .admin-table tr:hover { background: #f8fafc; }
+
+    /* Status Badges */
+    .badge-status {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .status-PENDING { background: #fef3c7; color: #b45309; }
+    .status-CONFIRMED { background: #e0f2fe; color: #0284c7; }
+    .status-PAID { background: #dcfce7; color: #15803d; }
+    .status-UNPAID { background: #fee2e2; color: #b91c1c; }
+    .status-SHIPPING { background: #fef08a; color: #854d0e; }
+    .status-COMPLETED { background: #dcfce7; color: #166534; }
+    .status-CANCELLED { background: #f1f5f9; color: #64748b; }
+
+    /* Action Buttons */
+    .btn-action {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12.5px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+    .btn-act-edit { background: #eff6ff; color: #2563eb; }
+    .btn-act-edit:hover { background: #dbeafe; }
+    .btn-act-del { background: #fee2e2; color: #dc2626; }
+    .btn-act-del:hover { background: #fecaca; }
+    .btn-act-pay { background: #dcfce7; color: #166534; }
+    .btn-act-pay:hover { background: #bbf7d0; }
+    .btn-act-ship { background: #e0f2fe; color: #0369a1; }
+    .btn-act-ship:hover { background: #bae6fd; }
+
+    /* Login Screen Modal */
+    .auth-guard-screen {
+      position: fixed;
+      inset: 0;
+      background: #0f172a;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .auth-card {
+      background: #ffffff;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 440px;
+      padding: 32px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+    }
+
+    @media (max-width: 1024px) {
+      .stat-cards-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .admin-layout { flex-direction: column; }
+      .admin-sidebar { width: 100%; height: auto; position: static; }
+      .stat-cards-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= 0. AUTH GUARD SCREEN (BẢO MẬT PHÂN QUYỀN CLIENT RUBRIC 3.1) ================= -->
+  <div id="adminAuthGuard" class="auth-guard-screen hidden">
+    <div class="auth-card">
+      <div style="text-align: center; margin-bottom: 24px;">
+        <div style="font-size: 40px; margin-bottom: 8px;">🔒</div>
+        <h2 style="font-size: 22px; font-weight: 800; color: #0f172a;">Khu Vực Quản Trị Viên</h2>
+        <p style="font-size: 13.5px; color: #64748b; margin-top: 4px;">Vui lòng đăng nhập với tài khoản có quyền Quản trị (Admin) để truy cập hệ thống.</p>
+      </div>
+
+      <form onsubmit="handleAdminLogin(event)">
+        <div class="form-group">
+          <label class="form-label">Email Quản Trị (*)</label>
+          <input type="email" id="adminEmail" class="form-input" value="admin@menstyle.vn" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Mật khẩu (*)</label>
+          <input type="password" id="adminPassword" class="form-input" value="AdminPassword123@" required>
+        </div>
+        <div style="background: #f8fafc; border: 1px dashed #cbd5e1; padding: 10px; border-radius: 8px; font-size: 12.5px; color: #475569; margin-bottom: 16px;">
+          🔑 <strong>Tài khoản Seeder có sẵn:</strong><br>
+          Email: <code>admin@menstyle.vn</code><br>
+          Mật khẩu: <code>AdminPassword123@</code>
+        </div>
+        <button type="submit" id="btnAdminLogin" class="btn-checkout-start">
+          Xác Thực & Truy Cập Dashboard
+        </button>
+      </form>
+      <div style="text-align: center; margin-top: 16px;">
+        <a href="index.html" style="font-size: 13px; color: var(--primary); text-decoration: none; font-weight: 600;">➔ Quay lại Cửa hàng Khách</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= LAYOUT ADMIN DASHBOARD ================= -->
+  <div class="admin-layout" id="adminDashboardLayout">
+    <!-- 1. Thanh Sidebar Menu -->
+    <aside class="admin-sidebar">
+      <div class="admin-brand">
+        👔 MENSTYLE <span class="brand-badge" style="background:#fee2e2; color:#b91c1c;">Admin</span>
+      </div>
+      <ul class="admin-menu">
+        <li class="admin-menu-item active" onclick="switchAdminTab('tabOverview', this)">
+          📊 Thống Kê Tổng Quan
+        </li>
+        <li class="admin-menu-item" onclick="switchAdminTab('tabProducts', this)">
+          👕 Quản Lý Sản Phẩm
+        </li>
+        <li class="admin-menu-item" onclick="switchAdminTab('tabCategories', this)">
+          📁 Quản Lý Danh Mục
+        </li>
+        <li class="admin-menu-item" onclick="switchAdminTab('tabOrders', this)">
+          📦 Quản Lý Đơn Hàng
+        </li>
+      </ul>
+      <div class="admin-sidebar-footer">
+        <div style="margin-bottom: 10px;">
+          Đăng nhập: <strong id="adminProfileName" style="color: #fff;">Quản trị viên</strong>
+        </div>
+        <button onclick="handleAdminLogout()" class="btn-action btn-act-del" style="width: 100%; justify-content: center; padding: 8px;">
+          ⏻ Đăng Xuất
+        </button>
+      </div>
+    </aside>
+
+    <!-- 2. Vùng Nội Dung Chính -->
+    <div class="admin-main">
+      <!-- Topbar -->
+      <header class="admin-topbar">
+        <h2 id="adminPageHeading" style="font-size: 20px; font-weight: 800; color: var(--secondary);">
+          Thống Kê Hoạt Động Cửa Hàng
+        </h2>
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <a href="index.html" target="_blank" class="btn-cart-toggle" style="text-decoration: none;">
+            🌐 Xem Storefront Khách
+          </a>
+        </div>
+      </header>
+
+      <!-- Nội dung các Tab -->
+      <main class="admin-body">
+
+        <!-- ================= TAB 1: THỐNG KÊ TỔNG QUAN ================= -->
+        <div id="tabOverview">
+          <div class="stat-cards-grid">
+            <div class="stat-card-box">
+              <div class="stat-card-title">Tổng Doanh Thu</div>
+              <div class="stat-card-num" id="statRevenue" style="color: var(--danger);">0 đ</div>
+              <span class="stat-card-badge" style="color: #10b981;">✓ Ghi nhận thực thu</span>
+            </div>
+            <div class="stat-card-box">
+              <div class="stat-card-title">Tổng Đơn Hàng</div>
+              <div class="stat-card-num" id="statOrders">0</div>
+              <span class="stat-card-badge" style="color: #3b82f6;">Đơn phát sinh trên hệ thống</span>
+            </div>
+            <div class="stat-card-box">
+              <div class="stat-card-title">Sản Phẩm Trong Kho</div>
+              <div class="stat-card-num" id="statProducts">0</div>
+              <span class="stat-card-badge" style="color: #8b5cf6;">Mẫu thời trang nam</span>
+            </div>
+            <div class="stat-card-box">
+              <div class="stat-card-title">Danh Mục Hàng</div>
+              <div class="stat-card-num" id="statCategories">0</div>
+              <span class="stat-card-badge" style="color: #f59e0b;">Nhóm hàng chính</span>
+            </div>
+          </div>
+
+          <div style="background: #ffffff; padding: 24px; border-radius: var(--radius); border: 1px solid var(--border);">
+            <h3 style="font-size: 17px; font-weight: 800; margin-bottom: 12px;">Đơn Hàng Gần Đây Cần Xử Lý</h3>
+            <p style="font-size: 13.5px; color: #64748b; margin-bottom: 16px;">Chuyển sang tab <strong>Quản Lý Đơn Hàng</strong> để duyệt thanh toán VietQR và xác nhận xuất kho giao hàng.</p>
+            <button class="btn-checkout-start" style="width: auto; padding: 10px 20px;" onclick="document.querySelectorAll('.admin-menu-item')[3].click()">
+              Chuyển Đến Duyệt Đơn Hàng ➔
+            </button>
+          </div>
+        </div>
+
+        <!-- ================= TAB 2: QUẢN LÝ SẢN PHẨM (CRUD) ================= -->
+        <div id="tabProducts" class="hidden">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+            <h3 style="font-size: 18px; font-weight: 800;">Danh Sách Sản Phẩm Thời Trang Nam</h3>
+            <button class="btn-checkout-start" style="width: auto; padding: 10px 18px;" onclick="openProductModal()">
+              + Thêm Sản Phẩm Mới
+            </button>
+          </div>
+
+          <div class="table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Ảnh</th>
+                  <th>Tên Sản Phẩm</th>
+                  <th>Danh Mục</th>
+                  <th>Giá Bán</th>
+                  <th>Giá Gốc</th>
+                  <th>Kho</th>
+                  <th>Hành Động</th>
+                </tr>
+              </thead>
+              <tbody id="adminProductsTableBody">
+                <tr><td colspan="7" style="text-align: center; padding: 30px;">⏳ Đang tải dữ liệu...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ================= TAB 3: QUẢN LÝ DANH MỤC (CRUD) ================= -->
+        <div id="tabCategories" class="hidden">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+            <h3 style="font-size: 18px; font-weight: 800;">Danh Sách Danh Mục Hàng</h3>
+            <button class="btn-checkout-start" style="width: auto; padding: 10px 18px;" onclick="openCategoryModal()">
+              + Thêm Danh Mục Mới
+            </button>
+          </div>
+
+          <div class="table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Ảnh</th>
+                  <th>Tên Danh Mục</th>
+                  <th>Slug (Đường Dẫn)</th>
+                  <th>Mô Tả</th>
+                  <th>Hành Động</th>
+                </tr>
+              </thead>
+              <tbody id="adminCategoriesTableBody">
+                <tr><td colspan="5" style="text-align: center; padding: 30px;">⏳ Đang tải danh mục...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ================= TAB 4: QUẢN LÝ & DUYỆT ĐƠN HÀNG (RUBRIC 3.2) ================= -->
+        <div id="tabOrders" class="hidden">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+            <div>
+              <h3 style="font-size: 18px; font-weight: 800;">Danh Sách Đơn Hàng & Thao Tác Duyệt</h3>
+              <p style="font-size: 13px; color: #64748b; margin-top: 2px;">Duyệt thanh toán VietQR và xác nhận giao hàng trực tiếp với HTTP PUT theo Rubric</p>
+            </div>
+            <button class="btn-cart-toggle" onclick="loadAdminOrders()">🔄 Làm Mới</button>
+          </div>
+
+          <div class="table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Mã Đơn</th>
+                  <th>Ngày Đặt</th>
+                  <th>Khách Hàng</th>
+                  <th>SĐT & Địa Chỉ</th>
+                  <th>Tổng Tiền</th>
+                  <th>Hình Thức</th>
+                  <th>Thanh Toán</th>
+                  <th>Giao Hàng</th>
+                  <th>Nút Duyệt Trực Tiếp</th>
+                </tr>
+              </thead>
+              <tbody id="adminOrdersTableBody">
+                <tr><td colspan="9" style="text-align: center; padding: 30px;">⏳ Đang tải đơn hàng...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ================= MODAL THÊM / SỬA SẢN PHẨM ================= -->
+  <div class="modal-overlay hidden" id="productModal">
+    <div class="modal-content" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3 id="productModalTitle" style="font-size: 18px; font-weight: 800;">+ Thêm Sản Phẩm Mới</h3>
+        <button class="btn-close" onclick="closeProductModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="productForm" onsubmit="handleProductFormSubmit(event)">
+          <input type="hidden" id="editProductId">
+          
+          <div class="form-group">
+            <label class="form-label">Tên Sản Phẩm (*)</label>
+            <input type="text" id="pName" class="form-input" placeholder="Ví dụ: Áo Sơ Mi Oxford Slimfit" required>
+          </div>
+
+          <div style="display: flex; gap: 12px;">
+            <div class="form-group" style="flex: 1;">
+              <label class="form-label">Danh Mục (*)</label>
+              <select id="pCategory" class="form-select" required>
+                <!-- Nạp động qua JS -->
+              </select>
+            </div>
+            <div class="form-group" style="flex: 1;">
+              <label class="form-label">Thương Hiệu</label>
+              <input type="text" id="pBrand" class="form-input" value="MENSTYLE">
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 12px;">
+            <div class="form-group" style="flex: 1;">
+              <label class="form-label">Giá Niêm Yết (VNĐ) (*)</label>
+              <input type="number" id="pOriginalPrice" class="form-input" placeholder="380000" required>
+            </div>
+            <div class="form-group" style="flex: 1;">
+              <label class="form-label">Giá Bán Ưu Đãi (VNĐ) (*)</label>
+              <input type="number" id="pSalePrice" class="form-input" placeholder="289000" required>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 12px;">
+            <div class="form-group" style="flex: 1;">
+              <label class="form-label">Số Lượng Kho (*)</label>
+              <input type="number" id="pStock" class="form-input" value="40" required>
+            </div>
+            <div class="form-group" style="flex: 1;">
+              <label class="form-label">Link Hình Ảnh (URL)</label>
+              <input type="url" id="pImage" class="form-input" placeholder="https://images.unsplash.com/...">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Mô Tả Sản Phẩm & Chất Liệu</label>
+            <textarea id="pDescription" class="form-input" rows="3" placeholder="Chất vải Oxford dệt chéo thoáng khí..."></textarea>
+          </div>
+
+          <button type="submit" class="btn-checkout-start">
+            Lưu Sản Phẩm Đồng Bộ Lên MongoDB
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL THÊM / SỬA DANH MỤC ================= -->
+  <div class="modal-overlay hidden" id="categoryModal">
+    <div class="modal-content" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3 id="categoryModalTitle" style="font-size: 18px; font-weight: 800;">+ Thêm Danh Mục Mới</h3>
+        <button class="btn-close" onclick="closeCategoryModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="categoryForm" onsubmit="handleCategoryFormSubmit(event)">
+          <input type="hidden" id="editCategoryId">
+          <div class="form-group">
+            <label class="form-label">Tên Danh Mục (*)</label>
+            <input type="text" id="catName" class="form-input" placeholder="Ví dụ: Áo Khoác & Blazer Nam" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Link Hình Ảnh Đại Diện (URL)</label>
+            <input type="url" id="catImage" class="form-input" placeholder="https://images.unsplash.com/...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Mô Tả Danh Mục</label>
+            <textarea id="catDescription" class="form-input" rows="2" placeholder="Bộ sưu tập áo khoác thời thượng..."></textarea>
+          </div>
+          <button type="submit" class="btn-checkout-start">
+            Lưu Danh Mục Vào Hệ Thống
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/api.js"></script>
+  <script>
+    /**
+     * LOGIC TOÀN DIỆN CHO ADMIN DASHBOARD
+     * Kiểm tra JWT Token, Phân quyền Client, Thống kê, CRUD Sản phẩm, CRUD Danh mục, Duyệt đơn hàng
+     */
+    let adminToken = localStorage.getItem('MENSTYLE_TOKEN') || '';
+    let adminUser = JSON.parse(localStorage.getItem('MENSTYLE_USER') || 'null');
+    let cachedCategories = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      checkAdminAuthGuard();
+    });
+
+    // ================= 1. BẢO MẬT & KIỂM SOÁT QUYỀN TRUY CẬP CLIENT (RUBRIC 3.1) =================
+    function checkAdminAuthGuard() {
+      const guardModal = document.getElementById('adminAuthGuard');
+
+      // Kiểm tra có Token và có role admin không
+      if (!adminToken || !adminUser || adminUser.role !== 'admin') {
+        if (guardModal) guardModal.classList.remove('hidden');
+      } else {
+        if (guardModal) guardModal.classList.add('hidden');
+        document.getElementById('adminProfileName').innerText = adminUser.name || 'Admin';
+        loadAdminInitialData();
+      }
+    }
+
+    async function handleAdminLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('adminEmail').value.trim();
+      const password = document.getElementById('adminPassword').value;
+      const btn = document.getElementById('btnAdminLogin');
+
+      btn.disabled = true;
+      btn.innerText = '⏳ Đang xác thực...';
+
+      const res = await API.login(email, password);
+      btn.disabled = false;
+      btn.innerText = 'Xác Thực & Truy Cập Dashboard';
+
+      if (res.success && res.token) {
+        if (res.user.role !== 'admin') {
+          alert('⛔ Tài khoản này không có quyền Quản trị (Admin)! Quyền của bạn: ' + res.user.role);
+          return;
+        }
+
+        adminToken = res.token;
+        adminUser = res.user;
+        localStorage.setItem('MENSTYLE_TOKEN', adminToken);
+        localStorage.setItem('MENSTYLE_USER', JSON.stringify(adminUser));
+
+        document.getElementById('adminAuthGuard').classList.add('hidden');
+        document.getElementById('adminProfileName').innerText = adminUser.name;
+        loadAdminInitialData();
+      } else {
+        alert('❌ Đăng nhập thất bại: ' + (res.message || 'Sai email hoặc mật khẩu'));
+      }
+    }
+
+    function handleAdminLogout() {
+      if (!confirm('Bạn có chắc chắn muốn đăng xuất khỏi trang Quản trị?')) return;
+      localStorage.removeItem('MENSTYLE_TOKEN');
+      localStorage.removeItem('MENSTYLE_USER');
+      adminToken = '';
+      adminUser = null;
+      checkAdminAuthGuard();
+    }
+
+    // ================= 2. ĐIỀU HƯỚNG TABS =================
+    function switchAdminTab(tabId, el) {
+      document.querySelectorAll('.admin-menu-item').forEach(i => i.classList.remove('active'));
+      el.classList.add('active');
+
+      document.getElementById('tabOverview').classList.add('hidden');
+      document.getElementById('tabProducts').classList.add('hidden');
+      document.getElementById('tabCategories').classList.add('hidden');
+      document.getElementById('tabOrders').classList.add('hidden');
+
+      const target = document.getElementById(tabId);
+      if (target) target.classList.remove('hidden');
+
+      const headings = {
+        tabOverview: 'Thống Kê Hoạt Động Cửa Hàng',
+        tabProducts: 'Quản Lý Sản Phẩm Thời Trang Nam',
+        tabCategories: 'Quản Lý Danh Mục Hàng Hóa',
+        tabOrders: 'Quản Lý & Duyệt Đơn Hàng'
+      };
+      document.getElementById('adminPageHeading').innerText = headings[tabId] || 'Admin Dashboard';
+    }
+
+    // ================= 3. KHỞI TẠO & TẢI DỮ LIỆU TỔNG QUAN =================
+    async function loadAdminInitialData() {
+      await loadAdminCategories();
+      await loadAdminProducts();
+      await loadAdminOrders();
+    }
+
+    // ================= 4. QUẢN LÝ DANH MỤC (CRUD CATEGORY) =================
+    async function loadAdminCategories() {
+      const res = await API.getCategories();
+      const tbody = document.getElementById('adminCategoriesTableBody');
+      const statEl = document.getElementById('statCategories');
+
+      if (res.success && Array.isArray(res.data)) {
+        cachedCategories = res.data;
+        if (statEl) statEl.innerText = res.data.length;
+
+        // Cập nhật select danh mục trong modal sản phẩm
+        const pCatSelect = document.getElementById('pCategory');
+        if (pCatSelect) {
+          pCatSelect.innerHTML = '<option value="">-- Chọn danh mục --</option>' +
+            res.data.map(c => `<option value="${c._id}">${c.name}</option>`).join('');
+        }
+
+        if (tbody) {
+          if (res.data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:20px;">Chưa có danh mục nào!</td></tr>`;
+          } else {
+            tbody.innerHTML = res.data.map(c => `
+              <tr>
+                <td><img src="${c.image || 'https://via.placeholder.com/50'}" style="width:48px; height:48px; object-fit:cover; border-radius:6px;"></td>
+                <td><strong>${c.name}</strong></td>
+                <td><code style="background:#f1f5f9; padding:2px 6px; border-radius:4px;">${c.slug}</code></td>
+                <td style="color:#64748b; font-size:13px;">${c.description || '-'}</td>
+                <td>
+                  <div style="display:flex; gap:6px;">
+                    <button class="btn-action btn-act-edit" onclick="openEditCategoryModal('${c._id}', '${escapeQuotes(c.name)}', '${escapeQuotes(c.image)}', '${escapeQuotes(c.description)}')">✏️ Sửa</button>
+                    <button class="btn-action btn-act-del" onclick="handleDeleteCategory('${c._id}')">🗑️ Xóa</button>
+                  </div>
+                </td>
+              </tr>
+            `).join('');
+          }
+        }
+      }
+    }
+
+    function openCategoryModal() {
+      document.getElementById('editCategoryId').value = '';
+      document.getElementById('catName').value = '';
+      document.getElementById('catImage').value = '';
+      document.getElementById('catDescription').value = '';
+      document.getElementById('categoryModalTitle').innerText = '+ Thêm Danh Mục Mới';
+      document.getElementById('categoryModal').classList.remove('hidden');
+    }
+
+    function openEditCategoryModal(id, name, image, desc) {
+      document.getElementById('editCategoryId').value = id;
+      document.getElementById('catName').value = name;
+      document.getElementById('catImage').value = image || '';
+      document.getElementById('catDescription').value = desc || '';
+      document.getElementById('categoryModalTitle').innerText = '✏️ Chỉnh Sửa Danh Mục';
+      document.getElementById('categoryModal').classList.remove('hidden');
+    }
+
+    function closeCategoryModal() {
+      document.getElementById('categoryModal').classList.add('hidden');
+    }
+
+    async function handleCategoryFormSubmit(e) {
+      e.preventDefault();
+      const id = document.getElementById('editCategoryId').value;
+      const catData = {
+        name: document.getElementById('catName').value.trim(),
+        image: document.getElementById('catImage').value.trim() || 'https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?w=500',
+        description: document.getElementById('catDescription').value.trim()
+      };
+
+      let res;
+      if (id) {
+        res = await API.updateCategory(id, catData, adminToken);
+      } else {
+        res = await API.createCategory(catData, adminToken);
+      }
+
+      if (res.success) {
+        alert(id ? 'Cập nhật danh mục thành công!' : 'Thêm danh mục mới thành công!');
+        closeCategoryModal();
+        loadAdminCategories();
+      } else {
+        alert('❌ Lỗi: ' + (res.message || 'Không thể lưu danh mục'));
+      }
+    }
+
+    async function handleDeleteCategory(id) {
+      if (!confirm('Bạn có chắc chắn muốn xóa danh mục này?')) return;
+      const res = await API.deleteCategory(id, adminToken);
+      if (res.success) {
+        alert('Đã xóa danh mục thành công!');
+        loadAdminCategories();
+      } else {
+        alert('❌ Lỗi: ' + (res.message || 'Không thể xóa danh mục'));
+      }
+    }
+
+    // ================= 5. QUẢN LÝ SẢN PHẨM (CRUD PRODUCT) =================
+    async function loadAdminProducts() {
+      const res = await API.getProducts({ all: 'true' });
+      const tbody = document.getElementById('adminProductsTableBody');
+      const statEl = document.getElementById('statProducts');
+
+      if (res.success && Array.isArray(res.data)) {
+        if (statEl) statEl.innerText = res.data.length;
+
+        if (tbody) {
+          if (res.data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:20px;">Chưa có sản phẩm nào!</td></tr>`;
+          } else {
+            tbody.innerHTML = res.data.map(p => {
+              const catName = p.category ? (p.category.name || p.category) : '-';
+              const catId = p.category ? (p.category._id || p.category) : '';
+              return `
+                <tr>
+                  <td><img src="${p.image || 'https://via.placeholder.com/50'}" style="width:48px; height:58px; object-fit:cover; border-radius:6px;"></td>
+                  <td>
+                    <strong>${p.name}</strong><br>
+                    <span style="font-size:11.5px; color:#64748b;">${p.brand || 'MENSTYLE'}</span>
+                  </td>
+                  <td><span class="brand-badge">${catName}</span></td>
+                  <td><strong style="color:var(--danger);">${Number(p.salePrice).toLocaleString('vi-VN')} đ</strong></td>
+                  <td><span style="color:#94a3b8; text-decoration:line-through;">${Number(p.originalPrice).toLocaleString('vi-VN')} đ</span></td>
+                  <td><strong>${p.stock || 0}</strong></td>
+                  <td>
+                    <div style="display:flex; gap:6px;">
+                      <button class="btn-action btn-act-edit" onclick="openEditProductModal('${p._id}', '${escapeQuotes(p.name)}', '${catId}', '${escapeQuotes(p.brand)}', ${p.originalPrice}, ${p.salePrice}, ${p.stock}, '${escapeQuotes(p.image)}', '${escapeQuotes(p.description)}')">✏️ Sửa</button>
+                      <button class="btn-action btn-act-del" onclick="handleDeleteProduct('${p._id}')">🗑️ Xóa</button>
+                    </div>
+                  </td>
+                </tr>
+              `;
+            }).join('');
+          }
+        }
+      }
+    }
+
+    function openProductModal() {
+      document.getElementById('editProductId').value = '';
+      document.getElementById('pName').value = '';
+      document.getElementById('pCategory').value = '';
+      document.getElementById('pBrand').value = 'MENSTYLE';
+      document.getElementById('pOriginalPrice').value = '';
+      document.getElementById('pSalePrice').value = '';
+      document.getElementById('pStock').value = 30;
+      document.getElementById('pImage').value = '';
+      document.getElementById('pDescription').value = '';
+      document.getElementById('productModalTitle').innerText = '+ Thêm Sản Phẩm Mới';
+      document.getElementById('productModal').classList.remove('hidden');
+    }
+
+    function openEditProductModal(id, name, catId, brand, origPrice, salePrice, stock, img, desc) {
+      document.getElementById('editProductId').value = id;
+      document.getElementById('pName').value = name;
+      document.getElementById('pCategory').value = catId;
+      document.getElementById('pBrand').value = brand || 'MENSTYLE';
+      document.getElementById('pOriginalPrice').value = origPrice;
+      document.getElementById('pSalePrice').value = salePrice;
+      document.getElementById('pStock').value = stock;
+      document.getElementById('pImage').value = img || '';
+      document.getElementById('pDescription').value = desc || '';
+      document.getElementById('productModalTitle').innerText = '✏️ Chỉnh Sửa Sản Phẩm';
+      document.getElementById('productModal').classList.remove('hidden');
+    }
+
+    function closeProductModal() {
+      document.getElementById('productModal').classList.add('hidden');
+    }
+
+    async function handleProductFormSubmit(e) {
+      e.preventDefault();
+      const id = document.getElementById('editProductId').value;
+      const productData = {
+        name: document.getElementById('pName').value.trim(),
+        category: document.getElementById('pCategory').value,
+        brand: document.getElementById('pBrand').value.trim() || 'MENSTYLE',
+        originalPrice: Number(document.getElementById('pOriginalPrice').value),
+        salePrice: Number(document.getElementById('pSalePrice').value),
+        stock: Number(document.getElementById('pStock').value),
+        image: document.getElementById('pImage').value.trim() || 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600',
+        description: document.getElementById('pDescription').value.trim()
+      };
+
+      let res;
+      if (id) {
+        res = await API.updateProduct(id, productData, adminToken);
+      } else {
+        res = await API.createProduct(productData, adminToken);
+      }
+
+      if (res.success) {
+        alert(id ? 'Cập nhật sản phẩm thành công!' : 'Thêm sản phẩm mới thành công!');
+        closeProductModal();
+        loadAdminProducts();
+      } else {
+        alert('❌ Lỗi: ' + (res.message || 'Không thể lưu sản phẩm'));
+      }
+    }
+
+    async function handleDeleteProduct(id) {
+      if (!confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi MongoDB Atlas?')) return;
+      const res = await API.deleteProduct(id, adminToken);
+      if (res.success) {
+        alert('Đã xóa sản phẩm thành công!');
+        loadAdminProducts();
+      } else {
+        alert('❌ Lỗi: ' + (res.message || 'Không thể xóa'));
+      }
+    }
+
+    // ================= 6. QUẢN LÝ & DUYỆT ĐƠN HÀNG (RUBRIC 3.2: /PAY & /DELIVER) =================
+    async function loadAdminOrders() {
+      const res = await API.getOrders(adminToken);
+      const tbody = document.getElementById('adminOrdersTableBody');
+      const statOrdersEl = document.getElementById('statOrders');
+      const statRevenueEl = document.getElementById('statRevenue');
+
+      if (res.success && Array.isArray(res.data)) {
+        if (statOrdersEl) statOrdersEl.innerText = res.data.length;
+
+        // Tính tổng doanh thu thực tế
+        const revenue = res.data
+          .filter(o => o.paymentStatus === 'PAID')
+          .reduce((sum, o) => sum + (o.totalAmount || 0), 0);
+        if (statRevenueEl) statRevenueEl.innerText = `${revenue.toLocaleString('vi-VN')} đ`;
+
+        if (tbody) {
+          if (res.data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:20px;">Chưa có đơn hàng nào!</td></tr>`;
+          } else {
+            tbody.innerHTML = res.data.map(o => {
+              const dateStr = new Date(o.createdAt).toLocaleString('vi-VN');
+              const isPaid = o.paymentStatus === 'PAID';
+              const isShippingOrCompleted = o.orderStatus === 'SHIPPING' || o.orderStatus === 'COMPLETED';
+
+              return `
+                <tr>
+                  <td><strong>#${o.orderCode || o._id.slice(-6).toUpperCase()}</strong></td>
+                  <td style="font-size:12px; color:#64748b;">${dateStr}</td>
+                  <td><strong>${o.customerName}</strong></td>
+                  <td style="font-size:12.5px;">
+                    📞 ${o.customerPhone}<br>
+                    📍 <span style="color:#64748b;">${o.shippingAddress}</span>
+                  </td>
+                  <td><strong style="color:var(--danger);">${Number(o.totalAmount).toLocaleString('vi-VN')} đ</strong></td>
+                  <td><span class="brand-badge">${o.paymentMethod}</span></td>
+                  <td>
+                    <span class="badge-status status-${o.paymentStatus}">
+                      ${isPaid ? '✓ Đã Thanh Toán' : 'Chưa TT'}
+                    </span>
+                  </td>
+                  <td>
+                    <span class="badge-status status-${o.orderStatus}">
+                      ${o.orderStatus === 'SHIPPING' ? '🚚 Đang Giao' : (o.orderStatus === 'COMPLETED' ? '✓ Đã Giao' : o.orderStatus)}
+                    </span>
+                  </td>
+                  <td>
+                    <div style="display:flex; flex-direction:column; gap:6px;">
+                      <!-- Nút Duyệt thanh toán theo Rubric PUT /api/orders/:id/pay -->
+                      <button class="btn-action btn-act-pay" ${isPaid ? 'disabled style="opacity:0.6;"' : ''} onclick="handleDirectPayOrder('${o._id}')">
+                        ${isPaid ? '✓ Đã Duyệt TT' : '💳 Duyệt TT (Pay)'}
+                      </button>
+
+                      <!-- Nút Giao hàng theo Rubric PUT /api/orders/:id/deliver -->
+                      <button class="btn-action btn-act-ship" onclick="handleDirectDeliverOrder('${o._id}')">
+                        🚚 ${o.orderStatus === 'SHIPPING' ? 'Xong Đơn (Complete)' : 'Giao Hàng (Deliver)'}
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              `;
+            }).join('');
+          }
+        }
+      }
+    }
+
+    // Nút thao tác trực tiếp duyệt thanh toán PUT /api/orders/:id/pay
+    async function handleDirectPayOrder(orderId) {
+      if (!confirm('Xác nhận khách hàng đã chuyển khoản thành công và duyệt thanh toán cho đơn hàng này?')) return;
+      const res = await API.payOrder(orderId, adminToken);
+      if (res.success) {
+        alert('🎉 Đã duyệt thanh toán thành công! Trạng thái cập nhật: PAID.');
+        loadAdminOrders();
+      } else {
+        alert('❌ Lỗi: ' + (res.message || 'Không thể duyệt'));
+      }
+    }
+
+    // Nút thao tác trực tiếp xác nhận giao hàng PUT /api/orders/:id/deliver
+    async function handleDirectDeliverOrder(orderId) {
+      const res = await API.deliverOrder(orderId, adminToken);
+      if (res.success) {
+        alert('🎉 ' + res.message);
+        loadAdminOrders();
+      } else {
+        alert('❌ Lỗi: ' + (res.message || 'Không thể đổi trạng thái'));
+      }
+    }
+
+    function escapeQuotes(str) {
+      return (str || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MENSTYLE - Thời Trang Nam Cao Cấp & Lịch Lãm</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ================= 1. HEADER & THANH ĐIỀU HƯỚNG ================= -->
+  <header>
+    <div class="container nav-container">
+      <a href="index.html" class="brand-logo">
+        👔 MEN<span class="logo-highlight">STYLE</span> <span class="brand-badge">Thời Trang Nam</span>
+      </a>
+
+      <!-- Ô Tìm kiếm nhanh Debounce -->
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" class="search-input" placeholder="Tìm kiếm áo sơ mi, polo, quần tây, blazer...">
+      </div>
+
+      <!-- Khu vực Tài khoản & Giỏ hàng -->
+      <div class="header-actions">
+        <!-- Nút Giỏ hàng -->
+        <button class="btn-cart-toggle" onclick="openCartDrawer()">
+          🛒 Giỏ hàng <span class="cart-badge" id="cartBadge">0</span>
+        </button>
+
+        <!-- Nút Đăng nhập / Profile khách -->
+        <div id="authHeaderArea">
+          <button class="btn-user-auth" onclick="openAuthModal()">
+            👤 Đăng nhập
+          </button>
+        </div>
+
+        <!-- Link sang Admin Dashboard -->
+        <a href="admin.html" class="btn-admin-link">⚙️ Quản Trị</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= 2. BANNER CAROUSEL QUẢNG CÁO ================= -->
+  <section class="carousel-container">
+    <div class="carousel-slides" id="carouselSlides">
+      <!-- Slide 1 -->
+      <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?w=1600');">
+        <div class="carousel-overlay"></div>
+        <div class="container" style="width: 100%;">
+          <div class="carousel-content">
+            <span class="carousel-tag">✨ BST CÔNG SỞ 2026</span>
+            <h1 class="carousel-title">Định Hình Phong Cách Phái Mạnh Lịch Lãm</h1>
+            <p class="carousel-desc">Chất liệu vải Oxford và Tuysi cao cấp chống nhăn, tôn lên khí chất đĩnh đạc và tự tin của quý ông hiện đại.</p>
+            <button class="btn-carousel" onclick="scrollToProducts()">Khám Phá Ngay ➔</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 2 -->
+      <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1516257984-b1b4d707412e?w=1600');">
+        <div class="carousel-overlay"></div>
+        <div class="container" style="width: 100%;">
+          <div class="carousel-content">
+            <span class="carousel-tag" style="background:#3b82f6; color:#fff;">🔥 STREETWEAR TREND</span>
+            <h1 class="carousel-title">Áo Thun & Hoodie Trẻ Trung, Bứt Phá</h1>
+            <p class="carousel-desc">Cotton 100% định lượng 250gsm dày dặn đứng form, chuẩn phong cách dạo phố năng động và phóng khoáng.</p>
+            <button class="btn-carousel" onclick="filterByCatSlug('ao-thun-hoodie')">Xem Bộ Sưu Tập ➔</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 3 -->
+      <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=1600');">
+        <div class="carousel-overlay"></div>
+        <div class="container" style="width: 100%;">
+          <div class="carousel-content">
+            <span class="carousel-tag" style="background:#10b981; color:#fff;">🌟 BLASER & SUIT</span>
+            <h1 class="carousel-title">Áo Khoác Blazer Nam Chuẩn Form Hàn Quốc</h1>
+            <p class="carousel-desc">Đường may may đo tinh xảo, ve áo thanh thoát, giải pháp hoàn hảo cho mọi buổi tiệc và sự kiện quan trọng.</p>
+            <button class="btn-carousel" onclick="filterByCatSlug('ao-khoac-blazer')">Mua Ngay ➔</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nút điều hướng Carousel -->
+    <button class="carousel-nav-btn carousel-prev" onclick="prevSlide()">❮</button>
+    <button class="carousel-nav-btn carousel-next" onclick="nextSlide()">❯</button>
+    <div class="carousel-dots" id="carouselDots">
+      <span class="carousel-dot active" onclick="goToSlide(0)"></span>
+      <span class="carousel-dot" onclick="goToSlide(1)"></span>
+      <span class="carousel-dot" onclick="goToSlide(2)"></span>
+    </div>
+  </section>
+
+  <!-- ================= 3. KHU VỰC BỘ LỌC DANH MỤC & KHOẢNG GIÁ ================= -->
+  <main class="container" id="productsMain">
+    <div class="filter-bar-wrapper">
+      <!-- Hàng 1: Danh mục -->
+      <div class="filter-row">
+        <div class="filter-group-title">🏷️ Danh mục:</div>
+        <div class="category-pills" id="categoryPills">
+          <button class="cat-pill active" data-id="">Tất cả sản phẩm</button>
+          <!-- Nạp động qua JS từ MongoDB -->
+        </div>
+      </div>
+
+      <!-- Hàng 2: Bộ lọc khoảng giá theo Rubric 2.2 -->
+      <div class="filter-row">
+        <div class="filter-group-title">💰 Khoảng giá:</div>
+        <div class="price-filters">
+          <button class="price-pill active" data-min="" data-max="">Tất cả giá</button>
+          <button class="price-pill" data-min="" data-max="200000">Dưới 200.000 đ</button>
+          <button class="price-pill" data-min="200000" data-max="350000">200.000 - 350.000 đ</button>
+          <button class="price-pill" data-min="350000" data-max="">Trên 350.000 đ</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= 4. DANH SÁCH SẢN PHẨM ================= -->
+    <section class="products-section">
+      <div class="section-header">
+        <h2 class="section-title">Bộ Sưu Tập Thời Trang Nam</h2>
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <span id="productCount" style="font-size: 13.5px; color: #64748b;">Đang tải...</span>
+          <select id="sortSelect" class="sort-select">
+            <option value="">Sắp xếp: Mới nhất</option>
+            <option value="price_asc">Giá: Thấp đến Cao</option>
+            <option value="price_desc">Giá: Cao đến Thấp</option>
+            <option value="rating">Đánh giá cao nhất</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="product-grid" id="productGrid">
+        <!-- Render động bằng JS -->
+      </div>
+
+      <!-- Phân trang (Pagination) Rubric 1.1 -->
+      <div class="pagination-wrapper" id="paginationWrapper">
+        <!-- Render động nút phân trang -->
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= 5. GIỎ HÀNG TRƯỢT (CART DRAWER) ================= -->
+  <div class="cart-drawer-backdrop" id="cartBackdrop" onclick="closeCartDrawer()"></div>
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <h3 class="cart-title">🛍️ Túi Đồ Của Bạn</h3>
+      <button class="btn-close" onclick="closeCartDrawer()">✕</button>
+    </div>
+    <div class="cart-body" id="cartItemsBody">
+      <!-- Render động danh sách món hàng -->
+    </div>
+    <div class="cart-footer">
+      <div class="cart-subtotal">
+        <span>Tổng cộng:</span>
+        <span id="cartSubtotal" style="color: var(--danger);">0 đ</span>
+      </div>
+      <button class="btn-checkout-start" onclick="openCheckoutModal()">
+        Tiến Hành Đặt Hàng ➔
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= 6. MODAL XEM CHI TIẾT SẢN PHẨM ================= -->
+  <div class="modal-overlay hidden" id="productDetailModal">
+    <div class="modal-content" style="max-width: 650px;">
+      <div class="modal-header">
+        <h3 style="font-size: 17px; font-weight: 800;">Thông Tin Chi Tiết Sản Phẩm</h3>
+        <button class="btn-close" onclick="closeProductDetailModal()">✕</button>
+      </div>
+      <div class="modal-body" id="productDetailContent">
+        <!-- Render động chi tiết sản phẩm + chọn size -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 7. MODAL ĐẶT HÀNG (CHECKOUT) ================= -->
+  <div class="modal-overlay hidden" id="checkoutModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 style="font-size: 18px; font-weight: 800;">📝 Thông Tin Giao Hàng & Thanh Toán</h3>
+        <button class="btn-close" onclick="closeCheckoutModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="checkoutForm" onsubmit="handleCheckoutSubmit(event)">
+          <div class="form-group">
+            <label class="form-label">Họ và Tên Người Nhận (*)</label>
+            <input type="text" name="customerName" id="chkCustomerName" class="form-input" placeholder="Ví dụ: Nguyễn Văn Hùng" required>
+          </div>
+          <div style="display: flex; gap: 12px;">
+            <div class="form-group" style="flex: 1;">
+              <label class="form-label">Số Điện Thoại (*)</label>
+              <input type="tel" name="customerPhone" id="chkCustomerPhone" class="form-input" placeholder="09xxxxxxxx" required>
+            </div>
+            <div class="form-group" style="flex: 1;">
+              <label class="form-label">Email Nhận Hóa Đơn (*)</label>
+              <input type="email" name="customerEmail" id="chkCustomerEmail" class="form-input" placeholder="email@gmail.com" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Địa Chỉ Nhận Hàng (*)</label>
+            <input type="text" name="shippingAddress" class="form-input" placeholder="Số nhà, Tên đường, Phường/Xã, Quận/Huyện, Tỉnh/TP" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phương Thức Thanh Toán (*)</label>
+            <select name="paymentMethod" class="form-select" required>
+              <option value="VIETQR">📲 Chuyển khoản Ngân hàng (Mã VietQR Động Napas 247)</option>
+              <option value="COD">💵 Thanh toán tiền mặt khi nhận hàng (COD)</option>
+              <option value="MOMO_QR">🟣 Ví Điện Tử MoMo (Quét mã QR)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Ghi Chú Đơn Hàng (Tùy chọn)</label>
+            <input type="text" name="note" class="form-input" placeholder="Ví dụ: Giao giờ hành chính, gọi trước khi giao...">
+          </div>
+          <button type="submit" id="btnSubmitOrder" class="btn-checkout-start">
+            Xác Nhận Đặt Hàng
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 8. POPUP MÃ VIETQR ĐỘNG CHUẨN NAPAS 247 ================= -->
+  <div class="modal-overlay hidden" id="qrModal">
+    <div class="modal-content" style="max-width: 440px; text-align: center;">
+      <div class="modal-header">
+        <h3 style="font-size: 17px; font-weight: 800;">📲 Thanh Toán Chuyển Khoản VietQR</h3>
+        <button class="btn-close" onclick="closeQRModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="qr-preview-box">
+          <img id="qrImage" src="" alt="Mã VietQR Thanh Toán" class="qr-img">
+          <p style="font-size: 13px; color: #64748b; margin-bottom: 8px;">Mở ứng dụng Ngân hàng (MB, Vietcombank, Techcombank...) để quét mã</p>
+          <div style="font-size: 14px; margin-bottom: 4px;">Mã đơn: <strong id="qrOrderCode">#...</strong></div>
+          <div style="font-size: 19px; font-weight: 800; color: var(--danger); margin-bottom: 8px;">Số tiền: <span id="qrTotalAmount">0 đ</span></div>
+          <div style="font-size: 12.5px; background: #eff6ff; color: #1e3a8a; padding: 8px; border-radius: 8px; font-weight: 600;" id="qrNoteInfo">
+            Nội dung CK: DH ...
+          </div>
+        </div>
+        <button class="btn-checkout-start" onclick="closeQRModal()">
+          ✓ Tôi Đã Hoàn Tất Chuyển Khoản
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 9. MODAL ĐĂNG NHẬP / ĐĂNG KÝ THÀNH VIÊN ================= -->
+  <div class="modal-overlay hidden" id="authModal">
+    <div class="modal-content" style="max-width: 420px;">
+      <div class="modal-header">
+        <h3 id="authModalTitle" style="font-size: 18px; font-weight: 800;">Đăng Nhập Khách Hàng</h3>
+        <button class="btn-close" onclick="closeAuthModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <!-- Form Đăng Nhập -->
+        <form id="loginForm" onsubmit="handleLoginSubmit(event)">
+          <div class="form-group">
+            <label class="form-label">Email (*)</label>
+            <input type="email" name="email" class="form-input" placeholder="email@gmail.com" required value="hung.nguyen@gmail.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Mật khẩu (*)</label>
+            <input type="password" name="password" class="form-input" placeholder="Nhập mật khẩu..." required value="KhachPassword123@">
+          </div>
+          <button type="submit" class="btn-checkout-start" style="margin-top: 10px;">
+            Đăng Nhập Ngay
+          </button>
+          <div style="text-align: center; margin-top: 14px; font-size: 13.5px;">
+            Chưa có tài khoản? <a href="javascript:void(0)" onclick="toggleAuthMode(true)" style="color: var(--primary); font-weight: bold;">Đăng ký ngay</a>
+          </div>
+        </form>
+
+        <!-- Form Đăng Ký (Mặc định ẩn) -->
+        <form id="registerForm" class="hidden" onsubmit="handleRegisterSubmit(event)">
+          <div class="form-group">
+            <label class="form-label">Họ và Tên (*)</label>
+            <input type="text" name="name" class="form-input" placeholder="Ví dụ: Lê Tuấn Anh" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email (*)</label>
+            <input type="email" name="email" class="form-input" placeholder="email@gmail.com" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Số Điện Thoại</label>
+            <input type="tel" name="phone" class="form-input" placeholder="09xxxxxxxx">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Mật khẩu (từ 6 ký tự) (*)</label>
+            <input type="password" name="password" class="form-input" minlength="6" placeholder="Mật khẩu..." required>
+          </div>
+          <button type="submit" class="btn-checkout-start" style="margin-top: 10px;">
+            Tạo Tài Khoản
+          </button>
+          <div style="text-align: center; margin-top: 14px; font-size: 13.5px;">
+            Đã có tài khoản? <a href="javascript:void(0)" onclick="toggleAuthMode(false)" style="color: var(--primary); font-weight: bold;">Đăng nhập</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 10. MODAL XEM ĐƠN HÀNG CÁ NHÂN (/MYORDERS) ================= -->
+  <div class="modal-overlay hidden" id="myOrdersModal">
+    <div class="modal-content" style="max-width: 680px;">
+      <div class="modal-header">
+        <h3 style="font-size: 17px; font-weight: 800;">📦 Lịch Sử Đơn Hàng Của Bạn</h3>
+        <button class="btn-close" onclick="closeMyOrdersModal()">✕</button>
+      </div>
+      <div class="modal-body" id="myOrdersContent">
+        <p style="text-align: center; padding: 20px;">Đang tải lịch sử đơn hàng...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 11. WIDGET CHATBOT AI GEMINI STYLIST NỔI GÓC ================= -->
+  <button class="ai-widget-button" onclick="toggleAIChat()" title="Tư vấn phối đồ cùng AI Stylist">
+    🤵
+  </button>
+  <div class="ai-chat-window hidden" id="aiChatWindow">
+    <div class="ai-chat-header">
+      <div class="ai-chat-title">
+        <span>🤵</span>
+        <div>
+          <div>MENSTYLE AI Stylist</div>
+          <div style="font-size: 11px; font-weight: normal; opacity: 0.85;">Chuyên gia tư vấn phối đồ & chọn size (Gemini RAG)</div>
+        </div>
+      </div>
+      <button class="btn-close" style="color: #fff;" onclick="toggleAIChat()">✕</button>
+    </div>
+    <div class="ai-chat-messages" id="aiMessages">
+      <div class="msg msg-ai">
+        Dạ em chào anh! Em là <strong>MENSTYLE AI Stylist</strong>. Anh đang cần tư vấn chọn size chuẩn hay gợi ý phối đồ đi làm, đi chơi, hẹn hò hôm nay ạ? 😊
+      </div>
+    </div>
+    <form class="ai-chat-input-area" onsubmit="sendAIMessage(event)">
+      <input type="text" id="aiInput" class="ai-chat-input" placeholder="Hỏi AI Stylist: ví dụ 'cao 1m72 nặng 65kg mặc size gì?'..." autocomplete="off">
+      <button type="submit" class="ai-chat-send">➤</button>
+    </form>
+  </div>
+
+  <!-- ================= 12. FOOTER ================= -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>👔 CỬA HÀNG THỜI TRANG NAM MENSTYLE</h4>
+          <p style="margin-bottom: 8px;">Thương hiệu thời trang nam cao cấp chuyên cung cấp sơ mi, polo, quần tây và blazer chuẩn phong cách phái mạnh.</p>
+          <p style="font-size: 13px;">📍 Trường Đại học Lạc Hồng (LHU) — Đồ Án Môn Học: Lập Trình Ứng Dụng</p>
+        </div>
+        <div class="footer-col">
+          <h4>CHÍNH SÁCH BÁN HÀNG</h4>
+          <p style="font-size: 13px; margin-bottom: 6px;">• Đổi trả trong 7 ngày nếu không vừa size</p>
+          <p style="font-size: 13px; margin-bottom: 6px;">• Miễn phí giao hàng cho đơn trên 500k</p>
+          <p style="font-size: 13px; margin-bottom: 6px;">• Kiểm tra hàng trước khi thanh toán (COD)</p>
+        </div>
+        <div class="footer-col">
+          <h4>KẾT NỐI HỆ THỐNG</h4>
+          <p style="font-size: 13px; margin-bottom: 6px;">• Backend RESTful API & MongoDB Atlas</p>
+          <p style="font-size: 13px; margin-bottom: 6px;">• Thanh toán VietQR Napas 247 Động</p>
+          <p style="font-size: 13px; margin-bottom: 6px;">• AI Tư vấn Gemini 1.5 Flash (RAG)</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 MENSTYLE STORE. Bản quyền thuộc về Đồ Án Lập Trình Ứng Dụng - Khoa CNTT - Đại học Lạc Hồng.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/ai-chat.js"></script>
+</body>
+</html>
