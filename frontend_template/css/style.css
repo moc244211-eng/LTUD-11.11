@@ -479,85 +479,68 @@ header {
 
 /* ================= 4. FEATURED CATEGORIES BAR ================= */
 .featured-cat-section {
-  padding: 24px 0;
+  padding: 30px 0;
   background: #ffffff;
   border-bottom: 1px solid var(--border);
 }
 
 .featured-cat-bar {
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
   gap: 16px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  padding-bottom: 4px;
-}
-
-.featured-cat-bar::-webkit-scrollbar {
-  display: none;
-}
-
-.cat-feature-badge {
-  background: #0b0b0b;
-  color: #ffffff;
-  padding: 16px 20px;
-  border-radius: var(--radius);
-  display: flex;
+  width: 100%;
+  justify-items: center;
   align-items: center;
-  gap: 12px;
-  font-weight: 800;
-  font-size: 12.5px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  flex-shrink: 0;
-  text-decoration: none;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.cat-feature-badge:hover {
-  background: #1f2937;
 }
 
 .cat-feature-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
-  border-radius: 10px;
+  gap: 10px;
+  padding: 8px 4px;
+  border-radius: 12px;
   text-decoration: none;
   color: var(--text-main);
-  flex-shrink: 0;
-  transition: all 0.2s ease;
+  width: 100%;
+  transition: all 0.25s ease;
   cursor: pointer;
 }
 
 .cat-feature-item:hover {
-  transform: translateY(-2px);
+  transform: translateY(-4px);
 }
 
 .cat-feature-thumb {
-  width: 60px;
-  height: 60px;
+  width: 86px;
+  height: 86px;
   border-radius: 50%;
-  background: #f3f4f6;
-  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  border: 2px solid #e5e7eb;
   object-fit: cover;
   padding: 4px;
-  transition: all 0.2s;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .cat-feature-item:hover .cat-feature-thumb {
   border-color: #0b0b0b;
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.14);
+  transform: scale(1.06);
 }
 
 .cat-feature-name {
-  font-size: 12px;
+  font-size: 13.5px;
   font-weight: 700;
-  color: #374151;
+  color: #1f2937;
   white-space: nowrap;
+  letter-spacing: 0.2px;
+  transition: color 0.2s;
+  text-align: center;
+}
+
+.cat-feature-item:hover .cat-feature-name {
+  color: #0b0b0b;
 }
 
 /* ================= 5. SECTION HEADERS ================= */
@@ -1574,6 +1557,10 @@ footer {
 }
 
 @media (max-width: 1024px) {
+  .featured-cat-bar {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
   .product-grid-6 {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -1589,6 +1576,17 @@ footer {
 }
 
 @media (max-width: 768px) {
+  .featured-cat-bar {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+  .cat-feature-thumb {
+    width: 66px;
+    height: 66px;
+  }
+  .cat-feature-name {
+    font-size: 11.5px;
+  }
   .top-bar {
     display: none;
   }
