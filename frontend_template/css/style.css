@@ -1108,66 +1108,72 @@ header {
   color: #ffffff;
 }
 
-/* ================= 10. NEWSLETTER SIGNUP ================= */
-.newsletter-section {
-  padding: 50px 0;
-  background: #f3f4f6;
-  text-align: center;
+/* ================= 10. MODAL LIÊN HỆ & TƯ VẤN KHÁCH HÀNG ================= */
+.contact-modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.35fr;
+  gap: 24px;
 }
 
-.newsletter-content {
-  max-width: 540px;
-  margin: 0 auto;
-}
-
-.newsletter-title {
-  font-size: 24px;
-  font-weight: 900;
-  color: #0b0b0b;
-  margin-bottom: 8px;
-  letter-spacing: 0.5px;
-}
-
-.newsletter-desc {
-  font-size: 13.5px;
-  color: #6b7280;
-  margin-bottom: 22px;
-}
-
-.newsletter-form {
+.contact-info-panel {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
   display: flex;
-  gap: 8px;
+  flex-direction: column;
 }
 
-.newsletter-input {
-  flex: 1;
-  padding: 12px 18px;
-  border-radius: var(--radius-pill);
-  border: 1px solid #d1d5db;
-  font-size: 13.5px;
-  outline: none;
-  background: #ffffff;
+.contact-info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+  font-size: 13px;
+  color: #334155;
+  line-height: 1.5;
 }
 
-.newsletter-input:focus {
-  border-color: #0b0b0b;
+.contact-info-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-top: 1px;
 }
 
-.newsletter-btn {
-  padding: 12px 24px;
-  border-radius: var(--radius-pill);
-  background: #0b0b0b;
-  color: #ffffff;
-  font-size: 13.5px;
-  font-weight: 800;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
+.contact-info-item strong {
+  display: block;
+  font-size: 12.5px;
+  color: #0b0b0b;
+  margin-bottom: 2px;
 }
 
-.newsletter-btn:hover {
-  background: #1f2937;
+.contact-info-item p {
+  margin: 0;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.contact-info-item a {
+  text-decoration: none;
+  color: #0b0b0b;
+  font-weight: 700;
+  transition: color 0.2s;
+}
+
+.contact-info-item a:hover {
+  color: var(--accent-red);
+}
+
+.contact-form-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 768px) {
+  .contact-modal-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
 }
 
 /* ================= 11. FOOTER (4 CỘT ĐEN THAN) ================= */

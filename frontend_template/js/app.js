@@ -918,16 +918,44 @@ function closeMyOrdersModal() {
   if (modal) modal.classList.add("hidden");
 }
 
-// ================= 12. BẢN TIN & TIỆN ÍCH THÔNG BÁO TOAST =================
-function handleNewsletterSubmit(e) {
-  e.preventDefault();
-  const input = document.getElementById("newsletterEmail");
-  if (!input) return;
-  const email = input.value.trim();
-  if (!email) return;
+// ================= 12. MODAL LIÊN HỆ & TIỆN ÍCH THÔNG BÁO TOAST =================
+function openContactModal() {
+  const modal = document.getElementById("contactModal");
+  if (!modal) return;
+  modal.classList.remove("hidden");
 
-  showToast(`🎉 Cảm ơn bạn! Mã voucher MENSTYLE10 đã sẵn sàng cho đơn hàng đầu tiên.`);
-  input.value = "";
+  // Tự động điền thông tin nếu đã đăng nhập
+  if (currentUser) {
+    const nameEl = document.getElementById("contactName");
+    const phoneEl = document.getElementById("contactPhone");
+    const emailEl = document.getElementById("contactEmail");
+    if (nameEl && !nameEl.value) nameEl.value = currentUser.name || "";
+    if (phoneEl && !phoneEl.value) phoneEl.value = currentUser.phone || "";
+    if (emailEl && !emailEl.value) emailEl.value = currentUser.email || "";
+  }
+}
+
+function closeContactModal() {
+  const modal = document.getElementById("contactModal");
+  if (modal) modal.classList.add("hidden");
+}
+
+function handleContactSubmit(e) {
+  e.preventDefault();
+  const name = document.getElementById("contactName")?.value.trim() || "";
+  const phone = document.getElementById("contactPhone")?.value.trim() || "";
+  const topic = document.getElementById("contactTopic")?.value || "Tư vấn";
+
+  closeContactModal();
+  showToast(`🎉 Cảm ơn anh ${name}! MENSTYLE đã nhận yêu cầu "${topic}" và sẽ liên hệ qua SĐT ${phone} sớm nhất.`);
+
+  const form = document.getElementById("contactForm");
+  if (form) form.reset();
+}
+
+function handleNewsletterSubmit(e) {
+  if (e) e.preventDefault();
+  openContactModal();
 }
 
 function showToast(msg) {

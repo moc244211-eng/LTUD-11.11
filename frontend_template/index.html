@@ -55,7 +55,7 @@
           </li>
           <li><a href="#promoSection" class="nav-link">Khuyến mãi</a></li>
           <li><a href="#commitmentsSection" class="nav-link">Tin tức</a></li>
-          <li><a href="#footerSection" class="nav-link">Liên hệ</a></li>
+          <li><a href="javascript:void(0)" onclick="openContactModal()" class="nav-link">Liên hệ</a></li>
         </ul>
       </nav>
 
@@ -365,21 +365,7 @@
     </div>
   </section>
 
-  <!-- ================= 9. ĐĂNG KÝ NHẬN BẢN TIN KHUYẾN MÃI ================= -->
-  <section class="newsletter-section">
-    <div class="container">
-      <div class="newsletter-content">
-        <h3 class="newsletter-title">ĐĂNG KÝ NHẬN TIN ƯU ĐÃI</h3>
-        <p class="newsletter-desc">Nhận ngay voucher giảm 10% (mã <strong>MENSTYLE10</strong>) cho đơn hàng đầu tiên và cập nhật xu hướng mới nhất.</p>
-        <form class="newsletter-form" onsubmit="handleNewsletterSubmit(event)">
-          <input type="email" id="newsletterEmail" class="newsletter-input" placeholder="Nhập địa chỉ email của bạn..." required>
-          <button type="submit" class="newsletter-btn">Đăng Ký Ngay</button>
-        </form>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= 10. FOOTER HIỆN ĐẠI 4 CỘT ================= -->
+  <!-- ================= 9. FOOTER HIỆN ĐẠI 4 CỘT ================= -->
   <footer id="footerSection">
     <div class="container">
       <div class="footer-grid">
@@ -400,9 +386,9 @@
         <div class="footer-col">
           <h4>HỖ TRỢ KHÁCH HÀNG</h4>
           <ul class="footer-links">
+            <li><a href="javascript:void(0)" onclick="openContactModal()">Liên hệ & Tư vấn trực tiếp</a></li>
             <li><a href="javascript:void(0)">Hướng dẫn chọn size chuẩn form</a></li>
             <li><a href="javascript:void(0)">Chính sách đổi trả trong 7 ngày</a></li>
-            <li><a href="javascript:void(0)">Chính sách bảo mật thông tin</a></li>
             <li><a href="javascript:void(0)">Thanh toán chuyển khoản VietQR</a></li>
           </ul>
         </div>
@@ -636,7 +622,109 @@
     </div>
   </div>
 
-  <!-- ================= 17. WIDGET CHATBOT AI GEMINI STYLIST NỔI GÓC (MESSENGER STYLE) ================= -->
+  <!-- ================= 17. MODAL LIÊN HỆ & ĐĂNG KÝ TƯ VẤN ================= -->
+  <div class="modal-overlay hidden" id="contactModal">
+    <div class="modal-content" style="max-width: 760px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 22px;">📞</span>
+          <div>
+            <h3 style="font-size: 17.5px; font-weight: 900; color: #0b0b0b; margin: 0;">Đăng Ký Liên Hệ & Tư Vấn Khách Hàng</h3>
+            <span style="font-size: 12px; color: #6b7280;">MENSTYLE - Fashion For Men sẵn sàng hỗ trợ quý khách chu đáo 24/7</span>
+          </div>
+        </div>
+        <button class="btn-close" onclick="closeContactModal()">✕</button>
+      </div>
+      <div class="modal-body" style="padding: 22px;">
+        <div class="contact-modal-grid">
+          <!-- Cột trái: Thông tin liên hệ trực tiếp -->
+          <div class="contact-info-panel">
+            <h4 style="font-size: 13.5px; font-weight: 800; text-transform: uppercase; margin-bottom: 14px; color: #0b0b0b; letter-spacing: 0.5px;">Thông Tin Trực Tiếp</h4>
+            
+            <div class="contact-info-item">
+              <span class="contact-info-icon">📍</span>
+              <div>
+                <strong>Showroom & Trụ sở:</strong>
+                <p>Trường Đại học Lạc Hồng (LHU), TP. Biên Hòa, Đồng Nai</p>
+              </div>
+            </div>
+
+            <div class="contact-info-item">
+              <span class="contact-info-icon">📞</span>
+              <div>
+                <strong>Hotline / Zalo:</strong>
+                <p><a href="tel:0862583284">0862.583.284</a> (Tư vấn 24/7)</p>
+              </div>
+            </div>
+
+            <div class="contact-info-item">
+              <span class="contact-info-icon">✉️</span>
+              <div>
+                <strong>Email hỗ trợ:</strong>
+                <p>cskh@menstyle.vn</p>
+              </div>
+            </div>
+
+            <div class="contact-info-item">
+              <span class="contact-info-icon">⏰</span>
+              <div>
+                <strong>Giờ mở cửa showroom:</strong>
+                <p>08:00 - 22:00 (Cả Thứ 7, CN & Lễ)</p>
+              </div>
+            </div>
+
+            <div style="margin-top: auto; padding: 12px; background: #ffffff; border: 1px dashed #cbd5e1; border-radius: 10px; font-size: 12px; color: #475569; line-height: 1.5;">
+              💬 Cần tư vấn phối đồ ngay? Anh có thể bấm biểu tượng <strong>AI Stylist</strong> ở góc dưới màn hình!
+            </div>
+          </div>
+
+          <!-- Cột phải: Form đăng ký liên hệ -->
+          <div class="contact-form-panel">
+            <h4 style="font-size: 13.5px; font-weight: 800; text-transform: uppercase; margin-bottom: 14px; color: #0b0b0b; letter-spacing: 0.5px;">Gửi Yêu Cầu Liên Hệ</h4>
+            <form id="contactForm" onsubmit="handleContactSubmit(event)">
+              <div class="form-group">
+                <label class="form-label">Họ và Tên (*)</label>
+                <input type="text" id="contactName" class="form-input" placeholder="Ví dụ: Nguyễn Văn Hùng" required>
+              </div>
+
+              <div style="display: flex; gap: 10px;">
+                <div class="form-group" style="flex: 1;">
+                  <label class="form-label">Số Điện Thoại (*)</label>
+                  <input type="tel" id="contactPhone" class="form-input" placeholder="09xxxxxxxx" required>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                  <label class="form-label">Email (*)</label>
+                  <input type="email" id="contactEmail" class="form-input" placeholder="email@gmail.com" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Chủ Đề Hỗ Trợ (*)</label>
+                <select id="contactTopic" class="form-select" required>
+                  <option value="Tư vấn phối đồ & Chọn size">Tư vấn phối đồ & Chọn size chuẩn</option>
+                  <option value="Hỗ trợ đơn hàng & Đổi trả">Hỗ trợ đơn hàng & Đổi trả size</option>
+                  <option value="Đặt may đồng phục / Số lượng lớn">Đặt may số lượng lớn / B2B</option>
+                  <option value="Hợp tác kinh doanh">Hợp tác kinh doanh & Đối tác</option>
+                  <option value="Góp ý dịch vụ">Góp ý & Khiếu nại dịch vụ</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Nội Dung Lời Nhắn (*)</label>
+                <textarea id="contactMessage" class="form-input" rows="3" placeholder="Nhập chi tiết yêu cầu của anh..." required style="resize: vertical; font-family: inherit; font-size: 13px;"></textarea>
+              </div>
+
+              <button type="submit" class="btn-checkout-start" style="padding: 12px; font-size: 13.5px;">
+                Gửi Yêu Cầu Liên Hệ ➔
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 18. WIDGET CHATBOT AI GEMINI STYLIST NỔI GÓC (MESSENGER STYLE) ================= -->
   <button class="ai-widget-button" onclick="toggleAIChat()" title="Tư vấn phối đồ cùng AI Stylist">
     <svg width="30" height="30" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M14 2C7.37 2 2 7.04 2 13.25C2 16.79 3.73 19.92 6.43 21.94V26L10.33 23.85C11.49 24.26 12.72 24.5 14 24.5C20.63 24.5 26 19.46 26 13.25C26 7.04 20.63 2 14 2Z" fill="#0084FF"/>
