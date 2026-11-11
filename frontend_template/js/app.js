@@ -1,6 +1,7 @@
 /**
- * LOGIC TƯƠNG TÁC GIAO DIỆN KHÁCH HÀNG - MENSTYLE STOREFRONT
- * Kết nối toàn bộ RESTful API, LocalStorage, VietQR, Carousel & Phân trang
+ * LOGIC TƯƠNG TÁC GIAO DIỆN KHÁCH HÀNG - MENSTYLE STOREFRONT (REDESIGN 2026)
+ * Chuẩn Modern Premium, Minimalist, Fashion E-Commerce
+ * Kết nối toàn bộ RESTful API, LocalStorage, VietQR, Best Sellers & Phân trang
  */
 
 // Trạng thái ứng dụng
@@ -10,9 +11,10 @@ let currentMinPrice = "";
 let currentMaxPrice = "";
 let currentSort = "";
 let currentPage = 1;
-const PAGE_LIMIT = 8;
+const PAGE_LIMIT = 12; // 2 hàng 6 cột trên màn hình lớn
 
 let cart = JSON.parse(localStorage.getItem("MENSTYLE_CART") || "[]");
+let wishlist = JSON.parse(localStorage.getItem("MENSTYLE_WISHLIST") || "[]");
 let currentUser = JSON.parse(localStorage.getItem("MENSTYLE_USER") || "null");
 let authToken = localStorage.getItem("MENSTYLE_TOKEN") || "";
 
@@ -24,9 +26,11 @@ let selectedDetailSize = "L";
 // Khởi chạy khi DOM sẵn sàng
 document.addEventListener("DOMContentLoaded", () => {
   initAuthUI();
+  initWishlistUI();
   initCarousel();
   initCategories();
   initPriceFilters();
+  loadBestSellers();
   loadProducts();
   updateCartUI();
   setupEventListeners();
@@ -35,10 +39,10 @@ document.addEventListener("DOMContentLoaded", () => {
 // ================= 1. CAROUSEL BANNER SLIDER =================
 function initCarousel() {
   startCarouselAuto();
-  const container = document.querySelector(".carousel-container");
-  if (container) {
-    container.addEventListener("mouseenter", () => clearInterval(carouselTimer));
-    container.addEventListener("mouseleave", () => startCarouselAuto());
+  const banner = document.querySelector(".hero-banner") || document.querySelector(".carousel-container");
+  if (banner) {
+    banner.addEventListener("mouseenter", () => clearInterval(carouselTimer));
+    banner.addEventListener("mouseleave", () => startCarouselAuto());
   }
 }
 
@@ -46,12 +50,12 @@ function startCarouselAuto() {
   clearInterval(carouselTimer);
   carouselTimer = setInterval(() => {
     nextSlide();
-  }, 4500);
+  }, 5000);
 }
 
 function updateCarouselView() {
   const slides = document.getElementById("carouselSlides");
-  const dots = document.querySelectorAll(".carousel-dot");
+  const dots = document.querySelectorAll(".hero-dot, .carousel-dot");
   if (slides) {
     slides.style.transform = `translateX(-${currentSlideIdx * 100}%)`;
   }
@@ -77,13 +81,34 @@ function goToSlide(idx) {
 }
 
 function scrollToProducts() {
-  const el = document.getElementById("productsMain");
+  const el = document.getElementById("catalogSection") || document.getElementById("productsMain");
   if (el) el.scrollIntoView({ behavior: "smooth" });
+}
+
+function filterByCategoryName(name) {
+  scrollToProducts();
+  const pills = document.querySelectorAll("#categoryPills .filter-pill");
+  let matched = false;
+  pills.forEach((p) => {
+    const text = p.innerText.toLowerCase();
+    if (text.includes(name.toLowerCase())) {
+      p.click();
+      matched = true;
+    }
+  });
+
+  if (!matched) {
+    currentSearch = name;
+    const sInput = document.getElementById("searchInput");
+    if (sInput) sInput.value = name;
+    currentPage = 1;
+    loadProducts();
+  }
 }
 
 function filterByCatSlug(slug) {
   scrollToProducts();
-  const pills = document.querySelectorAll("#categoryPills .cat-pill");
+  const pills = document.querySelectorAll("#categoryPills .filter-pill");
   pills.forEach((p) => {
     if (p.getAttribute("data-slug") === slug) {
       p.click();
@@ -98,15 +123,15 @@ async function initCategories() {
 
   const res = await API.getCategories();
   if (res.success && Array.isArray(res.data)) {
-    let html = `<button class="cat-pill active" data-id="" data-slug="">Tất cả sản phẩm</button>`;
+    let html = `<button class="filter-pill active" data-id="" data-slug="">Tất cả sản phẩm</button>`;
     res.data.forEach((cat) => {
-      html += `<button class="cat-pill" data-id="${cat._id}" data-slug="${cat.slug}">${cat.name}</button>`;
+      html += `<button class="filter-pill" data-id="${cat._id}" data-slug="${cat.slug}">${cat.name}</button>`;
     });
     catList.innerHTML = html;
 
-    catList.querySelectorAll(".cat-pill").forEach((btn) => {
+    catList.querySelectorAll(".filter-pill").forEach((btn) => {
       btn.addEventListener("click", (e) => {
-        catList.querySelectorAll(".cat-pill").forEach((b) => b.classList.remove("active"));
+        catList.querySelectorAll(".filter-pill").forEach((b) => b.classList.remove("active"));
         e.currentTarget.classList.add("active");
         currentCategory = e.currentTarget.getAttribute("data-id");
         currentPage = 1;
@@ -130,14 +155,67 @@ function initPriceFilters() {
   });
 }
 
-// ================= 3. TẢI VÀ HIỂN THỊ SẢN PHẨM (PAGINATION) =================
+// ================= 3. RENDER PRODUCT CARD (CHUẨN 6 CỘT THEO MOCKUP) =================
+function renderProductCard(p) {
+  const discount =
+    p.originalPrice > p.salePrice
+      ? Math.round(((p.originalPrice - p.salePrice) / p.originalPrice) * 100)
+      : 0;
+  const catName = p.category ? (p.category.name || p.category) : "Thời trang nam";
+  const imgUrl = p.image || "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600";
+  const isWishlisted = wishlist.includes(p._id);
+
+  return `
+    <div class="product-card">
+      <div class="product-thumb-wrap" onclick="viewProductDetail('${p._id}')">
+        <img src="${imgUrl}" alt="${p.name}" class="product-thumb" onerror="this.src='https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600'">
+        ${discount > 0 ? `<span class="discount-tag">-${discount}%</span>` : ""}
+        <button class="btn-wishlist ${isWishlisted ? "active" : ""}" onclick="toggleWishlist(event, '${p._id}')" title="Yêu thích">
+          ${isWishlisted ? "❤️" : "♡"}
+        </button>
+      </div>
+      <div class="product-details">
+        <span class="product-category-name">${catName}</span>
+        <h4 class="product-name" onclick="viewProductDetail('${p._id}')" title="${p.name}">${p.name}</h4>
+        <div class="price-container">
+          <span class="sale-price">${Number(p.salePrice).toLocaleString("vi-VN")} đ</span>
+          ${p.originalPrice > p.salePrice ? `<span class="original-price">${Number(p.originalPrice).toLocaleString("vi-VN")} đ</span>` : ""}
+        </div>
+        <div class="product-bottom-row">
+          <div class="product-rating"><span class="star">★</span> ${p.rating || 4.9} <span style="color:#9ca3af; font-size:10.5px;">(${p.stock ? p.stock + ' sp' : '1.2k'})</span></div>
+          <button class="btn-quick-cart" onclick="quickAddToCart('${p._id}', '${escapeQuotes(p.name)}', ${p.salePrice}, '${imgUrl}')" title="Thêm vào giỏ">
+            🛒
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ================= 4. SẢN PHẨM BÁN CHẠY (BEST SELLERS TOP 6) =================
+async function loadBestSellers() {
+  const bestGrid = document.getElementById("bestSellerGrid");
+  if (!bestGrid) return;
+
+  bestGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 24px; color: #6b7280;">⏳ Đang tải sản phẩm bán chạy...</div>`;
+
+  const res = await API.getProducts({ limit: 6, sort: "rating" });
+  if (res.success && Array.isArray(res.data) && res.data.length > 0) {
+    const top6 = res.data.slice(0, 6);
+    bestGrid.innerHTML = top6.map(renderProductCard).join("");
+  } else {
+    bestGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 24px; color: #9ca3af;">Chưa có sản phẩm nổi bật</div>`;
+  }
+}
+
+// ================= 5. TẢI VÀ HIỂN THỊ SẢN PHẨM CATALOG (PAGINATION) =================
 async function loadProducts() {
   const grid = document.getElementById("productGrid");
   const countEl = document.getElementById("productCount");
   const paginationWrapper = document.getElementById("paginationWrapper");
   if (!grid) return;
 
-  grid.innerHTML = `<div class="state-box"><h3>⏳ Đang tải sản phẩm từ MongoDB Atlas...</h3></div>`;
+  grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #6b7280;">⏳ Đang tải sản phẩm từ MongoDB Atlas...</div>`;
 
   const res = await API.getProducts({
     category: currentCategory,
@@ -154,52 +232,14 @@ async function loadProducts() {
     const totalPages = res.totalPages || 1;
     if (countEl) countEl.innerText = `Tìm thấy ${total} sản phẩm (Trang ${currentPage}/${totalPages})`;
 
-    grid.innerHTML = res.data
-      .map((p) => {
-        const discount =
-          p.originalPrice > p.salePrice
-            ? Math.round(((p.originalPrice - p.salePrice) / p.originalPrice) * 100)
-            : 0;
-        const catName = p.category ? p.category.name || p.category : "Thời trang nam";
-        const imgUrl = p.image || "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600";
-        const brand = p.brand || "MENSTYLE";
-
-        return `
-        <div class="product-card">
-          <div class="product-thumb-wrap">
-            <img src="${imgUrl}" alt="${p.name}" class="product-thumb" onerror="this.src='https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600'">
-            ${discount > 0 ? `<span class="discount-tag">-${discount}%</span>` : ""}
-            <span class="badge-brand">${brand}</span>
-          </div>
-          <div class="product-details">
-            <span class="product-category-name">${catName}</span>
-            <h4 class="product-name" title="${p.name}">${p.name}</h4>
-            <div class="product-rating">★ ${p.rating || 5.0} (Kho: ${p.stock || 0})</div>
-            <div class="price-container">
-              <span class="sale-price">${Number(p.salePrice).toLocaleString("vi-VN")} đ</span>
-              ${p.originalPrice > p.salePrice ? `<span class="original-price">${Number(p.originalPrice).toLocaleString("vi-VN")} đ</span>` : ""}
-            </div>
-            <div class="card-actions">
-              <button class="btn-add-cart" onclick="quickAddToCart('${p._id}', '${escapeQuotes(p.name)}', ${p.salePrice}, '${imgUrl}')">
-                🛒 Thêm giỏ
-              </button>
-              <button class="btn-view-quick" onclick="viewProductDetail('${p._id}')" title="Xem chi tiết & chọn size">
-                👁️
-              </button>
-            </div>
-          </div>
-        </div>
-      `;
-      })
-      .join("");
-
+    grid.innerHTML = res.data.map(renderProductCard).join("");
     renderPagination(totalPages);
   } else {
     if (countEl) countEl.innerText = "0 sản phẩm";
     grid.innerHTML = `
-      <div class="state-box">
-        <h3>🔍 Không tìm thấy sản phẩm phù hợp!</h3>
-        <p>Vui lòng thử chọn khoảng giá khác hoặc bấm 'Tất cả sản phẩm'.</p>
+      <div style="grid-column: 1/-1; text-align: center; padding: 50px 20px; background: #ffffff; border-radius: 12px; border: 1px dashed #d1d5db;">
+        <h3 style="font-size: 18px; margin-bottom: 8px;">🔍 Không tìm thấy sản phẩm phù hợp!</h3>
+        <p style="color: #6b7280; font-size: 13.5px;">Vui lòng thử chọn khoảng giá khác hoặc bấm 'Tất cả sản phẩm'.</p>
       </div>
     `;
     if (paginationWrapper) paginationWrapper.innerHTML = "";
@@ -226,7 +266,7 @@ function renderPagination(totalPages) {
   }
 
   html += `
-    <button class="page-btn" ${currentPage === totalPages ? "disabled" : ""} onclick="changePage(${currentPage + 1})">Tiếp ❯</button>
+    <button class="page-btn ${currentPage === totalPages ? "disabled" : ""} onclick="changePage(${currentPage + 1})">Tiếp ❯</button>
   `;
 
   wrapper.innerHTML = html;
@@ -238,7 +278,48 @@ function changePage(page) {
   scrollToProducts();
 }
 
-// ================= 4. XEM CHI TIẾT SẢN PHẨM & CHỌN SIZE =================
+// ================= 6. DANH SÁCH YÊU THÍCH (WISHLIST) =================
+function initWishlistUI() {
+  updateWishlistBadge();
+}
+
+function updateWishlistBadge() {
+  const badge = document.getElementById("wishlistBadge");
+  if (badge) {
+    if (wishlist.length > 0) {
+      badge.style.display = "flex";
+      badge.innerText = wishlist.length;
+    } else {
+      badge.style.display = "none";
+    }
+  }
+}
+
+function toggleWishlist(e, productId) {
+  if (e) e.stopPropagation();
+  const idx = wishlist.indexOf(productId);
+  if (idx > -1) {
+    wishlist.splice(idx, 1);
+    showToast("Đã xóa khỏi danh sách yêu thích");
+  } else {
+    wishlist.push(productId);
+    showToast("❤️ Đã thêm vào danh sách yêu thích!");
+  }
+  localStorage.setItem("MENSTYLE_WISHLIST", JSON.stringify(wishlist));
+  updateWishlistBadge();
+  loadBestSellers();
+  loadProducts();
+}
+
+function openWishlistToast() {
+  if (wishlist.length === 0) {
+    showToast("Danh sách yêu thích của bạn đang trống!");
+  } else {
+    showToast(`Bạn đang có ${wishlist.length} sản phẩm trong danh sách yêu thích ❤️`);
+  }
+}
+
+// ================= 7. XEM CHI TIẾT SẢN PHẨM & CHỌN SIZE =================
 async function viewProductDetail(id) {
   const modal = document.getElementById("productDetailModal");
   const content = document.getElementById("productDetailContent");
@@ -253,9 +334,9 @@ async function viewProductDetail(id) {
     selectedDetailProduct = p;
     selectedDetailSize = p.sizes && p.sizes.length > 0 ? p.sizes[0] : "L";
 
-    const catName = p.category ? p.category.name || p.category : "Thời trang nam";
+    const catName = p.category ? (p.category.name || p.category) : "Thời trang nam";
     const imgUrl = p.image || "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600";
-    const sizes = p.sizes || ["M", "L", "XL", "2XL"];
+    const sizes = p.sizes && p.sizes.length > 0 ? p.sizes : ["M", "L", "XL", "2XL"];
 
     const sizesHtml = sizes
       .map(
@@ -271,21 +352,21 @@ async function viewProductDetail(id) {
       <div style="display: flex; gap: 24px; flex-wrap: wrap;">
         <img src="${imgUrl}" style="width: 100%; max-width: 250px; height: 320px; object-fit: cover; border-radius: 12px;">
         <div style="flex: 1; min-width: 240px;">
-          <span style="font-size: 12px; color: var(--primary); font-weight: 800; text-transform: uppercase;">${catName} • ${p.brand || "MENSTYLE"}</span>
-          <h3 style="font-size: 20px; font-weight: 800; margin: 6px 0 10px 0; color: var(--secondary);">${p.name}</h3>
+          <span style="font-size: 11.5px; color: #6b7280; font-weight: 800; text-transform: uppercase;">${catName} • ${p.brand || "MENSTYLE"}</span>
+          <h3 style="font-size: 20px; font-weight: 800; margin: 6px 0 10px 0; color: #0b0b0b;">${p.name}</h3>
           
-          <div style="font-size: 22px; font-weight: 900; color: var(--danger); margin-bottom: 12px;">
+          <div style="font-size: 22px; font-weight: 900; color: var(--accent-red); margin-bottom: 12px;">
             ${Number(p.salePrice).toLocaleString("vi-VN")} đ
             ${p.originalPrice > p.salePrice ? `<span style="font-size:14px; color:#94a3b8; text-decoration:line-through; margin-left:8px;">${Number(p.originalPrice).toLocaleString("vi-VN")} đ</span>` : ""}
           </div>
 
           <div style="margin-bottom: 14px;">
             <label class="form-label">Chọn Kích Thước (Size):</label>
-            <div class="size-selector">${sizesHtml}</div>
+            <div class="size-selector" style="display: flex; gap: 8px;">${sizesHtml}</div>
           </div>
 
-          <p style="font-size: 14px; color: #475569; line-height: 1.5; margin-bottom: 16px;">
-            ${p.description || "Chất vải cao cấp, mềm mại, thoáng mát và bền màu."}
+          <p style="font-size: 13.5px; color: #475569; line-height: 1.5; margin-bottom: 16px;">
+            ${p.description || "Chất vải may đo cao cấp, mềm mại, thoáng mát và giữ form chuẩn phong cách phái mạnh."}
           </p>
 
           <div style="font-size: 13px; color: #64748b; margin-bottom: 18px; padding: 10px; background: #f8fafc; border-radius: 8px;">
@@ -324,7 +405,7 @@ function closeProductDetailModal() {
   if (modal) modal.classList.add("hidden");
 }
 
-// ================= 5. QUẢN LÝ GIỎ HÀNG (SHOPPING CART) =================
+// ================= 8. QUẢN LÝ GIỎ HÀNG (SHOPPING CART) =================
 function quickAddToCart(id, name, price, image) {
   addToCart(id, name, price, image, "L");
 }
@@ -350,6 +431,7 @@ function addToCart(id, name, price, image, size = "L") {
   saveCart();
   updateCartUI();
   openCartDrawer();
+  showToast(`✓ Đã thêm "${name}" vào giỏ hàng!`);
 }
 
 function changeQty(key, delta) {
@@ -389,8 +471,8 @@ function updateCartUI() {
       body.innerHTML = `
         <div style="text-align: center; padding: 50px 10px; color: #94a3b8;">
           <p style="font-size: 42px; margin-bottom: 10px;">🛍️</p>
-          <p style="font-weight: 600;">Túi đồ của bạn đang trống!</p>
-          <p style="font-size: 13px; margin-top: 4px;">Hãy chọn những mẫu trang phục ưng ý nhé.</p>
+          <p style="font-weight: 600; color: #374151;">Túi đồ của bạn đang trống!</p>
+          <p style="font-size: 13px; margin-top: 4px; color: #9ca3af;">Hãy chọn những mẫu trang phục ưng ý nhé.</p>
         </div>
       `;
     } else {
@@ -438,7 +520,7 @@ function closeCartDrawer() {
   }
 }
 
-// ================= 6. ĐẶT HÀNG, ÁP MÃ GIẢM GIÁ & SINH MÃ VIETQR ĐỘNG =================
+// ================= 9. ĐẶT HÀNG, ÁP MÃ GIẢM GIÁ & SINH MÃ VIETQR ĐỘNG =================
 let currentAppliedCoupon = null;
 
 function updateCheckoutSummaryUI() {
@@ -634,19 +716,7 @@ async function handleCheckoutSubmit(e) {
   }
 }
 
-// Xem nhanh mã QR VietQR MB Bank chính chủ bất kỳ lúc nào
-function previewMyVietQR() {
-  const totalAmount = cart.length > 0
-    ? cart.reduce((sum, item) => sum + item.price * item.quantity, 0) + 25000
-    : 289000;
-  const demoOrder = {
-    orderCode: "MS" + Date.now().toString().slice(-6),
-    totalAmount: totalAmount,
-  };
-  showDynamicQRModal(demoOrder, "VIETQR");
-}
-
-// Gọi API Backend sinh mã VietQR động chuẩn tài khoản của bạn (MB Bank - MÀN MỘC SÁNG)
+// Gọi API Backend sinh mã VietQR động chuẩn tài khoản MB Bank - 0862583284 - MÀN MỘC SÁNG
 async function showDynamicQRModal(order, paymentMethod) {
   const modal = document.getElementById("qrModal");
   const qrImg = document.getElementById("qrImage");
@@ -692,26 +762,34 @@ function closeQRModal() {
   alert("Cảm ơn anh! Đơn hàng của anh đã được ghi nhận. Quản trị viên sẽ xác nhận thanh toán và gửi đồ sớm nhất.");
 }
 
-// ================= 7. XÁC THỰC NGƯỜI DÙNG & PROFILE =================
+// ================= 10. XÁC THỰC NGƯỜI DÙNG & PROFILE =================
 function initAuthUI() {
   const area = document.getElementById("authHeaderArea");
   if (!area) return;
 
   if (currentUser && authToken) {
     area.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <button class="btn-user-auth" onclick="openMyOrdersModal()">
-          👤 ${currentUser.name.split(" ").pop()} (Đơn hàng)
+      <div style="display: flex; align-items: center; gap: 4px;">
+        <button class="btn-header-icon" onclick="openMyOrdersModal()" title="Lịch sử đơn hàng: ${currentUser.name}">
+          👤
         </button>
-        <button class="btn-close" onclick="handleLogout()" title="Đăng xuất">⏻</button>
+        <button class="btn-close" style="font-size: 15px;" onclick="handleLogout()" title="Đăng xuất">⏻</button>
       </div>
     `;
   } else {
     area.innerHTML = `
-      <button class="btn-user-auth" onclick="openAuthModal()">
-        👤 Đăng nhập
+      <button class="btn-header-icon" onclick="openAuthModal()" title="Đăng nhập tài khoản">
+        👤
       </button>
     `;
+  }
+}
+
+function handleUserAccountClick() {
+  if (currentUser && authToken) {
+    openMyOrdersModal();
+  } else {
+    openAuthModal();
   }
 }
 
@@ -755,7 +833,7 @@ async function handleLoginSubmit(e) {
     localStorage.setItem("MENSTYLE_USER", JSON.stringify(currentUser));
     initAuthUI();
     closeAuthModal();
-    alert(`🎉 Đăng nhập thành công! Xin chào ${currentUser.name}`);
+    showToast(`🎉 Xin chào ${currentUser.name}!`);
   } else {
     alert("❌ Đăng nhập thất bại: " + (res.message || "Email hoặc mật khẩu không đúng"));
   }
@@ -779,7 +857,7 @@ async function handleRegisterSubmit(e) {
     localStorage.setItem("MENSTYLE_USER", JSON.stringify(currentUser));
     initAuthUI();
     closeAuthModal();
-    alert(`🎉 Đăng ký thành công! Xin chào ${currentUser.name}`);
+    showToast(`🎉 Tạo tài khoản thành công! Xin chào ${currentUser.name}`);
   } else {
     alert("❌ Đăng ký thất bại: " + (res.message || "Lỗi tạo tài khoản"));
   }
@@ -792,10 +870,10 @@ function handleLogout() {
   localStorage.removeItem("MENSTYLE_TOKEN");
   localStorage.removeItem("MENSTYLE_USER");
   initAuthUI();
-  alert("Đã đăng xuất tài khoản!");
+  showToast("Đã đăng xuất tài khoản!");
 }
 
-// ================= 8. LỊCH SỬ ĐƠN HÀNG CÁ NHÂN (/MYORDERS) =================
+// ================= 11. LỊCH SỬ ĐƠN HÀNG CÁ NHÂN (/MYORDERS) =================
 async function openMyOrdersModal() {
   const modal = document.getElementById("myOrdersModal");
   const content = document.getElementById("myOrdersContent");
@@ -821,7 +899,7 @@ async function openMyOrdersModal() {
             ${(o.items || []).map((it) => `<div>• ${it.name} (x${it.quantity}, Size ${it.size || "L"})</div>`).join("")}
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed #cbd5e1; pt: 8px;">
-            <div>Tổng: <strong style="color:var(--danger);">${Number(o.totalAmount).toLocaleString("vi-VN")} đ</strong> (${o.paymentMethod})</div>
+            <div>Tổng: <strong style="color:var(--accent-red);">${Number(o.totalAmount).toLocaleString("vi-VN")} đ</strong> (${o.paymentMethod})</div>
             <div>
               <span class="badge-status status-${o.paymentStatus}">${o.paymentStatus === "PAID" ? "Đã TT" : "Chưa TT"}</span>
               <span class="badge-status status-${o.orderStatus}">${o.orderStatus}</span>
@@ -840,7 +918,36 @@ function closeMyOrdersModal() {
   if (modal) modal.classList.add("hidden");
 }
 
-// ================= 9. EVENT LISTENERS & TIỆN ÍCH =================
+// ================= 12. BẢN TIN & TIỆN ÍCH THÔNG BÁO TOAST =================
+function handleNewsletterSubmit(e) {
+  e.preventDefault();
+  const input = document.getElementById("newsletterEmail");
+  if (!input) return;
+  const email = input.value.trim();
+  if (!email) return;
+
+  showToast(`🎉 Cảm ơn bạn! Mã voucher MENSTYLE10 đã sẵn sàng cho đơn hàng đầu tiên.`);
+  input.value = "";
+}
+
+function showToast(msg) {
+  const existing = document.querySelector(".toast-msg");
+  if (existing) existing.remove();
+
+  const toast = document.createElement("div");
+  toast.className = "toast-msg";
+  toast.innerHTML = `<span>✨</span><span>${msg}</span>`;
+  document.body.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.transition = "opacity 0.4s ease, transform 0.4s ease";
+    toast.style.opacity = "0";
+    toast.style.transform = "translate(-50%, 20px)";
+    setTimeout(() => toast.remove(), 400);
+  }, 3000);
+}
+
+// ================= 13. EVENT LISTENERS & TIỆN ÍCH =================
 function setupEventListeners() {
   // Tìm kiếm Debounce 350ms
   const searchInput = document.getElementById("searchInput");

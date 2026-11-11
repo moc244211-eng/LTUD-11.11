@@ -3,157 +3,386 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MENSTYLE - Thời Trang Nam Cao Cấp & Lịch Lãm</title>
+  <title>MENSTYLE - FASHION FOR MEN | Thời Trang Nam Cao Cấp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-  <!-- ================= 1. HEADER & THANH ĐIỀU HƯỚNG ================= -->
+  <!-- ================= 1. TOP ANNOUNCEMENT BAR ================= -->
+  <div class="top-bar">
+    <div class="container top-bar-container">
+      <div class="top-bar-items">
+        <span class="top-bar-item">🚚 Miễn phí vận chuyển cho đơn từ 500.000đ</span>
+        <span class="top-bar-item">🔄 Đổi trả trong 7 ngày</span>
+        <span class="top-bar-item">🎧 Tư vấn 24/7</span>
+      </div>
+      <div class="top-bar-slogan">
+        Phong cách tạo nên bạn —
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 2. HEADER & THANH ĐIỀU HƯỚNG CHÍNH ================= -->
   <header>
     <div class="container nav-container">
-      <a href="index.html" class="brand-logo" title="MENSTYLE">
-        <div class="brand-logo-mark">
-          <svg width="36" height="36" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="38" height="38" rx="9" fill="#0f172a"/>
-            <path d="M10 27V11L19 21.5L28 11V27" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M14 27H24" stroke="#2563eb" stroke-width="2.6" stroke-linecap="round"/>
-          </svg>
-        </div>
+      <!-- Logo MENSTYLE với Icon Hộp Đen chữ M -->
+      <a href="index.html" class="brand-logo" title="MENSTYLE - FASHION FOR MEN">
+        <div class="brand-logo-mark">M</div>
         <div class="brand-logo-text">
-          <span class="brand-name-main">MEN</span><span class="brand-name-sub">STYLE</span>
+          <span class="brand-name-main">MENSTYLE</span>
+          <span class="brand-name-sub">FASHION FOR MEN</span>
         </div>
       </a>
 
-      <!-- Ô Tìm kiếm nhanh Debounce -->
+      <!-- Menu Điều Hướng Dạng Pill Đen / Trắng -->
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="index.html" class="nav-link active">Trang chủ</a></li>
+          <li class="nav-dropdown">
+            <a href="#catalogSection" class="nav-link">Danh mục ▾</a>
+            <div class="nav-dropdown-content" id="headerDropdownCategories">
+              <a href="javascript:void(0)" onclick="filterByCategoryName('Áo Thun')" class="dropdown-item">Áo Thun Nam</a>
+              <a href="javascript:void(0)" onclick="filterByCategoryName('Áo Sơ Mi')" class="dropdown-item">Áo Sơ Mi Oxford</a>
+              <a href="javascript:void(0)" onclick="filterByCategoryName('Hoodie')" class="dropdown-item">Áo Hoodie Streetwear</a>
+              <a href="javascript:void(0)" onclick="filterByCategoryName('Áo Khoác')" class="dropdown-item">Áo Khoác & Blazer</a>
+              <a href="javascript:void(0)" onclick="filterByCategoryName('Quần')" class="dropdown-item">Quần Tây & Kaki</a>
+              <a href="javascript:void(0)" onclick="filterByCategoryName('Jean')" class="dropdown-item">Quần Jean Cao Cấp</a>
+              <a href="javascript:void(0)" onclick="filterByCategoryName('Phụ Kiện')" class="dropdown-item">Phụ Kiện Nam</a>
+            </div>
+          </li>
+          <li><a href="#promoSection" class="nav-link">Khuyến mãi</a></li>
+          <li><a href="#commitmentsSection" class="nav-link">Tin tức</a></li>
+          <li><a href="#footerSection" class="nav-link">Liên hệ</a></li>
+        </ul>
+      </nav>
+
+      <!-- Thanh Tìm Kiếm Tròn Bo Góc -->
       <div class="search-box">
+        <input type="text" id="searchInput" class="search-input" placeholder="Tìm kiếm sản phẩm...">
         <span class="search-icon">🔍</span>
-        <input type="text" id="searchInput" class="search-input" placeholder="Tìm kiếm áo sơ mi, polo, quần tây, blazer...">
       </div>
 
-      <!-- Khu vực Tài khoản & Giỏ hàng -->
+      <!-- Icon Tiện Ích: Tài Khoản, Yêu Thích, Giỏ Hàng, Quản Trị -->
       <div class="header-actions">
-        <!-- Nút Giỏ hàng -->
-        <button class="btn-cart-toggle" onclick="openCartDrawer()">
-          🛒 Giỏ hàng <span class="cart-badge" id="cartBadge">0</span>
-        </button>
-
-        <!-- Nút Đăng nhập / Profile khách -->
         <div id="authHeaderArea">
-          <button class="btn-user-auth" onclick="openAuthModal()">
-            👤 Đăng nhập
+          <button class="btn-header-icon" onclick="handleUserAccountClick()" title="Tài khoản cá nhân">
+            👤
           </button>
         </div>
-
-        <!-- Link sang Admin Dashboard -->
-        <a href="admin.html" class="btn-admin-link">⚙️ Quản Trị</a>
+        <button class="btn-header-icon" onclick="openWishlistToast()" title="Danh sách yêu thích">
+          ♡
+          <span class="cart-count-badge" id="wishlistBadge" style="display:none;">0</span>
+        </button>
+        <button class="btn-header-icon" onclick="openCartDrawer()" title="Giỏ hàng">
+          🛒
+          <span class="cart-count-badge" id="cartBadge">0</span>
+        </button>
+        <a href="admin.html" class="btn-admin-pill" title="Trang Quản Trị Hệ Thống">
+          ⚙️ Quản Trị
+        </a>
       </div>
     </div>
   </header>
 
-  <!-- ================= 2. BANNER CAROUSEL QUẢNG CÁO ================= -->
-  <section class="carousel-container">
-    <div class="carousel-slides" id="carouselSlides">
-      <!-- Slide 1 -->
-      <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?w=1600');">
-        <div class="carousel-overlay"></div>
-        <div class="container" style="width: 100%;">
-          <div class="carousel-content">
-            <span class="carousel-tag">✨ BST CÔNG SỞ 2026</span>
-            <h1 class="carousel-title">Định Hình Phong Cách Phái Mạnh Lịch Lãm</h1>
-            <p class="carousel-desc">Chất liệu vải Oxford và Tuysi cao cấp chống nhăn, tôn lên khí chất đĩnh đạc và tự tin của quý ông hiện đại.</p>
-            <button class="btn-carousel" onclick="scrollToProducts()">Khám Phá Ngay ➔</button>
+  <!-- ================= 3. HERO BANNER SLIDER (URBAN MENSWEAR) ================= -->
+  <section class="hero-banner">
+    <div class="hero-slides" id="carouselSlides">
+      <!-- Slide 1 (Matching Mockup: Nam tính, Kính râm, Áo khoác đen) -->
+      <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=1600&auto=format&fit=crop&q=80');">
+        <div class="hero-overlay"></div>
+        <div class="container" style="width: 100%; position: relative;">
+          <div class="hero-content">
+            <span class="hero-tag">MENSTYLE</span>
+            <h1 class="hero-title">ĐẲNG CẤP THỜI TRANG NAM</h1>
+            <p class="hero-subtitle">Phong cách lịch lãm – Tự tin khẳng định bản thân</p>
+            <button class="hero-cta" onclick="scrollToProducts()">Mua ngay ➔</button>
           </div>
+          <div class="hero-script-accent">Men's Fashion</div>
         </div>
       </div>
 
-      <!-- Slide 2 -->
-      <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1516257984-b1b4d707412e?w=1600');">
-        <div class="carousel-overlay"></div>
-        <div class="container" style="width: 100%;">
-          <div class="carousel-content">
-            <span class="carousel-tag" style="background:#3b82f6; color:#fff;">🔥 STREETWEAR TREND</span>
-            <h1 class="carousel-title">Áo Thun & Hoodie Trẻ Trung, Bứt Phá</h1>
-            <p class="carousel-desc">Cotton 100% định lượng 250gsm dày dặn đứng form, chuẩn phong cách dạo phố năng động và phóng khoáng.</p>
-            <button class="btn-carousel" onclick="filterByCatSlug('ao-thun-hoodie')">Xem Bộ Sưu Tập ➔</button>
+      <!-- Slide 2 (Sơ mi & Blazer công sở) -->
+      <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1617137984095-74e4e5e3613f?w=1600&auto=format&fit=crop&q=80');">
+        <div class="hero-overlay"></div>
+        <div class="container" style="width: 100%; position: relative;">
+          <div class="hero-content">
+            <span class="hero-tag">NEW COLLECTION 2026</span>
+            <h1 class="hero-title">SƠ MI & BLAZER MAY ĐO CAO CẤP</h1>
+            <p class="hero-subtitle">Tôn vinh vóc dáng phái mạnh với chất liệu chống nhăn thượng hạng</p>
+            <button class="hero-cta" onclick="filterByCategoryName('Áo Sơ Mi')">Xem Bộ Sưu Tập ➔</button>
           </div>
+          <div class="hero-script-accent">Elegance</div>
         </div>
       </div>
 
-      <!-- Slide 3 -->
-      <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=1600');">
-        <div class="carousel-overlay"></div>
-        <div class="container" style="width: 100%;">
-          <div class="carousel-content">
-            <span class="carousel-tag" style="background:#10b981; color:#fff;">🌟 BLASER & SUIT</span>
-            <h1 class="carousel-title">Áo Khoác Blazer Nam Chuẩn Form Hàn Quốc</h1>
-            <p class="carousel-desc">Đường may may đo tinh xảo, ve áo thanh thoát, giải pháp hoàn hảo cho mọi buổi tiệc và sự kiện quan trọng.</p>
-            <button class="btn-carousel" onclick="filterByCatSlug('ao-khoac-blazer')">Mua Ngay ➔</button>
+      <!-- Slide 3 (Streetwear & Hoodie) -->
+      <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?w=1600&auto=format&fit=crop&q=80');">
+        <div class="hero-overlay"></div>
+        <div class="container" style="width: 100%; position: relative;">
+          <div class="hero-content">
+            <span class="hero-tag">URBAN CASUAL</span>
+            <h1 class="hero-title">ÁO THUN & HOODIE NĂNG ĐỘNG</h1>
+            <p class="hero-subtitle">Chất liệu 100% Cotton thoáng mát, giữ form dáng chuẩn suốt ngày dài</p>
+            <button class="hero-cta" onclick="filterByCategoryName('Áo Thun')">Khám Phá Ngay ➔</button>
           </div>
+          <div class="hero-script-accent">Lifestyle</div>
         </div>
       </div>
     </div>
 
-    <!-- Nút điều hướng Carousel -->
-    <button class="carousel-nav-btn carousel-prev" onclick="prevSlide()">❮</button>
-    <button class="carousel-nav-btn carousel-next" onclick="nextSlide()">❯</button>
-    <div class="carousel-dots" id="carouselDots">
-      <span class="carousel-dot active" onclick="goToSlide(0)"></span>
-      <span class="carousel-dot" onclick="goToSlide(1)"></span>
-      <span class="carousel-dot" onclick="goToSlide(2)"></span>
+    <!-- Nút điều hướng Carousel Slider -->
+    <button class="hero-arrow prev" onclick="prevSlide()" aria-label="Slide trước">❮</button>
+    <button class="hero-arrow next" onclick="nextSlide()" aria-label="Slide sau">❯</button>
+    <div class="hero-dots" id="carouselDots">
+      <span class="hero-dot active" onclick="goToSlide(0)"></span>
+      <span class="hero-dot" onclick="goToSlide(1)"></span>
+      <span class="hero-dot" onclick="goToSlide(2)"></span>
     </div>
   </section>
 
-  <!-- ================= 3. KHU VỰC BỘ LỌC DANH MỤC & KHOẢNG GIÁ ================= -->
-  <main class="container" id="productsMain">
-    <div class="filter-bar-wrapper">
-      <!-- Hàng 1: Danh mục -->
-      <div class="filter-row">
-        <div class="filter-group-title">🏷️ Danh mục:</div>
-        <div class="category-pills" id="categoryPills">
-          <button class="cat-pill active" data-id="">Tất cả sản phẩm</button>
-          <!-- Nạp động qua JS từ MongoDB -->
+  <!-- ================= 4. FEATURED CATEGORIES BAR ================= -->
+  <section class="featured-cat-section">
+    <div class="container">
+      <div class="featured-cat-bar">
+        <!-- Badge bên trái màu đen -->
+        <div class="cat-feature-badge" onclick="scrollToProducts()">
+          <span style="font-size: 16px;">⚏</span>
+          <span>DANH MỤC<br>NỔI BẬT ➔</span>
+        </div>
+
+        <!-- 8 danh mục tròn cắt nét theo Mockup -->
+        <div class="cat-feature-item" onclick="filterByCategoryName('Áo Thun')">
+          <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=160&auto=format&fit=crop&q=80" alt="Áo Thun" class="cat-feature-thumb">
+          <span class="cat-feature-name">Áo Thun</span>
+        </div>
+        <div class="cat-feature-item" onclick="filterByCategoryName('Áo Sơ Mi')">
+          <img src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=160&auto=format&fit=crop&q=80" alt="Áo Sơ Mi" class="cat-feature-thumb">
+          <span class="cat-feature-name">Áo Sơ Mi</span>
+        </div>
+        <div class="cat-feature-item" onclick="filterByCategoryName('Hoodie')">
+          <img src="https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=160&auto=format&fit=crop&q=80" alt="Áo Hoodie" class="cat-feature-thumb">
+          <span class="cat-feature-name">Áo Hoodie</span>
+        </div>
+        <div class="cat-feature-item" onclick="filterByCategoryName('Áo Khoác')">
+          <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?w=160&auto=format&fit=crop&q=80" alt="Áo Khoác" class="cat-feature-thumb">
+          <span class="cat-feature-name">Áo Khoác</span>
+        </div>
+        <div class="cat-feature-item" onclick="filterByCategoryName('Quần Nam')">
+          <img src="https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=160&auto=format&fit=crop&q=80" alt="Quần Nam" class="cat-feature-thumb">
+          <span class="cat-feature-name">Quần Nam</span>
+        </div>
+        <div class="cat-feature-item" onclick="filterByCategoryName('Quần Jean')">
+          <img src="https://images.unsplash.com/photo-1542272604-787c3835535d?w=160&auto=format&fit=crop&q=80" alt="Quần Jean" class="cat-feature-thumb">
+          <span class="cat-feature-name">Quần Jean</span>
+        </div>
+        <div class="cat-feature-item" onclick="filterByCategoryName('Đồ Bộ')">
+          <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=160&auto=format&fit=crop&q=80" alt="Đồ Bộ" class="cat-feature-thumb">
+          <span class="cat-feature-name">Đồ Bộ</span>
+        </div>
+        <div class="cat-feature-item" onclick="filterByCategoryName('Phụ Kiện')">
+          <img src="https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=160&auto=format&fit=crop&q=80" alt="Phụ Kiện" class="cat-feature-thumb">
+          <span class="cat-feature-name">Phụ Kiện</span>
         </div>
       </div>
+    </div>
+  </section>
 
-      <!-- Hàng 2: Bộ lọc khoảng giá theo Rubric 2.2 -->
+  <!-- ================= 5. SẢN PHẨM BÁN CHẠY (6 CỘT CHUẨN MOCKUP) ================= -->
+  <section class="container" style="margin-top: 36px;">
+    <div class="section-header">
+      <div class="section-title-wrap">
+        <h2 class="section-title">✦ SẢN PHẨM BÁN CHẠY</h2>
+        <div class="section-divider"></div>
+      </div>
+      <a href="#catalogSection" class="section-view-all">Xem tất cả ➔</a>
+    </div>
+
+    <!-- 6 Column Grid cho Best Sellers -->
+    <div class="product-grid-6" id="bestSellerGrid">
+      <!-- Nạp động qua JS từ Backend MongoDB Atlas -->
+    </div>
+  </section>
+
+  <!-- ================= 6. PROMO 3-BANNER GRID ================= -->
+  <section class="container" id="promoSection">
+    <div class="promo-grid">
+      <!-- Box 1: Ưu đãi 50% (Đen) -->
+      <div class="promo-card promo-card-dark">
+        <div class="promo-info">
+          <h3 class="promo-title">ƯU ĐÃI 50%</h3>
+          <p class="promo-desc">CHO ĐƠN TỪ 500K</p>
+          <button class="promo-btn" onclick="scrollToProducts()">Săn ngay ➔</button>
+        </div>
+        <img src="https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=300&auto=format&fit=crop&q=80" alt="Ưu đãi 50%" class="promo-visual" style="border-radius: 8px;">
+      </div>
+
+      <!-- Box 2: Miễn phí vận chuyển (Trắng Xám) -->
+      <div class="promo-card promo-card-light">
+        <div class="promo-info">
+          <div style="font-size: 26px; margin-bottom: 2px;">🚚</div>
+          <h3 class="promo-title" style="font-size: 16px;">MIỄN PHÍ VẬN CHUYỂN</h3>
+          <p class="promo-desc" style="color: #6b7280;">Cho đơn từ 500.000đ</p>
+        </div>
+        <div style="font-size: 52px; z-index: 1;">🚛</div>
+      </div>
+
+      <!-- Box 3: Quà tặng hấp dẫn (Đen) -->
+      <div class="promo-card promo-card-dark">
+        <div class="promo-info">
+          <h3 class="promo-title">QUÀ TẶNG HẤP DẪN</h3>
+          <p class="promo-desc">Dành cho khách hàng thân thiết</p>
+          <button class="promo-btn" onclick="openCheckoutModal()">Khám phá ➔</button>
+        </div>
+        <div style="font-size: 54px; z-index: 1;">🎁</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 7. BỘ SƯU TẬP THỜI TRANG NAM (CATALOG & FILTER) ================= -->
+  <main class="container" id="catalogSection">
+    <div class="section-header">
+      <div class="section-title-wrap">
+        <h2 class="section-title">✦ BỘ SƯU TẬP THỜI TRANG NAM</h2>
+        <div class="section-divider"></div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <span id="productCount" style="font-size: 13px; color: #6b7280;">Đang tải...</span>
+        <select id="sortSelect" class="form-select" style="width: auto; padding: 6px 12px; font-size: 12.5px;">
+          <option value="">Sắp xếp: Mới nhất</option>
+          <option value="price_asc">Giá: Thấp đến Cao</option>
+          <option value="price_desc">Giá: Cao đến Thấp</option>
+          <option value="rating">Đánh giá cao nhất</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Bảng Lọc Danh Mục & Khoảng Giá Chuẩn E-Commerce -->
+    <div class="catalog-filter-card">
+      <div class="filter-row" style="margin-bottom: 12px;">
+        <span class="filter-label">🏷️ Danh mục:</span>
+        <div class="filter-pills" id="categoryPills">
+          <button class="filter-pill active" data-id="">Tất cả sản phẩm</button>
+        </div>
+      </div>
       <div class="filter-row">
-        <div class="filter-group-title">💰 Khoảng giá:</div>
-        <div class="price-filters">
-          <button class="price-pill active" data-min="" data-max="">Tất cả giá</button>
-          <button class="price-pill" data-min="" data-max="200000">Dưới 200.000 đ</button>
-          <button class="price-pill" data-min="200000" data-max="350000">200.000 - 350.000 đ</button>
-          <button class="price-pill" data-min="350000" data-max="">Trên 350.000 đ</button>
+        <span class="filter-label">💰 Khoảng giá:</span>
+        <div class="filter-pills">
+          <button class="filter-pill price-pill active" data-min="" data-max="">Tất cả giá</button>
+          <button class="filter-pill price-pill" data-min="" data-max="200000">Dưới 200.000 đ</button>
+          <button class="filter-pill price-pill" data-min="200000" data-max="350000">200.000 - 350.000 đ</button>
+          <button class="filter-pill price-pill" data-min="350000" data-max="">Trên 350.000 đ</button>
         </div>
       </div>
     </div>
 
-    <!-- ================= 4. DANH SÁCH SẢN PHẨM ================= -->
-    <section class="products-section">
-      <div class="section-header">
-        <h2 class="section-title">Bộ Sưu Tập Thời Trang Nam</h2>
-        <div style="display: flex; align-items: center; gap: 14px;">
-          <span id="productCount" style="font-size: 13.5px; color: #64748b;">Đang tải...</span>
-          <select id="sortSelect" class="sort-select">
-            <option value="">Sắp xếp: Mới nhất</option>
-            <option value="price_asc">Giá: Thấp đến Cao</option>
-            <option value="price_desc">Giá: Cao đến Thấp</option>
-            <option value="rating">Đánh giá cao nhất</option>
-          </select>
-        </div>
-      </div>
+    <!-- 6 Column Grid cho Catalog -->
+    <div class="product-grid-6" id="productGrid">
+      <!-- Nạp động qua JS từ API Backend -->
+    </div>
 
-      <div class="product-grid" id="productGrid">
-        <!-- Render động bằng JS -->
-      </div>
-
-      <!-- Phân trang (Pagination) Rubric 1.1 -->
-      <div class="pagination-wrapper" id="paginationWrapper">
-        <!-- Render động nút phân trang -->
-      </div>
-    </section>
+    <!-- Phân trang động (Pagination) -->
+    <div class="pagination-wrapper" id="paginationWrapper"></div>
   </main>
 
-  <!-- ================= 5. GIỎ HÀNG TRƯỢT (CART DRAWER) ================= -->
+  <!-- ================= 8. CAM KẾT THƯƠNG HIỆU ================= -->
+  <section class="commitments-section" id="commitmentsSection">
+    <div class="container">
+      <div class="commitments-grid">
+        <div class="commitment-item">
+          <div class="commitment-icon">🛡️</div>
+          <div>
+            <h4 class="commitment-title">100% Chính Hãng</h4>
+            <p class="commitment-desc">Cam kết chất lượng chuẩn may đo, đường chỉ chắc chắn và bền bỉ.</p>
+          </div>
+        </div>
+        <div class="commitment-item">
+          <div class="commitment-icon">🔄</div>
+          <div>
+            <h4 class="commitment-title">Đổi Trả 7 Ngày</h4>
+            <p class="commitment-desc">Miễn phí đổi hàng tận nơi nếu không vừa size hoặc không ưng ý.</p>
+          </div>
+        </div>
+        <div class="commitment-item">
+          <div class="commitment-icon">🚀</div>
+          <div>
+            <h4 class="commitment-title">Giao Hàng Siêu Tốc</h4>
+            <p class="commitment-desc">Nhận hàng từ 2-4 ngày trên toàn quốc, đồng kiểm trước thanh toán.</p>
+          </div>
+        </div>
+        <div class="commitment-item">
+          <div class="commitment-icon">💬</div>
+          <div>
+            <h4 class="commitment-title">Tư Vấn 24/7</h4>
+            <p class="commitment-desc">Đội ngũ stylist cùng trợ lý AI Gemini RAG gợi ý outfit chuẩn dáng.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 9. ĐĂNG KÝ NHẬN BẢN TIN KHUYẾN MÃI ================= -->
+  <section class="newsletter-section">
+    <div class="container">
+      <div class="newsletter-content">
+        <h3 class="newsletter-title">ĐĂNG KÝ NHẬN TIN ƯU ĐÃI</h3>
+        <p class="newsletter-desc">Nhận ngay voucher giảm 10% (mã <strong>MENSTYLE10</strong>) cho đơn hàng đầu tiên và cập nhật xu hướng mới nhất.</p>
+        <form class="newsletter-form" onsubmit="handleNewsletterSubmit(event)">
+          <input type="email" id="newsletterEmail" class="newsletter-input" placeholder="Nhập địa chỉ email của bạn..." required>
+          <button type="submit" class="newsletter-btn">Đăng Ký Ngay</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 10. FOOTER HIỆN ĐẠI 4 CỘT ================= -->
+  <footer id="footerSection">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>👔 CỬA HÀNG THỜI TRANG NAM MENSTYLE</h4>
+          <p>Thương hiệu thời trang nam cao cấp chuyên cung cấp sơ mi, polo, quần tây và blazer chuẩn phong cách phái mạnh hiện đại.</p>
+          <p style="font-size: 12.5px; color: #6b7280; margin-top: 8px;">📍 Trường Đại học Lạc Hồng (LHU) — Đồ Án Môn Học: Lập Trình Ứng Dụng</p>
+        </div>
+        <div class="footer-col">
+          <h4>VỀ CHÚNG TÔI</h4>
+          <ul class="footer-links">
+            <li><a href="javascript:void(0)">Giới thiệu thương hiệu MENSTYLE</a></li>
+            <li><a href="javascript:void(0)">Hệ thống showroom toàn quốc</a></li>
+            <li><a href="javascript:void(0)">Tuyển dụng & Cơ hội việc làm</a></li>
+            <li><a href="javascript:void(0)">Tin tức xu hướng thời trang</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>HỖ TRỢ KHÁCH HÀNG</h4>
+          <ul class="footer-links">
+            <li><a href="javascript:void(0)">Hướng dẫn chọn size chuẩn form</a></li>
+            <li><a href="javascript:void(0)">Chính sách đổi trả trong 7 ngày</a></li>
+            <li><a href="javascript:void(0)">Chính sách bảo mật thông tin</a></li>
+            <li><a href="javascript:void(0)">Thanh toán chuyển khoản VietQR</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>KẾT NỐI HỆ THỐNG</h4>
+          <p>• Backend RESTful API & MongoDB Atlas</p>
+          <p>• Thanh toán VietQR Napas 247 Động</p>
+          <p>• AI Tư vấn Gemini 3.5 Flash (RAG)</p>
+          <p style="margin-top: 10px; font-weight: 700; color: #ffffff;">Hotline: 0862.583.284</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div>© 2026 MENSTYLE STORE. Bản quyền thuộc về Đồ Án Lập Trình Ứng Dụng - Khoa CNTT - Đại học Lạc Hồng.</div>
+        <div style="display: flex; gap: 16px;">
+          <span>Quyền riêng tư</span>
+          <span>Điều khoản dịch vụ</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================= 11. GIỎ HÀNG TRƯỢT (CART DRAWER) ================= -->
   <div class="cart-drawer-backdrop" id="cartBackdrop" onclick="closeCartDrawer()"></div>
   <div class="cart-drawer" id="cartDrawer">
     <div class="cart-header">
@@ -174,7 +403,7 @@
     </div>
   </div>
 
-  <!-- ================= 6. MODAL XEM CHI TIẾT SẢN PHẨM ================= -->
+  <!-- ================= 12. MODAL XEM CHI TIẾT SẢN PHẨM ================= -->
   <div class="modal-overlay hidden" id="productDetailModal">
     <div class="modal-content" style="max-width: 650px;">
       <div class="modal-header">
@@ -187,7 +416,7 @@
     </div>
   </div>
 
-  <!-- ================= 7. MODAL ĐẶT HÀNG (CHECKOUT) ================= -->
+  <!-- ================= 13. MODAL ĐẶT HÀNG (CHECKOUT VỚI MÃ GIẢM GIÁ) ================= -->
   <div class="modal-overlay hidden" id="checkoutModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -227,7 +456,7 @@
             <input type="text" name="note" class="form-input" placeholder="Ví dụ: Giao giờ hành chính, gọi trước khi giao...">
           </div>
 
-          <!-- Khu vực Áp Dụng Mã Giảm Giá Khuyến Mãi -->
+          <!-- Áp Dụng Mã Giảm Giá -->
           <div class="form-group" style="background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px dashed #cbd5e1; margin-bottom: 16px;">
             <label class="form-label" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
               <span>🎟️ Mã Giảm Giá Khuyến Mãi</span>
@@ -235,7 +464,7 @@
             </label>
             <div style="display: flex; gap: 8px;">
               <input type="text" id="chkCouponCode" class="form-input" placeholder="Nhập mã ưu đãi..." style="text-transform: uppercase;">
-              <button type="button" class="btn-action btn-act-ship" style="padding: 0 16px; white-space: nowrap; font-size: 13px;" onclick="handleApplyCheckoutCoupon()">
+              <button type="button" class="btn-checkout-start" style="width: auto; padding: 0 16px; white-space: nowrap; font-size: 13px;" onclick="handleApplyCheckoutCoupon()">
                 Áp Dụng
               </button>
             </div>
@@ -270,7 +499,7 @@
     </div>
   </div>
 
-  <!-- ================= 8. POPUP MÃ VIETQR ĐỘNG CHUẨN NAPAS 247 ================= -->
+  <!-- ================= 14. POPUP MÃ VIETQR ĐỘNG CHUẨN NAPAS 247 ================= -->
   <div class="modal-overlay hidden" id="qrModal">
     <div class="modal-content" style="max-width: 440px; text-align: center;">
       <div class="modal-header">
@@ -297,7 +526,7 @@
     </div>
   </div>
 
-  <!-- ================= 9. MODAL ĐĂNG NHẬP / ĐĂNG KÝ THÀNH VIÊN ================= -->
+  <!-- ================= 15. MODAL ĐĂNG NHẬP / ĐĂNG KÝ THÀNH VIÊN ================= -->
   <div class="modal-overlay hidden" id="authModal">
     <div class="modal-content" style="max-width: 420px;">
       <div class="modal-header">
@@ -352,7 +581,7 @@
     </div>
   </div>
 
-  <!-- ================= 10. MODAL XEM ĐƠN HÀNG CÁ NHÂN (/MYORDERS) ================= -->
+  <!-- ================= 16. MODAL XEM ĐƠN HÀNG CÁ NHÂN (/MYORDERS) ================= -->
   <div class="modal-overlay hidden" id="myOrdersModal">
     <div class="modal-content" style="max-width: 680px;">
       <div class="modal-header">
@@ -365,16 +594,20 @@
     </div>
   </div>
 
-  <!-- ================= 11. WIDGET CHATBOT AI GEMINI STYLIST NỔI GÓC ================= -->
+  <!-- ================= 17. WIDGET CHATBOT AI GEMINI STYLIST NỔI GÓC (MESSENGER STYLE) ================= -->
   <button class="ai-widget-button" onclick="toggleAIChat()" title="Tư vấn phối đồ cùng AI Stylist">
-    🤵
+    <svg width="30" height="30" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M14 2C7.37 2 2 7.04 2 13.25C2 16.79 3.73 19.92 6.43 21.94V26L10.33 23.85C11.49 24.26 12.72 24.5 14 24.5C20.63 24.5 26 19.46 26 13.25C26 7.04 20.63 2 14 2Z" fill="#0084FF"/>
+      <path d="M14.7 15.65L11.5 12.23L5.27 15.65L12.12 8.35L15.32 11.77L21.55 8.35L14.7 15.65Z" fill="white"/>
+    </svg>
   </button>
+
   <div class="ai-chat-window hidden" id="aiChatWindow">
     <div class="ai-chat-header">
-      <div class="ai-chat-title">
-        <span>🤵</span>
+      <div class="ai-chat-title" style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 20px;">🤵</span>
         <div>
-          <div>MENSTYLE AI Stylist</div>
+          <div style="font-weight: 800; font-size: 14px;">MENSTYLE AI Stylist</div>
           <div style="font-size: 11px; font-weight: normal; opacity: 0.85;">Chuyên gia tư vấn phối đồ & chọn size (Gemini RAG)</div>
         </div>
       </div>
@@ -390,34 +623,6 @@
       <button type="submit" class="ai-chat-send">➤</button>
     </form>
   </div>
-
-  <!-- ================= 12. FOOTER ================= -->
-  <footer>
-    <div class="container">
-      <div class="footer-grid">
-        <div class="footer-col">
-          <h4>👔 CỬA HÀNG THỜI TRANG NAM MENSTYLE</h4>
-          <p style="margin-bottom: 8px;">Thương hiệu thời trang nam cao cấp chuyên cung cấp sơ mi, polo, quần tây và blazer chuẩn phong cách phái mạnh.</p>
-          <p style="font-size: 13px;">📍 Trường Đại học Lạc Hồng (LHU) — Đồ Án Môn Học: Lập Trình Ứng Dụng</p>
-        </div>
-        <div class="footer-col">
-          <h4>CHÍNH SÁCH BÁN HÀNG</h4>
-          <p style="font-size: 13px; margin-bottom: 6px;">• Đổi trả trong 7 ngày nếu không vừa size</p>
-          <p style="font-size: 13px; margin-bottom: 6px;">• Miễn phí giao hàng cho đơn trên 500k</p>
-          <p style="font-size: 13px; margin-bottom: 6px;">• Kiểm tra hàng trước khi thanh toán (COD)</p>
-        </div>
-        <div class="footer-col">
-          <h4>KẾT NỐI HỆ THỐNG</h4>
-          <p style="font-size: 13px; margin-bottom: 6px;">• Backend RESTful API & MongoDB Atlas</p>
-          <p style="font-size: 13px; margin-bottom: 6px;">• Thanh toán VietQR Napas 247 Động</p>
-          <p style="font-size: 13px; margin-bottom: 6px;">• AI Tư vấn Gemini 3.5 Flash (RAG)</p>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>© 2026 MENSTYLE STORE. Bản quyền thuộc về Đồ Án Lập Trình Ứng Dụng - Khoa CNTT - Đại học Lạc Hồng.</p>
-      </div>
-    </div>
-  </footer>
 
   <!-- Scripts -->
   <script src="js/api.js"></script>
