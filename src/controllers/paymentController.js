@@ -26,18 +26,17 @@ exports.createPaymentQR = async (req, res) => {
 
     const bankId = process.env.BANK_ID || "MB";
     const accountNo = process.env.BANK_ACCOUNT_NO || "0862583284";
-    const accountName = encodeURIComponent(
-      process.env.BANK_ACCOUNT_NAME || "MENSTYLE STORE"
-    );
+    const rawAccountName = process.env.BANK_ACCOUNT_NAME || "MÀN MỘC SÁNG";
+    const accountName = encodeURIComponent(rawAccountName);
     const addInfo = encodeURIComponent(`DH ${orderCode}`);
 
     if (paymentMethod === "VIETQR" || !paymentMethod) {
-      // 1. Chuẩn VietQR (Napas 247)
+      // 1. Chuẩn VietQR (Napas 247) cho tài khoản ngân hàng của bạn
       qrUrl = `https://img.vietqr.io/image/${bankId}-${accountNo}-compact2.png?amount=${totalAmount}&addInfo=${addInfo}&accountName=${accountName}`;
     } else if (paymentMethod === "MOMO_QR") {
       // 2. Mã QR Ví MoMo
       const momoPhone = process.env.MOMO_PHONE || "0862583284";
-      const momoName = encodeURIComponent("MENSTYLE STORE");
+      const momoName = encodeURIComponent(rawAccountName);
       const momoData = encodeURIComponent(
         `2|99|${momoPhone}|${momoName}||0|0|${totalAmount}|DH ${orderCode}|transfer_myqr`
       );
@@ -55,7 +54,7 @@ exports.createPaymentQR = async (req, res) => {
         qrUrl,
         bankId,
         accountNo,
-        accountName: process.env.BANK_ACCOUNT_NAME || "MENSTYLE STORE",
+        accountName: rawAccountName,
         transferNote: `DH ${orderCode}`,
       },
     });

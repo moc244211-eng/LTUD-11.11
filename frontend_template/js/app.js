@@ -515,7 +515,7 @@ async function handleCheckoutSubmit(e) {
     closeCheckoutModal();
 
     if (paymentMethod === "VIETQR" || paymentMethod === "MOMO_QR") {
-      await showDynamicQRModal(createdOrder._id, paymentMethod);
+      await showDynamicQRModal(createdOrder, paymentMethod);
     } else {
       alert(
         `🎉 ĐẶT HÀNG THÀNH CÔNG!\n\n• Mã đơn hàng: #${createdOrder.orderCode}\n• Tổng tiền: ${Number(createdOrder.totalAmount).toLocaleString("vi-VN")} đ\n• Hình thức: Tiền mặt khi nhận hàng (COD)\n\nCảm ơn bạn đã lựa chọn MENSTYLE!`
@@ -526,28 +526,43 @@ async function handleCheckoutSubmit(e) {
   }
 }
 
-// Gọi API Backend sinh mã VietQR động
-async function showDynamicQRModal(orderId, paymentMethod) {
+// Gọi API Backend sinh mã VietQR động chuẩn tài khoản của bạn (MB Bank - MÀN MỘC SÁNG)
+async function showDynamicQRModal(order, paymentMethod) {
   const modal = document.getElementById("qrModal");
   const qrImg = document.getElementById("qrImage");
   const orderCodeEl = document.getElementById("qrOrderCode");
   const totalEl = document.getElementById("qrTotalAmount");
   const infoEl = document.getElementById("qrNoteInfo");
 
+  const orderId = order._id || order;
+  const orderCode = order.orderCode || (typeof order === "string" ? order.slice(-8) : "DH");
+  const totalAmount = order.totalAmount || 0;
+
   if (modal) modal.classList.remove("hidden");
-  if (qrImg) qrImg.src = "";
-  if (infoEl) infoEl.innerText = "Đang tạo mã QR chuẩn Napas 247...";
+  if (orderCodeEl) orderCodeEl.innerText = `#${orderCode}`;
+  if (totalEl) totalEl.innerText = `${Number(totalAmount).toLocaleString("vi-VN")} đ`;
 
-  const res = await API.createPaymentQR(orderId, paymentMethod);
+  // Mã QR chuẩn tài khoản cá nhân: MB Bank - STK 0862583284 - MÀN MỘC SÁNG
+  const defaultQrUrl =
+    paymentMethod === "MOMO_QR"
+      ? `https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=${encodeURIComponent(
+          `2|99|0862583284|MÀN MỘC SÁNG||0|0|${totalAmount}|DH ${orderCode}|transfer_myqr`
+        )}`
+      : `https://img.vietqr.io/image/MB-0862583284-compact2.png?amount=${totalAmount}&addInfo=DH%20${orderCode}&accountName=M%C3%80N%20M%E1%BB%98C%20S%C3%81NG`;
 
-  if (res.success && res.data) {
-    const d = res.data;
-    if (orderCodeEl) orderCodeEl.innerText = `#${d.orderCode}`;
-    if (totalEl) totalEl.innerText = `${Number(d.totalAmount).toLocaleString("vi-VN")} đ`;
-    if (infoEl) infoEl.innerText = `Nội dung CK: ${d.transferNote} | Ngân hàng: ${d.bankId} (${d.accountNo})`;
-    if (qrImg) qrImg.src = d.qrUrl;
-  } else {
-    alert("Lỗi tạo mã QR: " + res.message);
+  if (qrImg) qrImg.src = defaultQrUrl;
+  if (infoEl) infoEl.innerText = `Nội dung CK: DH ${orderCode} | MB Bank (0862583284 - MÀN MỘC SÁNG)`;
+
+  // Gọi đồng thời qua API Backend để lưu log và đảm bảo tính chuẩn hóa
+  try {
+    const res = await API.createPaymentQR(orderId, paymentMethod);
+    if (res.success && res.data && res.data.qrUrl) {
+      if (qrImg) qrImg.src = res.data.qrUrl;
+      if (infoEl)
+        infoEl.innerText = `Nội dung CK: ${res.data.transferNote} | Ngân hàng: ${res.data.bankId} (${res.data.accountNo} - ${res.data.accountName})`;
+    }
+  } catch (err) {
+    console.warn("Lỗi gọi API VietQR:", err);
   }
 }
 
