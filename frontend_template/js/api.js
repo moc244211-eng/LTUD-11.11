@@ -10,7 +10,8 @@ const isLocal =
    !window.location.origin ||
    window.location.origin === 'null');
 
-const API_BASE_URL = isLocal ? 'http://localhost:5000/api' : '/api';
+let API_BASE_URL = isLocal ? 'http://localhost:5000/api' : '/api';
+const RENDER_FALLBACK_API = 'https://men-style.onrender.com/api';
 
 const API = {
   // ================= 1. XÁC THỰC & NGƯỜI DÙNG =================
@@ -60,6 +61,10 @@ const API = {
       const res = await fetch(`${API_BASE_URL}/categories`);
       return await res.json();
     } catch (err) {
+      if (isLocal && API_BASE_URL.includes('localhost:5000')) {
+        API_BASE_URL = RENDER_FALLBACK_API;
+        return await this.getCategories();
+      }
       console.error('Lỗi API Lấy danh mục:', err);
       return { success: false, data: [] };
     }
@@ -135,6 +140,10 @@ const API = {
       const res = await fetch(url);
       return await res.json();
     } catch (err) {
+      if (isLocal && API_BASE_URL.includes('localhost:5000')) {
+        API_BASE_URL = RENDER_FALLBACK_API;
+        return await this.getProducts(params);
+      }
       console.error('Lỗi API Lấy sản phẩm:', err);
       return { success: false, data: [] };
     }

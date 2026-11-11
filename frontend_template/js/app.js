@@ -613,11 +613,6 @@ async function handleCheckoutSubmit(e) {
       paymentMethod,
     };
   }
-      customerEmail,
-      shippingAddress,
-      paymentMethod,
-    };
-  }
 
   if (submitBtn) {
     submitBtn.disabled = false;
