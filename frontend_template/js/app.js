@@ -1011,8 +1011,7 @@ function handleNavClick(el, target) {
     const promoSection = document.getElementById("promoSection");
     if (promoSection) promoSection.scrollIntoView({ behavior: "smooth" });
   } else if (target === "news") {
-    const newsSection = document.getElementById("commitmentsSection");
-    if (newsSection) newsSection.scrollIntoView({ behavior: "smooth" });
+    window.location.href = "news.html";
   } else if (target === "contact") {
     openContactModal();
   }
@@ -1052,19 +1051,16 @@ function setupEventListeners() {
 
     const scrollPos = window.scrollY + 220;
     const promoEl = document.getElementById("promoSection");
-    const newsEl = document.getElementById("commitmentsSection");
     const catalogEl = document.getElementById("catalogSection");
 
     let currentNav = "home";
-    if (newsEl && scrollPos >= newsEl.offsetTop) {
-      currentNav = "news";
-    } else if (catalogEl && scrollPos >= catalogEl.offsetTop) {
+    if (catalogEl && scrollPos >= catalogEl.offsetTop) {
       currentNav = "catalog";
     } else if (promoEl && scrollPos >= promoEl.offsetTop) {
       currentNav = "promo";
     }
 
-    document.querySelectorAll(".nav-menu .nav-link:not([data-nav='contact'])").forEach((l) => {
+    document.querySelectorAll(".nav-menu .nav-link:not([data-nav='contact']):not([data-nav='news'])").forEach((l) => {
       if (l.getAttribute("data-nav") === currentNav) {
         l.classList.add("active");
       } else {
