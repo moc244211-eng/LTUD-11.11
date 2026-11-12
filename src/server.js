@@ -53,7 +53,18 @@ app.use("/api/coupons", couponRoutes);
 app.use("/api/articles", articleRoutes);
 app.use("/api/contacts", contactRoutes);
 
-// 6. Xử lý fallback cho SPA / Giao diện Frontend
+// 6. Xử lý SEO & Robots / Sitemap cho Google Search Console
+app.get("/robots.txt", (req, res) => {
+  res.type("text/plain");
+  res.sendFile(path.join(__dirname, "../frontend_template/robots.txt"));
+});
+
+app.get("/sitemap.xml", (req, res) => {
+  res.type("application/xml");
+  res.sendFile(path.join(__dirname, "../frontend_template/sitemap.xml"));
+});
+
+// 7. Xử lý fallback cho SPA / Giao diện Frontend
 app.get("/admin", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend_template/admin.html"));
 });
@@ -61,7 +72,7 @@ app.get(["/news", "/tin-tuc"], (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend_template/news.html"));
 });
 
-// 7. Bắt lỗi 404 cho API không tồn tại
+// 8. Bắt lỗi 404 cho API không tồn tại
 app.use("/api/*", (req, res) => {
   res.status(404).json({
     success: false,

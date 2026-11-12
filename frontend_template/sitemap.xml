@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <!-- 1. TRANG CHỦ MENSTYLE STOREFRONT -->
+  <url>
+    <loc>https://men-style.onrender.com/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://men-style.onrender.com/index.html</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- 2. TRANG TẠP CHÍ TIN TỨC THỜI TRANG MENSTYLE MAGAZINE -->
+  <url>
+    <loc>https://men-style.onrender.com/news.html</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- 3. TOP 8 BÀI VIẾT CHUYÊN SÂU CHUẨN GOOGLE AI OVERVIEWS (GEO) -->
+  <url>
+    <loc>https://men-style.onrender.com/news.html?slug=xu-huong-thoi-trang-nam-2026-minimalist-smart-casual</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=1200</image:loc>
+      <image:title>Xu Hướng Thời Trang Nam 2026: Phong Cách Tối Giản Minimalist và Smart Casual</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://men-style.onrender.com/news.html?slug=5-bi-quyet-phoi-ao-so-mi-oxford-chuan-quy-ong</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=800</image:loc>
+      <image:title>5 Bí Quyết Phối Áo Sơ Mi Oxford Chuẩn Quý Ông Thành Đạt</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://men-style.onrender.com/news.html?slug=nghe-thuat-xay-dung-capsule-wardrobe-toi-gian</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800</image:loc>
+      <image:title>Nghệ Thuật Xây Dựng Capsule Wardrobe Tối Giản Cho Quý Ông</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://men-style.onrender.com/news.html?slug=huong-dan-chon-size-quan-tay-quan-jeans-chuan-voc-dang</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=800</image:loc>
+      <image:title>Cẩm Nang Chọn Size Quần Tây và Quần Jeans Vừa Vặn Từng Điểm Cơ Thể</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://men-style.onrender.com/news.html?slug=bi-quyet-giat-ui-va-bao-quan-so-mi-do-len-cao-cap</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=800</image:loc>
+      <image:title>Bí Quyết Giặt Ủi và Bảo Quản Áo Sơ Mi Cao Cấp, Đồ Len và Polo Dệt Kim</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://men-style.onrender.com/news.html?slug=menstyle-ra-mat-bo-suu-tap-xuan-he-2026-urban-elegance</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1490114538077-0a7f8cb49891?w=800</image:loc>
+      <image:title>MENSTYLE Ra Mắt Bộ Sưu Tập Xuân Hè 2026 Urban Elegance</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://men-style.onrender.com/news.html?slug=ao-polo-knitwear-lan-gio-moi-trong-tu-do-quy-ong</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=800</image:loc>
+      <image:title>Áo Polo Knitwear Dệt Kim: Biểu Tượng Phong Thái Của Quý Ông Đương Đại</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://men-style.onrender.com/news.html?slug=phong-cach-lich-lam-cho-buoi-gap-go-doi-tac-va-hen-ho</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1516257984-b1b4d707412e?w=800</image:loc>
+      <image:title>Nguyên Tắc Phối Đồ Lịch Lãm Cho Buổi Gặp Gỡ Đối Tác và Hẹn Hò Buổi Tối</image:title>
+    </image:image>
+  </url>
+
+  <!-- 4. CHUYÊN MỤC TẠP CHÍ & BỘ SƯU TẬP -->
+  <url>
+    <loc>https://men-style.onrender.com/news.html?category=Xu%20h%C6%B0%E1%BB%9Bng%20th%E1%BB%9Di%20trang</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://men-style.onrender.com/news.html?category=B%C3%AD%20quy%E1%BA%BFt%20ph%E1%BB%91i%20%C4%91%E1%BB%93</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://men-style.onrender.com/news.html?category=Phong%20c%C3%A1ch%20nam</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://men-style.onrender.com/news.html?category=M%E1%BA%B9o%20ch%E1%BB%8Dn%20trang%20ph%E1%BB%A5c</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://men-style.onrender.com/news.html?category=Ch%C4%83m%20s%C3%B3c%20v%C3%A0%20b%E1%BA%A3o%20qu%E1%BA%A3n</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://men-style.onrender.com/news.html?category=Tin%20t%E1%BB%A9c%20MENSTYLE</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+</urlset>
