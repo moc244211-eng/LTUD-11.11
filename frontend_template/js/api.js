@@ -473,49 +473,62 @@ const API = {
       const url = `${API_BASE_URL}/articles${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
       const res = await fetch(url);
       const data = await res.json();
-      if (data && data.success && data.data && data.data.length > 0) {
+      if (data && data.success && Array.isArray(data.data) && data.data.length > 0) {
         return data;
       }
-      return data;
     } catch (err) {
-      console.warn('API getArticles fallback to Render or mock:', err);
-      if (isLocal && API_BASE_URL.includes('localhost:5000')) {
-        try {
-          const res = await fetch(`${RENDER_FALLBACK_API}/articles`);
-          const data = await res.json();
-          if (data && data.success) return data;
-        } catch (e) {}
-      }
-      return { success: true, data: API.getDefaultMockArticles(), total: API.getDefaultMockArticles().length, page: 1, totalPages: 1 };
+      console.warn('API getArticles fallback:', err);
     }
+
+    // Fallback dữ liệu phong phú: tự động dùng mock và lọc theo category / search
+    let mockList = API.getDefaultMockArticles();
+    if (params.category && params.category !== 'Tất cả') {
+      mockList = mockList.filter(a => a.category && a.category.toLowerCase().includes(params.category.toLowerCase()));
+    }
+    if (params.search && params.search.trim()) {
+      const s = params.search.trim().toLowerCase();
+      mockList = mockList.filter(a =>
+        (a.title && a.title.toLowerCase().includes(s)) ||
+        (a.excerpt && a.excerpt.toLowerCase().includes(s))
+      );
+    }
+    return {
+      success: true,
+      data: mockList,
+      total: mockList.length,
+      page: 1,
+      totalPages: 1
+    };
   },
 
   async getFeaturedArticles() {
     try {
       const res = await fetch(`${API_BASE_URL}/articles/featured`);
       const data = await res.json();
-      if (data && data.success && data.data && data.data.length > 0) {
+      if (data && data.success && Array.isArray(data.data) && data.data.length > 0) {
         return data;
       }
-      return data;
     } catch (err) {
       console.warn('API getFeaturedArticles fallback:', err);
-      const mocks = API.getDefaultMockArticles();
-      return { success: true, data: mocks.slice(0, 3) };
     }
+    const mocks = API.getDefaultMockArticles();
+    return { success: true, data: mocks.slice(0, 3) };
   },
 
   async getArticleBySlug(slug) {
     try {
       const res = await fetch(`${API_BASE_URL}/articles/${slug}`);
-      return await res.json();
+      const data = await res.json();
+      if (data && data.success && data.data) {
+        return data;
+      }
     } catch (err) {
       console.warn('API getArticleBySlug fallback:', err);
-      const mocks = API.getDefaultMockArticles();
-      const found = mocks.find(a => a.slug === slug) || mocks[0];
-      const related = mocks.filter(a => a.slug !== found.slug).slice(0, 3);
-      return { success: true, data: found, related };
     }
+    const mocks = API.getDefaultMockArticles();
+    const found = mocks.find(a => a.slug === slug) || mocks[0];
+    const related = mocks.filter(a => a.slug !== found.slug).slice(0, 3);
+    return { success: true, data: found, related };
   },
 
   async getAdminArticles(token) {

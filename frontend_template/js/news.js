@@ -50,10 +50,10 @@ async function loadFeaturedEditorial() {
 
   try {
     const res = await API.getFeaturedArticles();
-    const articles = res && res.data ? res.data : [];
+    let articles = res && res.data && res.data.length > 0 ? res.data : API.getDefaultMockArticles().slice(0, 3);
 
-    if (articles.length === 0) {
-      return;
+    if (!articles || articles.length === 0) {
+      articles = API.getDefaultMockArticles().slice(0, 3);
     }
 
     // Bài 1: Lead Article (Lớn bên trái)
@@ -125,8 +125,15 @@ async function loadArticles() {
       limit: PAGE_LIMIT,
     });
 
-    const articles = res && res.data ? res.data : [];
-    const totalPages = res ? res.totalPages || 1 : 1;
+    let articles = res && res.data && res.data.length > 0 ? res.data : [];
+    if (articles.length === 0 && (!currentSearch || currentSearch.trim() === '')) {
+      let defaultList = API.getDefaultMockArticles();
+      if (currentCategory && currentCategory !== 'Tất cả') {
+        defaultList = defaultList.filter(a => a.category && a.category.toLowerCase().includes(currentCategory.toLowerCase()));
+      }
+      articles = defaultList;
+    }
+    const totalPages = res && res.totalPages ? res.totalPages : Math.ceil(articles.length / PAGE_LIMIT) || 1;
 
     if (articles.length === 0) {
       grid.innerHTML = '';
