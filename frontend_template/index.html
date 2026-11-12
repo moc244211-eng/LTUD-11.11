@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=20261112c">
 </head>
 <body>
 
@@ -105,48 +105,147 @@
     </div>
   </header>
 
-  <!-- ================= 3. HERO BANNER SLIDER (URBAN MENSWEAR) ================= -->
+  <!-- ================= 3. HERO BANNER SLIDER (PREMIUM EDITORIAL REDESIGN 2026) ================= -->
   <section class="hero-banner">
     <div class="hero-slides" id="carouselSlides">
-      <!-- Slide 1 (Matching Mockup: Nam tính, Kính râm, Áo khoác đen) -->
-      <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=1600&auto=format&fit=crop&q=80');">
+      <!-- Slide 1: Executive & Bespoke Suiting (Sang trọng, Đẳng cấp quý ông, Công sở) -->
+      <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=1800&auto=format&fit=crop&q=85');">
         <div class="hero-overlay"></div>
         <div class="container" style="width: 100%; position: relative;">
-          <div class="hero-content">
-            <span class="hero-tag">MENSTYLE</span>
-            <h1 class="hero-title">ĐẲNG CẤP THỜI TRANG NAM</h1>
-            <p class="hero-subtitle">Phong cách lịch lãm – Tự tin khẳng định bản thân</p>
-            <button class="hero-cta" onclick="scrollToProducts()">Mua ngay ➔</button>
+          <div class="hero-flex-wrap">
+            <div class="hero-content">
+              <span class="hero-badge-tag">✦ BỘ SƯU TẬP 2026 • SIGNATURE EXECUTIVE</span>
+              <h1 class="hero-title">
+                ĐẲNG CẤP QUÝ ÔNG HIỆN ĐẠI
+                <span class="hero-highlight">LỊCH LÃM & QUYỀN LỰC</span>
+              </h1>
+              <p class="hero-subtitle">
+                Định hình phong thái thành đạt cùng dòng Sơ Mi Oxford & Blazer may đo công nghệ chống nhăn Easy-Iron 24/7. Tôn vinh bờ vai nam tính và sự chỉn chu trong mọi cuộc gặp gỡ.
+              </p>
+              <div class="hero-perks">
+                <span class="hero-perk-item">👔 Form Slim-fit may đo chuẩn mực</span>
+                <span class="hero-perk-item">✨ Vải Oxford & Wool Blend chống nhăn</span>
+                <span class="hero-perk-item">🚚 Freeship toàn quốc từ 500.000 đ</span>
+              </div>
+              <div class="hero-actions">
+                <button class="hero-cta" onclick="scrollToProducts()">Khám Phá Bộ Sưu Tập ➔</button>
+                <button class="hero-cta-secondary" onclick="toggleAIChat()">🤵 Tư Vấn Chọn Size Với AI</button>
+              </div>
+            </div>
+
+            <!-- Floating Glassmorphism Hero Card (Right Column) -->
+            <div class="hero-card-wrapper">
+              <div class="hero-floating-card">
+                <div class="hero-card-header">
+                  <span class="hero-card-tag">MENSTYLE BESPOKE</span>
+                  <span class="hero-card-live"><span class="live-dot"></span> BÁN CHẠY NHẤT</span>
+                </div>
+                <div class="hero-card-big">BLAZER & SƠ MI OXFORD</div>
+                <div class="hero-card-desc">Thiết kế công sở & dạ tiệc chuẩn phong thái phái mạnh</div>
+                <div class="hero-card-perks">
+                  <div class="hero-card-perk">⭐ <strong>4.9 / 5.0</strong> (12.400+ khách hàng tin chọn)</div>
+                  <div class="hero-card-perk">🔄 Đổi trả tận nơi 30 ngày hoàn toàn miễn phí</div>
+                </div>
+                <div class="hero-card-footer">
+                  Nhập mã: <strong>MENSTYLE10</strong> • Giảm thêm 10%
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="hero-script-accent">Men's Fashion</div>
         </div>
       </div>
 
-      <!-- Slide 2 (Sơ mi & Blazer công sở) -->
-      <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1617137984095-74e4e5e3613f?w=1600&auto=format&fit=crop&q=80');">
+      <!-- Slide 2: Flash Sale Giới Hạn & Trợ Giá Độc Quyền (Bắt mắt, Kích thích mua sắm) -->
+      <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=1800&auto=format&fit=crop&q=85');">
         <div class="hero-overlay"></div>
         <div class="container" style="width: 100%; position: relative;">
-          <div class="hero-content">
-            <span class="hero-tag">NEW COLLECTION 2026</span>
-            <h1 class="hero-title">SƠ MI & BLAZER MAY ĐO CAO CẤP</h1>
-            <p class="hero-subtitle">Tôn vinh vóc dáng phái mạnh với chất liệu chống nhăn thượng hạng</p>
-            <button class="hero-cta" onclick="filterByCategoryName('Áo Sơ Mi')">Xem Bộ Sưu Tập ➔</button>
+          <div class="hero-flex-wrap">
+            <div class="hero-content">
+              <span class="hero-badge-tag sale">⚡ FLASH SALE GIỚI HẠN • TIẾT KIỆM TỚI 50%</span>
+              <h1 class="hero-title">
+                NÂNG CẤP TỦ ĐỒ PHÁI MẠNH
+                <span class="hero-highlight sale">SĂN DEAL HỜI CHỈ TỪ 179.000 Đ</span>
+              </h1>
+              <p class="hero-subtitle">
+                Đặc quyền sở hữu 5 siêu phẩm Best-Seller: Áo Polo Pique, Quần Tây Cạp Chun, Blazer Hàn Quốc... với mức trợ giá trực tiếp độc quyền. Số lượng ưu đãi có hạn trong tuần lễ tri ân!
+              </p>
+              <div class="hero-perks">
+                <span class="hero-perk-item">🏷️ 5 Deal Sốc: Sơ Mi 289K • Polo 249K • Blazer 589K</span>
+                <span class="hero-perk-item">🎁 Tặng Ví da nam cao cấp cho đơn từ 899K</span>
+                <span class="hero-perk-item">💳 Thanh toán VietQR Napas 24/7 an toàn tức thì</span>
+              </div>
+              <div class="hero-actions">
+                <a href="#promoSection" class="hero-cta" style="background: var(--accent-red); color: #ffffff;">Săn Ngay Deal Khuyến Mãi ➔</a>
+                <button class="hero-cta-secondary" onclick="resetToAllProducts()">Xem Tất Cả Sản Phẩm</button>
+              </div>
+            </div>
+
+            <!-- Floating Glassmorphism Hero Card (Right Column) -->
+            <div class="hero-card-wrapper">
+              <div class="hero-floating-card">
+                <div class="hero-card-header">
+                  <span class="hero-card-tag" style="background: rgba(220, 38, 38, 0.25); color: #fca5a5;">🔥 FLASH SALE</span>
+                  <span class="hero-card-live" style="color: #f87171;"><span class="live-dot" style="background:#ef4444; box-shadow:0 0 8px #ef4444;"></span> SẮP KẾT THÚC</span>
+                </div>
+                <div class="hero-card-big" style="color: #fca5a5;">ƯU ĐÃI ĐẾN 50%</div>
+                <div class="hero-card-desc">Áp dụng trực tiếp cho 5 sản phẩm thịnh hành nhất</div>
+                <div class="hero-card-perks">
+                  <div class="hero-card-perk">⚡ Đồng giá chỉ từ <strong>179.000 đ</strong> / sản phẩm</div>
+                  <div class="hero-card-perk">📦 Đồng kiểm tra hàng thoải mái trước khi nhận</div>
+                </div>
+                <div class="hero-card-footer" style="background: rgba(239, 68, 68, 0.12); border-color: rgba(239, 68, 68, 0.3); color: #fca5a5;">
+                  Quét mã <strong>VietQR Napas 24/7</strong> nhanh gọn
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="hero-script-accent">Elegance</div>
         </div>
       </div>
 
-      <!-- Slide 3 (Streetwear & Hoodie) -->
-      <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?w=1600&auto=format&fit=crop&q=80');">
+      <!-- Slide 3: Urban Streetwear & Smart Casual (Trẻ trung, Thoải mái, Năng động) -->
+      <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?w=1800&auto=format&fit=crop&q=85');">
         <div class="hero-overlay"></div>
         <div class="container" style="width: 100%; position: relative;">
-          <div class="hero-content">
-            <span class="hero-tag">URBAN CASUAL</span>
-            <h1 class="hero-title">ÁO THUN & HOODIE NĂNG ĐỘNG</h1>
-            <p class="hero-subtitle">Chất liệu 100% Cotton thoáng mát, giữ form dáng chuẩn suốt ngày dài</p>
-            <button class="hero-cta" onclick="filterByCategoryName('Áo Thun')">Khám Phá Ngay ➔</button>
+          <div class="hero-flex-wrap">
+            <div class="hero-content">
+              <span class="hero-badge-tag urban">🌿 URBAN STREETWEAR & SMART CASUAL 2026</span>
+              <h1 class="hero-title">
+                TỰ DO BỨT PHÁ BẢN LĨNH
+                <span class="hero-highlight urban">THOẢI MÁI CHINH PHỤC NGÀY DÀI</span>
+              </h1>
+              <p class="hero-subtitle">
+                Sự kết hợp hoàn hảo giữa Áo Thun Cotton 100% 250gsm thoáng mát tự nhiên và Quần Kaki / Jeans co giãn 4 chiều. Phóng khoáng, tự tin và giữ form chuẩn suốt mọi hành trình năng động.
+              </p>
+              <div class="hero-perks">
+                <span class="hero-perk-item">❄️ Sợi Cotton Compact mềm mát, thoáng khí</span>
+                <span class="hero-perk-item">👖 Co giãn 4 chiều vận động linh hoạt mọi lúc</span>
+                <span class="hero-perk-item">🛡️ Cam kết chuẩn form áo và đường may trọn đời</span>
+              </div>
+              <div class="hero-actions">
+                <button class="hero-cta" onclick="filterByCategoryName('Áo Thun')">Khám Phá Streetwear ➔</button>
+                <a href="news.html" class="hero-cta-secondary">📖 Xem Xu Hướng Phối Đồ</a>
+              </div>
+            </div>
+
+            <!-- Floating Glassmorphism Hero Card (Right Column) -->
+            <div class="hero-card-wrapper">
+              <div class="hero-floating-card">
+                <div class="hero-card-header">
+                  <span class="hero-card-tag" style="background: rgba(16, 185, 129, 0.2); color: #6ee7b7;">CASUAL EDITION</span>
+                  <span class="hero-card-live" style="color: #6ee7b7;"><span class="live-dot" style="background:#10b981;"></span> SẴN HÀNG TẠI KHO</span>
+                </div>
+                <div class="hero-card-big">100% COTTON 250GSM</div>
+                <div class="hero-card-desc">Chất lượng sợi dệt cao cấp, mềm mại & bền màu vượt trội</div>
+                <div class="hero-card-perks">
+                  <div class="hero-card-perk">⭐ <strong>5.0 / 5.0</strong> (Hơn 8.600+ đánh giá trải nghiệm)</div>
+                  <div class="hero-card-perk">🛡️ Bảo hành đường may và form dáng trọn đời</div>
+                </div>
+                <div class="hero-card-footer" style="background: rgba(16, 185, 129, 0.12); border-color: rgba(16, 185, 129, 0.3); color: #6ee7b7;">
+                  Xem Lookbook phối đồ chuẩn phong cách tại <strong>Tin tức</strong>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="hero-script-accent">Lifestyle</div>
         </div>
       </div>
     </div>
