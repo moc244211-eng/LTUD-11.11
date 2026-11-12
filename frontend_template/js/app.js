@@ -155,12 +155,22 @@ function initPriceFilters() {
   });
 }
 
+// 5 Sản phẩm duy nhất được hưởng chính sách giảm giá
+const DISCOUNTED_PRODUCT_NAMES = [
+  "Áo Sơ Mi Nam Oxford Slimfit Chống Nhăn",
+  "Áo Polo Nam Bo Cổ Dệt Kim Pique Cao Cấp",
+  "Áo Thun Nam Oversize Cotton 100% Định Lượng 250gsm",
+  "Quần Tây Nam Ống Đứng Cạp Chun Thông Minh",
+  "Áo Khoác Blazer Nam 2 Cúc Phong Cách Hàn Quốc",
+];
+
 // ================= 3. RENDER PRODUCT CARD (CHUẨN 6 CỘT THEO MOCKUP) =================
 function renderProductCard(p) {
-  const discount =
-    p.originalPrice > p.salePrice
-      ? Math.round(((p.originalPrice - p.salePrice) / p.originalPrice) * 100)
-      : 0;
+  const isDiscounted =
+    DISCOUNTED_PRODUCT_NAMES.includes(p.name) && p.originalPrice > p.salePrice;
+  const discount = isDiscounted
+    ? Math.round(((p.originalPrice - p.salePrice) / p.originalPrice) * 100)
+    : 0;
   const catName = p.category ? (p.category.name || p.category) : "Thời trang nam";
   const imgUrl = p.image || "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600";
   const isWishlisted = wishlist.includes(p._id);
@@ -179,7 +189,7 @@ function renderProductCard(p) {
         <h4 class="product-name" onclick="viewProductDetail('${p._id}')" title="${p.name}">${p.name}</h4>
         <div class="price-container">
           <span class="sale-price">${Number(p.salePrice).toLocaleString("vi-VN")} đ</span>
-          ${p.originalPrice > p.salePrice ? `<span class="original-price">${Number(p.originalPrice).toLocaleString("vi-VN")} đ</span>` : ""}
+          ${isDiscounted ? `<span class="original-price">${Number(p.originalPrice).toLocaleString("vi-VN")} đ</span>` : ""}
         </div>
         <div class="product-bottom-row">
           <div class="product-rating"><span class="star">★</span> ${p.rating || 4.9} <span style="color:#9ca3af; font-size:10.5px;">(${p.stock ? p.stock + ' sp' : '1.2k'})</span></div>
@@ -348,6 +358,9 @@ async function viewProductDetail(id) {
       )
       .join("");
 
+    const isDiscounted =
+      DISCOUNTED_PRODUCT_NAMES.includes(p.name) && p.originalPrice > p.salePrice;
+
     content.innerHTML = `
       <div style="display: flex; gap: 24px; flex-wrap: wrap;">
         <img src="${imgUrl}" style="width: 100%; max-width: 250px; height: 320px; object-fit: cover; border-radius: 12px;">
@@ -355,9 +368,9 @@ async function viewProductDetail(id) {
           <span style="font-size: 11.5px; color: #6b7280; font-weight: 800; text-transform: uppercase;">${catName} • ${p.brand || "MENSTYLE"}</span>
           <h3 style="font-size: 20px; font-weight: 800; margin: 6px 0 10px 0; color: #0b0b0b;">${p.name}</h3>
           
-          <div style="font-size: 22px; font-weight: 900; color: var(--accent-red); margin-bottom: 12px;">
+          <div style="font-size: 22px; font-weight: 900; color: ${isDiscounted ? 'var(--accent-red)' : 'var(--secondary)'}; margin-bottom: 12px;">
             ${Number(p.salePrice).toLocaleString("vi-VN")} đ
-            ${p.originalPrice > p.salePrice ? `<span style="font-size:14px; color:#94a3b8; text-decoration:line-through; margin-left:8px;">${Number(p.originalPrice).toLocaleString("vi-VN")} đ</span>` : ""}
+            ${isDiscounted ? `<span style="font-size:14px; color:#94a3b8; text-decoration:line-through; margin-left:8px;">${Number(p.originalPrice).toLocaleString("vi-VN")} đ</span>` : ""}
           </div>
 
           <div style="margin-bottom: 14px;">
