@@ -1,7 +1,7 @@
 {
-  "name": "lhu-ecommerce-backend-week02",
+  "name": "menstyle-ecommerce-platform",
   "version": "1.0.0",
-  "description": "Dự án Kết Nối MongoDB Atlas & Mongoose Models - Tuần 02 - LHU TMĐT",
+  "description": "MENSTYLE - Nền tảng Thương mại Điện tử Thời trang Nam Cao cấp & Tạp chí Tin tức Chuẩn SEO",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
