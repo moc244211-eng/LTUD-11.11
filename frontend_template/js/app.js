@@ -35,6 +35,16 @@ document.addEventListener("DOMContentLoaded", () => {
   loadProducts();
   updateCartUI();
   setupEventListeners();
+
+  // Kiểm tra mở popup tra cứu đơn hàng nếu được điều hướng từ trang tin tức hoặc URL
+  if (sessionStorage.getItem("openTrackOrder") === "true") {
+    sessionStorage.removeItem("openTrackOrder");
+    openOrderTrackingModal();
+  }
+  const trackParam = new URLSearchParams(window.location.search).get("track");
+  if (trackParam) {
+    openOrderTrackingModal(trackParam);
+  }
 });
 
 // ================= 1. CAROUSEL BANNER SLIDER =================
@@ -802,10 +812,14 @@ async function handleCheckoutSubmit(e) {
     alert(
       `🎉 ĐẶT HÀNG THÀNH CÔNG!\n\n• Mã đơn hàng: #${createdOrder.orderCode}\n• Tổng tiền: ${Number(createdOrder.totalAmount).toLocaleString("vi-VN")} đ\n• Hình thức: Tiền mặt khi nhận hàng (COD)\n\nCảm ơn bạn đã lựa chọn MENSTYLE!`
     );
+    openOrderTrackingModal(createdOrder.orderCode);
   }
 }
 
 // Gọi API Backend sinh mã VietQR động chuẩn tài khoản MB Bank - 0862583284 - MÀN MỘC SÁNG
+window.activeQROrder = null;
+window.activeTransferNote = "";
+
 async function showDynamicQRModal(order, paymentMethod) {
   const modal = document.getElementById("qrModal");
   const qrImg = document.getElementById("qrImage");
@@ -813,6 +827,7 @@ async function showDynamicQRModal(order, paymentMethod) {
   const totalEl = document.getElementById("qrTotalAmount");
   const infoEl = document.getElementById("qrNoteInfo");
 
+  window.activeQROrder = typeof order === "object" ? order : { _id: order, orderCode: String(order).slice(-8) };
   const orderId = order._id || order;
   const orderCode = order.orderCode || (typeof order === "string" ? order.slice(-8) : "DH");
   const totalAmount = order.totalAmount || 0;
@@ -820,6 +835,8 @@ async function showDynamicQRModal(order, paymentMethod) {
   if (modal) modal.classList.remove("hidden");
   if (orderCodeEl) orderCodeEl.innerText = `#${orderCode}`;
   if (totalEl) totalEl.innerText = `${Number(totalAmount).toLocaleString("vi-VN")} đ`;
+
+  window.activeTransferNote = `DH ${orderCode}`;
 
   // Mã QR chuẩn tài khoản cá nhân: MB Bank - STK 0862583284 - MÀN MỘC SÁNG
   const defaultQrUrl =
@@ -830,25 +847,245 @@ async function showDynamicQRModal(order, paymentMethod) {
       : `https://img.vietqr.io/image/MB-0862583284-compact2.png?amount=${totalAmount}&addInfo=DH%20${orderCode}&accountName=M%C3%80N%20M%E1%BB%98C%20S%C3%81NG`;
 
   if (qrImg) qrImg.src = defaultQrUrl;
-  if (infoEl) infoEl.innerText = `Nội dung CK: DH ${orderCode} | MB Bank (0862583284 - MÀN MỘC SÁNG)`;
+  if (infoEl) infoEl.innerText = `📝 Nội dung: DH ${orderCode}`;
 
-  // Gọi đồng thời qua API Backend để lưu log và đảm bảo tính chuẩn hóa
+  // Gọi API Backend lấy mã VietQR đồng bộ
   try {
     const res = await API.createPaymentQR(orderId, paymentMethod);
     if (res.success && res.data && res.data.qrUrl) {
       if (qrImg) qrImg.src = res.data.qrUrl;
-      if (infoEl)
-        infoEl.innerText = `Nội dung CK: ${res.data.transferNote} | Ngân hàng: ${res.data.bankId} (${res.data.accountNo} - ${res.data.accountName})`;
+      window.activeTransferNote = res.data.transferNote;
+      if (infoEl) {
+        infoEl.innerText = `📝 Nội dung: ${res.data.transferNote}`;
+      }
     }
   } catch (err) {
     console.warn("Lỗi gọi API VietQR:", err);
   }
 }
 
+function copyTextToClipboard(text, successMsg = "Đã sao chép vào bộ nhớ tạm!") {
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(() => {
+      alert(`📋 ${successMsg}`);
+    }).catch(() => {
+      fallbackCopyText(text, successMsg);
+    });
+  } else {
+    fallbackCopyText(text, successMsg);
+  }
+}
+
+function fallbackCopyText(text, successMsg) {
+  const textArea = document.createElement("textarea");
+  textArea.value = text;
+  textArea.style.position = "fixed";
+  textArea.style.left = "-999999px";
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+  try {
+    document.execCommand('copy');
+    alert(`📋 ${successMsg}`);
+  } catch (err) {
+    prompt("Vui lòng nhấn Ctrl+C để sao chép:", text);
+  }
+  document.body.removeChild(textArea);
+}
+
+function copyCurrentTransferNote() {
+  const note = window.activeTransferNote || (window.activeQROrder ? `DH ${window.activeQROrder.orderCode}` : "DH");
+  copyTextToClipboard(note, `Đã sao chép nội dung chuyển khoản: "${note}"!`);
+}
+
+function confirmCompletedTransfer() {
+  const modal = document.getElementById("qrModal");
+  if (modal) modal.classList.add("hidden");
+  const orderCode = window.activeQROrder?.orderCode || "";
+  openOrderTrackingModal(orderCode);
+}
+
 function closeQRModal() {
   const modal = document.getElementById("qrModal");
   if (modal) modal.classList.add("hidden");
-  alert("Cảm ơn anh! Đơn hàng của anh đã được ghi nhận. Quản trị viên sẽ xác nhận thanh toán và gửi đồ sớm nhất.");
+}
+
+// ================= TRA CỨU ĐƠN HÀNG THỜI GIAN THỰC (ORDER TRACKING) =================
+function openOrderTrackingModal(prefillQuery = "") {
+  const modal = document.getElementById("orderTrackingModal");
+  if (!modal) return;
+  modal.classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+
+  if (prefillQuery) {
+    const input = document.getElementById("trackingSearchInput");
+    if (input) {
+      input.value = prefillQuery;
+      handleTrackOrderSearch();
+    }
+  }
+}
+
+function closeOrderTrackingModal() {
+  const modal = document.getElementById("orderTrackingModal");
+  if (modal) {
+    modal.classList.add("hidden");
+    document.body.style.overflow = "";
+  }
+}
+
+async function handleTrackOrderSearch() {
+  const input = document.getElementById("trackingSearchInput");
+  const container = document.getElementById("trackingResultArea");
+  if (!input || !container) return;
+
+  const query = input.value.trim();
+  if (!query) {
+    container.innerHTML = `<div style="text-align:center; padding:20px; color:#ef4444; font-weight:bold;">⚠️ Vui lòng nhập mã đơn hàng (MS...) hoặc số điện thoại!</div>`;
+    return;
+  }
+
+  container.innerHTML = `<div style="text-align:center; padding:35px; color:#64748b;">⏳ Đang tra cứu thông tin đơn hàng trên hệ thống...</div>`;
+
+  try {
+    const res = await API.trackOrder(query);
+    if (!res.success || !res.data || res.data.length === 0) {
+      container.innerHTML = `
+        <div style="text-align:center; padding:35px; background:#fff1f2; border:1px solid #fecdd3; border-radius:10px; color:#9f1239;">
+          <span style="font-size:32px; display:block; margin-bottom:8px;">🔎</span>
+          <strong style="font-size:16px;">Không tìm thấy đơn hàng khớp với "${escapeHtml(query)}"!</strong>
+          <p style="font-size:13px; color:#be123c; margin-top:8px;">Vui lòng kiểm tra lại Mã đơn hàng (VD: MS10023456) hoặc Số điện thoại bạn đã dùng khi đặt hàng.</p>
+        </div>
+      `;
+      return;
+    }
+
+    const orders = res.data;
+    container.innerHTML = `
+      <div style="font-size:13px; color:#64748b; margin-bottom:14px;">
+        Đã tìm thấy <strong>${orders.length}</strong> đơn hàng tương ứng:
+      </div>
+      ${orders.map(renderTrackingCard).join("")}
+    `;
+  } catch (err) {
+    container.innerHTML = `<div style="text-align:center; padding:20px; color:#ef4444;">❌ Lỗi kết nối: ${err.message}</div>`;
+  }
+}
+
+function renderTrackingCard(ord) {
+  const dateStr = new Date(ord.createdAt).toLocaleString("vi-VN");
+  const isPaid = ord.paymentStatus === "PAID";
+  const isCancelled = ord.orderStatus === "CANCELLED";
+
+  // Xác định trạng thái tiến trình (5 bước)
+  // PENDING -> CONFIRMED -> PROCESSING -> SHIPPING -> COMPLETED
+  let activeStep = 1;
+  if (ord.orderStatus === "CONFIRMED") activeStep = 2;
+  else if (ord.orderStatus === "PROCESSING") activeStep = 3;
+  else if (ord.orderStatus === "SHIPPING") activeStep = 4;
+  else if (ord.orderStatus === "COMPLETED") activeStep = 5;
+
+  const stepsHtml = isCancelled
+    ? `
+      <div class="tracking-stepper">
+        <div class="tracking-step cancelled">
+          <div class="step-icon-bubble">✕</div>
+          <div class="step-label">Đã Hủy Đơn</div>
+        </div>
+      </div>
+    `
+    : `
+      <div class="tracking-stepper">
+        <div class="tracking-step ${activeStep >= 1 ? (activeStep === 1 ? 'active' : 'completed') : ''}">
+          <div class="step-icon-bubble">${activeStep > 1 ? '✓' : '📝'}</div>
+          <div class="step-label">Đã Tiếp Nhận</div>
+        </div>
+        <div class="tracking-step ${activeStep >= 2 ? (activeStep === 2 ? 'active' : 'completed') : ''}">
+          <div class="step-icon-bubble">${activeStep > 2 ? '✓' : '💳'}</div>
+          <div class="step-label">Xác Nhận Đơn</div>
+        </div>
+        <div class="tracking-step ${activeStep >= 3 ? (activeStep === 3 ? 'active' : 'completed') : ''}">
+          <div class="step-icon-bubble">${activeStep > 3 ? '✓' : '📦'}</div>
+          <div class="step-label">Đang Đóng Gói</div>
+        </div>
+        <div class="tracking-step ${activeStep >= 4 ? (activeStep === 4 ? 'active' : 'completed') : ''}">
+          <div class="step-icon-bubble">${activeStep > 4 ? '✓' : '🚚'}</div>
+          <div class="step-label">Đang Giao Hàng</div>
+        </div>
+        <div class="tracking-step ${activeStep >= 5 ? 'active completed' : ''}">
+          <div class="step-icon-bubble">🎉</div>
+          <div class="step-label">Giao Thành Công</div>
+        </div>
+      </div>
+    `;
+
+  return `
+    <div class="tracking-order-card">
+      <div class="tracking-header-row">
+        <div>
+          <div class="tracking-order-code">#${ord.orderCode || ord._id.slice(-8).toUpperCase()}</div>
+          <div style="font-size:12px; color:#64748b; margin-top:2px;">📅 Đặt lúc: ${dateStr}</div>
+        </div>
+        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+          <span class="badge-status status-${ord.paymentStatus}">
+            ${isPaid ? '✓ ĐÃ THANH TOÁN' : 'CHƯA THANH TOÁN'} (${ord.paymentMethod})
+          </span>
+          <span class="badge-status status-${ord.orderStatus}">
+            ${ord.orderStatus}
+          </span>
+        </div>
+      </div>
+
+      <!-- Hành trình vận chuyển (Timeline Stepper) -->
+      ${stepsHtml}
+
+      <!-- Thông tin nhận hàng -->
+      <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:12px 14px; margin-bottom:14px; font-size:13px; line-height:1.6;">
+        <div>👤 <strong>Người nhận:</strong> ${escapeHtml(ord.customerName)} (${ord.customerPhoneMasked || ord.customerPhone})</div>
+        <div>📍 <strong>Địa chỉ giao:</strong> ${escapeHtml(ord.shippingAddress)}</div>
+        ${ord.note ? `<div style="color:#64748b;">📝 <strong>Ghi chú:</strong> ${escapeHtml(ord.note)}</div>` : ''}
+      </div>
+
+      <!-- Danh sách sản phẩm -->
+      <div style="margin-bottom:14px;">
+        <h5 style="font-size:13px; font-weight:800; text-transform:uppercase; color:#0f172a; margin-bottom:8px;">Sản phẩm (${(ord.items || []).length}):</h5>
+        ${(ord.items || []).map(item => `
+          <div class="tracking-item-row">
+            <img src="${item.image || 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=200'}" alt="${escapeHtml(item.name)}" class="tracking-item-thumb">
+            <div class="tracking-item-info">
+              <div class="tracking-item-name">${escapeHtml(item.name)}</div>
+              <div class="tracking-item-meta">Size: <strong>${item.size || 'L'}</strong> • SL: <strong>x${item.quantity}</strong></div>
+            </div>
+            <div style="text-align:right; font-size:13.5px; font-weight:700; color:#0f172a;">
+              ${Number(item.price * item.quantity).toLocaleString('vi-VN')} đ
+            </div>
+          </div>
+        `).join('')}
+      </div>
+
+      <!-- Tổng tiền & Nút thao tác -->
+      <div class="tracking-footer-summary">
+        <div>
+          <div style="font-size:12px; color:#64748b;">
+            Tạm tính: ${Number((ord.totalAmount || 0) - (ord.shippingFee || 0) + (ord.discountAmount || 0)).toLocaleString('vi-VN')} đ | Phí ship: ${Number(ord.shippingFee || 0).toLocaleString('vi-VN')} đ
+          </div>
+          <div style="font-size:16px; font-weight:900; color:var(--danger); margin-top:2px;">
+            Tổng thanh toán: ${Number(ord.totalAmount).toLocaleString('vi-VN')} đ
+          </div>
+        </div>
+        <div style="display:flex; gap:8px;">
+          ${!isPaid && ord.paymentMethod === 'VIETQR' && !isCancelled ? `
+            <button type="button" class="btn-checkout-start" style="width:auto; padding:8px 14px; font-size:12.5px; background:#2563eb;" onclick="closeOrderTrackingModal(); showDynamicQRModal('${ord._id}', 'VIETQR');">
+              📲 Xem Lại Mã VietQR
+            </button>
+          ` : ''}
+          <a href="tel:0862583284" class="btn-checkout-start" style="width:auto; padding:8px 14px; font-size:12.5px; background:#0f172a; text-decoration:none;">
+            📞 Hỗ Trợ Đơn
+          </a>
+        </div>
+      </div>
+    </div>
+  `;
 }
 
 // ================= 10. XÁC THỰC NGƯỜI DÙNG & PROFILE =================

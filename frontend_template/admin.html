@@ -658,14 +658,15 @@
             <button class="btn-cart-toggle" onclick="loadAdminOrders()">🔄 Làm Mới Đơn Hàng</button>
           </div>
 
-          <!-- Lọc trạng thái đơn -->
-          <div class="admin-filter-bar">
+          <!-- Lọc trạng thái đơn & Tìm kiếm nhanh -->
+          <div class="admin-filter-bar" style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
             <button class="btn-action btn-act-view order-filter-btn active" onclick="filterOrdersByStatus('ALL', this)">Tất Cả</button>
             <button class="btn-action btn-act-view order-filter-btn" onclick="filterOrdersByStatus('PENDING', this)">⏳ Chờ Xử Lý</button>
             <button class="btn-action btn-act-view order-filter-btn" onclick="filterOrdersByStatus('CONFIRMED', this)">✓ Đã Xác Nhận</button>
             <button class="btn-action btn-act-view order-filter-btn" onclick="filterOrdersByStatus('SHIPPING', this)">🚚 Đang Giao</button>
             <button class="btn-action btn-act-view order-filter-btn" onclick="filterOrdersByStatus('COMPLETED', this)">🎉 Hoàn Thành</button>
             <button class="btn-action btn-act-view order-filter-btn" onclick="filterOrdersByStatus('CANCELLED', this)">❌ Đã Hủy</button>
+            <input type="text" id="adminOrderSearchInput" class="form-input" style="max-width: 260px; padding: 7px 12px; margin-left: auto;" placeholder="🔍 Tìm mã đơn, tên, SĐT..." oninput="handleAdminOrderSearch()">
           </div>
 
           <div class="table-container">
@@ -2151,6 +2152,12 @@
             <div style="font-size:17px; font-weight:800; color:var(--danger);">Tổng: ${Number(order.totalAmount).toLocaleString('vi-VN')} đ</div>
           </div>
         </div>
+
+        <div style="margin-top:16px; display:flex; justify-content:flex-end; gap:10px;">
+          <button type="button" class="btn-action" style="background:#0f172a; color:#ffffff; padding:10px 18px; font-size:13px; font-weight:700; border-radius:6px; cursor:pointer;" onclick="printOrderInvoice('${order._id}')">
+            🖨️ In Vận Đơn / Phiếu Giao Hàng
+          </button>
+        </div>
       `;
 
       modal.classList.remove('hidden');
@@ -2158,6 +2165,187 @@
 
     function closeOrderDetailModal() {
       document.getElementById('orderDetailModal').classList.add('hidden');
+    }
+
+    function handleAdminOrderSearch() {
+      const q = (document.getElementById('adminOrderSearchInput')?.value || '').trim().toLowerCase();
+      if (!q) {
+        renderAdminOrdersTable(cachedOrders);
+        return;
+      }
+      const filtered = cachedOrders.filter(o => 
+        (o.orderCode && o.orderCode.toLowerCase().includes(q)) ||
+        (o.customerName && o.customerName.toLowerCase().includes(q)) ||
+        (o.customerPhone && o.customerPhone.includes(q)) ||
+        (o.shippingAddress && o.shippingAddress.toLowerCase().includes(q))
+      );
+      renderAdminOrdersTable(filtered);
+    }
+
+    function printOrderInvoice(orderId) {
+      const order = cachedOrders.find(o => o._id === orderId);
+      if (!order) {
+        alert("Không tìm thấy dữ liệu đơn hàng!");
+        return;
+      }
+
+      const isPaid = order.paymentStatus === "PAID";
+      const dateFormatted = new Date(order.createdAt).toLocaleString("vi-VN");
+      const codAmount = isPaid ? 0 : order.totalAmount;
+
+      const printWindow = window.open("", "_blank", "width=850,height=750");
+      if (!printWindow) {
+        alert("Trình duyệt đang chặn cửa sổ pop-up in ấn. Vui lòng cho phép pop-up và thử lại!");
+        return;
+      }
+
+      const printHtml = `
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Vận Đơn #${order.orderCode || order._id} - MENSTYLE</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+    body { padding: 30px; color: #111827; line-height: 1.5; font-size: 13.5px; }
+    .invoice-box { max-width: 780px; margin: 0 auto; border: 1.5px solid #000; padding: 24px; border-radius: 4px; }
+    .header-table { width: 100%; border-bottom: 2px solid #000; padding-bottom: 14px; margin-bottom: 16px; }
+    .brand-title { font-size: 24px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; }
+    .order-code-badge { font-size: 18px; font-weight: 800; font-family: monospace; background: #000; color: #fff; padding: 6px 14px; border-radius: 4px; display: inline-block; }
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+    .info-panel { border: 1px solid #d1d5db; border-radius: 4px; padding: 12px 14px; background: #f9fafb; }
+    .info-panel h4 { font-size: 12px; font-weight: 800; text-transform: uppercase; color: #4b5563; margin-bottom: 8px; border-bottom: 1px solid #e5e7eb; padding-bottom: 4px; }
+    table.items-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+    table.items-table th, table.items-table td { border: 1px solid #d1d5db; padding: 10px 12px; }
+    table.items-table th { background: #f3f4f6; font-weight: 800; font-size: 12px; text-transform: uppercase; }
+    .summary-box { width: 100%; margin-bottom: 24px; }
+    .summary-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 13.5px; }
+    .cod-box { background: ${isPaid ? '#ecfdf5' : '#fef2f2'}; border: 2px solid ${isPaid ? '#059669' : '#dc2626'}; border-radius: 6px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .cod-title { font-size: 14px; font-weight: 800; text-transform: uppercase; color: ${isPaid ? '#065f46' : '#991b1b'}; }
+    .cod-val { font-size: 22px; font-weight: 900; color: ${isPaid ? '#059669' : '#dc2626'}; }
+    .signatures { display: grid; grid-template-columns: 1fr 1fr 1fr; text-align: center; margin-top: 30px; padding-top: 10px; }
+    .sig-col { height: 100px; display: flex; flex-direction: column; justify-content: space-between; }
+    .sig-label { font-size: 12px; font-weight: 700; text-transform: uppercase; }
+    @media print {
+      body { padding: 0; }
+      .invoice-box { border: 1px solid #000; }
+      @page { margin: 12mm; }
+    }
+  </style>
+</head>
+<body>
+  <div class="invoice-box">
+    <table class="header-table">
+      <tr>
+        <td>
+          <div class="brand-title">MENSTYLE STORE</div>
+          <div style="font-size: 12px; color: #4b5563;">THỜI TRANG NAM CAO CẤP – PHIẾU XUẤT KHO KIÊM VẬN ĐƠN</div>
+          <div style="font-size: 11.5px; color: #6b7280; margin-top: 4px;">📍 123 Lê Lợi, P. Bến Thành, Quận 1, TP.HCM • Hotline: 0862.583.284</div>
+        </td>
+        <td style="text-align: right; vertical-align: top;">
+          <div class="order-code-badge">#${order.orderCode || order._id}</div>
+          <div style="font-size: 11.5px; color: #6b7280; margin-top: 6px;">Ngày tạo: ${dateFormatted}</div>
+        </td>
+      </tr>
+    </table>
+
+    <div class="info-grid">
+      <div class="info-panel">
+        <h4>ĐƠN VỊ VẬN CHUYỂN & GỬI HÀNG</h4>
+        <div><strong>Người gửi:</strong> MENSTYLE FASHION STORE</div>
+        <div><strong>Hotline:</strong> 0862.583.284</div>
+        <div><strong>Kho xuất:</strong> Showroom Trung Tâm, Quận 1, TP.HCM</div>
+        <div><strong>Ghi chú giao hàng:</strong> Cho khách đồng kiểm tra hàng khi nhận</div>
+      </div>
+      <div class="info-panel">
+        <h4>THÔNG TIN NGƯỜI NHẬN HÀNG</h4>
+        <div><strong>Họ tên:</strong> ${order.customerName}</div>
+        <div><strong>Số điện thoại:</strong> ${order.customerPhone}</div>
+        <div><strong>Địa chỉ:</strong> ${order.shippingAddress}</div>
+        <div><strong>Ghi chú đơn:</strong> ${order.note || 'Không có'}</div>
+      </div>
+    </div>
+
+    <table class="items-table">
+      <thead>
+        <tr>
+          <th style="width: 40px; text-align: center;">STT</th>
+          <th>Tên Sản Phẩm</th>
+          <th style="width: 70px; text-align: center;">Size</th>
+          <th style="width: 60px; text-align: center;">SL</th>
+          <th style="width: 110px; text-align: right;">Đơn Giá</th>
+          <th style="width: 130px; text-align: right;">Thành Tiền</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${(order.items || []).map((it, idx) => `
+          <tr>
+            <td style="text-align: center;">${idx + 1}</td>
+            <td><strong>${it.name}</strong></td>
+            <td style="text-align: center; font-weight: bold;">${it.size || 'L'}</td>
+            <td style="text-align: center; font-weight: bold;">${it.quantity}</td>
+            <td style="text-align: right;">${Number(it.price).toLocaleString('vi-VN')} đ</td>
+            <td style="text-align: right; font-weight: bold;">${Number(it.price * it.quantity).toLocaleString('vi-VN')} đ</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+
+    <div class="summary-box">
+      <div class="summary-row">
+        <span>Tiền hàng:</span>
+        <strong>${Number((order.totalAmount || 0) - (order.shippingFee || 0) + (order.discountAmount || 0)).toLocaleString('vi-VN')} đ</strong>
+      </div>
+      <div class="summary-row">
+        <span>Phí vận chuyển:</span>
+        <strong>${Number(order.shippingFee || 0).toLocaleString('vi-VN')} đ</strong>
+      </div>
+      ${order.discountAmount ? `
+      <div class="summary-row" style="color: #dc2626;">
+        <span>Giảm giá (Mã ${order.couponCode || 'Khuyến mãi'}):</span>
+        <strong>-${Number(order.discountAmount).toLocaleString('vi-VN')} đ</strong>
+      </div>
+      ` : ''}
+    </div>
+
+    <div class="cod-box">
+      <div>
+        <div class="cod-title">${isPaid ? 'ĐƠN HÀNG ĐÃ THANH TOÁN (VIETQR)' : 'TIỀN THU NGƯỜI NHẬN (TIỀN MẶT COD)'}</div>
+        <div style="font-size: 11.5px; color: ${isPaid ? '#047857' : '#b91c1c'}; margin-top: 3px;">
+          ${isPaid ? '✓ Khách đã chuyển khoản thành công qua VietQR Napas 247. Shipper KHÔNG THU TIỀN.' : '⚠️ Shipper thu đúng số tiền bên phải khi giao kiện hàng.'}
+        </div>
+      </div>
+      <div class="cod-val">${Number(codAmount).toLocaleString('vi-VN')} đ</div>
+    </div>
+
+    <div class="signatures">
+      <div class="sig-col">
+        <div class="sig-label">Người Lập Phiếu</div>
+        <div style="font-size: 11px; color: #6b7280;">(Ký & ghi rõ họ tên)</div>
+      </div>
+      <div class="sig-col">
+        <div class="sig-label">Nhân Viên Giao Hàng</div>
+        <div style="font-size: 11px; color: #6b7280;">(Xác nhận nhận đủ kiện hàng)</div>
+      </div>
+      <div class="sig-col">
+        <div class="sig-label">Người Nhận Hàng</div>
+        <div style="font-size: 11px; color: #6b7280;">(Ký khi đã kiểm tra kiện hàng)</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.onload = function() {
+      setTimeout(function() { window.print(); }, 400);
+    };
+  <\/script>
+</body>
+</html>
+      `;
+
+      printWindow.document.open();
+      printWindow.document.write(printHtml);
+      printWindow.document.close();
     }
 
     // ================= 9. QUẢN LÝ BÀI VIẾT TẠP CHÍ (MENSTYLE MAGAZINE) =================

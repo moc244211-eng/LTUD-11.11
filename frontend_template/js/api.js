@@ -243,6 +243,20 @@ const API = {
     }
   },
 
+  async trackOrder(query) {
+    try {
+      const q = encodeURIComponent((query || '').trim());
+      const res = await fetch(`${API_BASE_URL}/orders/track/${q}`);
+      return await res.json();
+    } catch (err) {
+      if (isLocal && API_BASE_URL.includes('localhost:5000')) {
+        API_BASE_URL = RENDER_FALLBACK_API;
+        return await this.trackOrder(query);
+      }
+      return { success: false, message: 'Không thể kết nối đến máy chủ tra cứu: ' + err.message };
+    }
+  },
+
   async payOrder(id, token) {
     try {
       const res = await fetch(`${API_BASE_URL}/orders/${id}/pay`, {

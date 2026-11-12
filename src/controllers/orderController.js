@@ -467,3 +467,53 @@ exports.getDashboardAnalytics = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+// [GET] /api/orders/track/:query - Tra cứu đơn hàng công khai theo mã đơn hoặc số điện thoại
+exports.trackOrder = async (req, res) => {
+  try {
+    const rawQuery = (req.params.query || "").trim();
+    if (!rawQuery) {
+      return res.status(400).json({
+        success: false,
+        message: "Vui lòng nhập mã đơn hàng (VD: MS...) hoặc số điện thoại!",
+      });
+    }
+
+    // Tìm theo mã đơn hàng hoặc số điện thoại
+    const queryRegex = new RegExp(`^${rawQuery}$`, "i");
+    const orders = await Order.find({
+      $or: [
+        { orderCode: queryRegex },
+        { customerPhone: rawQuery },
+        ...(rawQuery.match(/^[0-9a-fA-F]{24}$/) ? [{ _id: rawQuery }] : []),
+      ],
+    }).sort({ createdAt: -1 });
+
+    if (!orders || orders.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: `Không tìm thấy đơn hàng nào khớp với "${rawQuery}". Vui lòng kiểm tra lại mã đơn hoặc số điện thoại!`,
+      });
+    }
+
+    // Bảo mật: Ẩn một phần số điện thoại khi hiển thị công khai (VD: 098****321)
+    const sanitizedOrders = orders.map((ord) => {
+      const obj = ord.toObject();
+      if (obj.customerPhone && obj.customerPhone.length >= 8) {
+        const p = obj.customerPhone;
+        obj.customerPhoneMasked = p.slice(0, 3) + "****" + p.slice(-3);
+      } else {
+        obj.customerPhoneMasked = obj.customerPhone;
+      }
+      return obj;
+    });
+
+    res.status(200).json({
+      success: true,
+      message: `Tìm thấy ${orders.length} đơn hàng!`,
+      data: sanitizedOrders,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

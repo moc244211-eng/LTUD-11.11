@@ -20,7 +20,7 @@
         <span class="top-bar-item">🎧 Tư vấn 24/7</span>
       </div>
       <div class="top-bar-slogan">
-        Phong cách tạo nên bạn —
+        Phong cách tạo nên bạn — <a href="javascript:void(0)" onclick="openOrderTrackingModal()" style="color:#ffffff; text-decoration:none; font-weight:700; margin-left:8px; border-bottom:1px dashed #94a3b8;">🔍 Tra cứu đơn hàng</a>
       </div>
     </div>
   </div>
@@ -55,6 +55,7 @@
           </li>
           <li><a href="#promoSection" onclick="handleNavClick(this, 'promo')" data-nav="promo" class="nav-link">Khuyến mãi</a></li>
           <li><a href="news.html" class="nav-link" data-nav="news">Tin tức</a></li>
+          <li><a href="javascript:void(0)" onclick="openOrderTrackingModal()" class="nav-link">Tra cứu đơn</a></li>
           <li><a href="javascript:void(0)" onclick="handleNavClick(this, 'contact')" data-nav="contact" class="nav-link">Liên hệ</a></li>
         </ul>
       </nav>
@@ -633,7 +634,7 @@
 
   <!-- ================= 14. POPUP MÃ VIETQR ĐỘNG CHUẨN NAPAS 247 ================= -->
   <div class="modal-overlay hidden" id="qrModal">
-    <div class="modal-content" style="max-width: 440px; text-align: center;">
+    <div class="modal-content" style="max-width: 460px; text-align: center;">
       <div class="modal-header">
         <h3 style="font-size: 17px; font-weight: 800;">📲 Thanh Toán Chuyển Khoản VietQR</h3>
         <button class="btn-close" onclick="closeQRModal()">✕</button>
@@ -641,19 +642,63 @@
       <div class="modal-body">
         <div class="qr-preview-box">
           <img id="qrImage" src="https://img.vietqr.io/image/MB-0862583284-compact2.png?amount=289000&addInfo=DH%20THANHTOAN&accountName=M%C3%80N%20M%E1%BB%98C%20S%C3%81NG" alt="Mã VietQR Thanh Toán" class="qr-img">
-          <p style="font-size: 13px; color: #64748b; margin-bottom: 8px;">Mở ứng dụng Ngân hàng (MB, Vietcombank, Techcombank...) để quét mã</p>
+          <p style="font-size: 13px; color: #64748b; margin: 8px 0 12px;">Mở ứng dụng Ngân hàng (MB, VCB, Techcombank, MoMo...) quét mã tự động điền STK & số tiền</p>
           <div style="font-size: 14px; margin-bottom: 4px;">Mã đơn hàng: <strong id="qrOrderCode">#...</strong></div>
-          <div style="font-size: 20px; font-weight: 800; color: var(--danger); margin-bottom: 10px;">Số tiền: <span id="qrTotalAmount">0 đ</span></div>
-          <div style="font-size: 13px; background: #eff6ff; color: #1e3a8a; padding: 10px; border-radius: 8px; line-height: 1.6; text-align: left; margin-bottom: 6px;">
-            🏦 <strong>Ngân hàng:</strong> MB Bank (Quân Đội)<br>
-            🔢 <strong>Số tài khoản:</strong> <span style="font-family: monospace; font-size: 14px; font-weight: bold; color: #2563eb;">0862583284</span><br>
-            👤 <strong>Chủ tài khoản:</strong> <strong>MÀN MỘC SÁNG</strong><br>
-            📝 <span id="qrNoteInfo">Nội dung CK: DH ...</span>
+          <div style="font-size: 20px; font-weight: 800; color: var(--danger); margin-bottom: 12px;">Số tiền: <span id="qrTotalAmount">0 đ</span></div>
+          
+          <div style="font-size: 13px; background: #f8fafc; border: 1px solid #e2e8f0; color: #1e293b; padding: 12px 14px; border-radius: 8px; line-height: 1.8; text-align: left; margin-bottom: 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #cbd5e1; padding-bottom: 6px; margin-bottom: 6px;">
+              <span>🏦 Ngân hàng: <strong>MB Bank (Quân Đội)</strong></span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #cbd5e1; padding-bottom: 6px; margin-bottom: 6px;">
+              <span>🔢 STK: <strong style="font-family: monospace; font-size: 14px; color: #2563eb;">0862583284</strong></span>
+              <button type="button" class="btn-copy-chip" onclick="copyTextToClipboard('0862583284', 'Đã sao chép số tài khoản!')">📋 Copy STK</button>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #cbd5e1; padding-bottom: 6px; margin-bottom: 6px;">
+              <span>👤 Chủ tài khoản: <strong>MÀN MỘC SÁNG</strong></span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span id="qrNoteInfo">📝 Nội dung: DH ...</span>
+              <button type="button" class="btn-copy-chip" onclick="copyCurrentTransferNote()">📋 Copy ND</button>
+            </div>
           </div>
         </div>
-        <button class="btn-checkout-start" onclick="closeQRModal()">
-          ✓ Tôi Đã Hoàn Tất Chuyển Khoản
-        </button>
+        
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
+          <button class="btn-checkout-start" style="flex: 1; background: #0f172a;" onclick="confirmCompletedTransfer()">
+            ✓ Tôi Đã Chuyển Khoản & Theo Dõi Đơn
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 14B. MODAL TRA CỨU & THEO DÕI HÀNH TRÌNH ĐƠN HÀNG ================= -->
+  <div class="modal-overlay hidden" id="orderTrackingModal">
+    <div class="modal-content" style="max-width: 680px; max-height: 90vh; overflow-y: auto;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 20px;">📦</span>
+          <h3 style="font-size: 17.5px; font-weight: 800;">Tra Cứu & Theo Dõi Hành Trình Đơn Hàng</h3>
+        </div>
+        <button class="btn-close" onclick="closeOrderTrackingModal()">✕</button>
+      </div>
+      <div class="modal-body" style="padding: 20px;">
+        <!-- Ô tìm kiếm mã đơn hoặc SĐT -->
+        <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+          <input type="text" id="trackingSearchInput" class="form-input" placeholder="Nhập mã đơn hàng (VD: MS...) hoặc số điện thoại đặt hàng..." style="font-size: 14px;" onkeydown="if(event.key === 'Enter') handleTrackOrderSearch()">
+          <button type="button" class="btn-checkout-start" style="width: auto; padding: 0 20px; white-space: nowrap;" onclick="handleTrackOrderSearch()">
+            🔍 Tra Cứu
+          </button>
+        </div>
+
+        <!-- Khung kết quả tra cứu -->
+        <div id="trackingResultArea">
+          <div style="text-align: center; padding: 30px; color: #64748b; background: #f8fafc; border-radius: 8px; border: 1px dashed #cbd5e1;">
+            <span style="font-size: 32px; display: block; margin-bottom: 8px;">🔎</span>
+            Vui lòng nhập Mã đơn hàng hoặc Số điện thoại để xem hành trình vận chuyển và thông tin thanh toán theo thời gian thực.
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -670,11 +715,11 @@
         <form id="loginForm" onsubmit="handleLoginSubmit(event)">
           <div class="form-group">
             <label class="form-label">Email (*)</label>
-            <input type="email" name="email" class="form-input" placeholder="email@gmail.com" required value="hung.nguyen@gmail.com">
+            <input type="email" name="email" class="form-input" placeholder="Nhập email của bạn..." required>
           </div>
           <div class="form-group">
             <label class="form-label">Mật khẩu (*)</label>
-            <input type="password" name="password" class="form-input" placeholder="Nhập mật khẩu..." required value="KhachPassword123@">
+            <input type="password" name="password" class="form-input" placeholder="Nhập mật khẩu..." required>
           </div>
           <button type="submit" class="btn-checkout-start" style="margin-top: 10px;">
             Đăng Nhập Ngay
