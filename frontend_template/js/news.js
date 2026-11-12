@@ -501,18 +501,26 @@ function updateHeaderCartAndWishlist() {
 
 function renderUserHeader() {
   const authArea = document.getElementById('authHeaderArea');
-  if (!authArea) return;
+  const adminBtn = document.getElementById('newsHeaderAdminBtn');
 
   try {
-    const userStr = localStorage.getItem('menstyle_user');
-    if (userStr) {
+    const userStr = localStorage.getItem('MENSTYLE_USER') || localStorage.getItem('menstyle_user');
+    const token = localStorage.getItem('MENSTYLE_TOKEN') || localStorage.getItem('menstyle_token');
+    if (userStr && token) {
       const user = JSON.parse(userStr);
-      authArea.innerHTML = `
-        <div class="user-profile-chip" onclick="handleUserAccountClick()" title="${user.name}">
-          <div class="user-avatar-circle">${(user.name || 'U').charAt(0).toUpperCase()}</div>
-          <span class="user-chip-name">${user.name.split(' ').slice(-1)[0]}</span>
-        </div>
-      `;
+      if (authArea) {
+        authArea.innerHTML = `
+          <div class="user-profile-chip" onclick="handleUserAccountClick()" title="${user.name}">
+            <div class="user-avatar-circle">${(user.name || 'U').charAt(0).toUpperCase()}</div>
+            <span class="user-chip-name">${user.name.split(' ').slice(-1)[0]}</span>
+          </div>
+        `;
+      }
+      if (adminBtn) {
+        adminBtn.style.display = user.role === 'admin' ? 'inline-flex' : 'none';
+      }
+    } else {
+      if (adminBtn) adminBtn.style.display = 'none';
     }
   } catch (e) {}
 }

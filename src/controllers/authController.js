@@ -108,3 +108,45 @@ exports.getMe = async (req, res) => {
     data: req.user,
   });
 };
+
+// [PUT] /api/auth/update-password - Đổi mật khẩu tài khoản (Chuẩn bảo mật thực tế)
+exports.updatePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Vui lòng nhập mật khẩu hiện tại và mật khẩu mới!",
+      });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: "Mật khẩu mới phải có ít nhất 6 ký tự!",
+      });
+    }
+
+    const user = await User.findById(req.user._id);
+    if (!user || !(await user.matchPassword(currentPassword))) {
+      return res.status(401).json({
+        success: false,
+        message: "Mật khẩu hiện tại không chính xác!",
+      });
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    const token = generateToken(user._id);
+
+    res.status(200).json({
+      success: true,
+      message: "Đổi mật khẩu thành công!",
+      token,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

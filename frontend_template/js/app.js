@@ -886,6 +886,16 @@ function initAuthUI() {
       </button>
     `;
   }
+
+  // Quản lý hiển thị nút Quản trị viên: Chỉ tài khoản có role 'admin' mới được nhìn thấy
+  const adminBtn = document.getElementById("headerAdminBtn");
+  if (adminBtn) {
+    if (currentUser && authToken && currentUser.role === "admin") {
+      adminBtn.style.display = "inline-flex";
+    } else {
+      adminBtn.style.display = "none";
+    }
+  }
 }
 
 function handleUserAccountClick() {

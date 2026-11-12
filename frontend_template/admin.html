@@ -365,16 +365,14 @@
       <form onsubmit="handleAdminLogin(event)">
         <div class="form-group">
           <label class="form-label">Email Quản Trị (*)</label>
-          <input type="email" id="adminEmail" class="form-input" value="admin@menstyle.vn" required>
+          <input type="email" id="adminEmail" class="form-input" placeholder="admin@menstyle.vn" required autocomplete="username">
         </div>
         <div class="form-group">
           <label class="form-label">Mật khẩu (*)</label>
-          <input type="password" id="adminPassword" class="form-input" value="AdminPassword123@" required>
-        </div>
-        <div style="background: #f8fafc; border: 1px dashed #cbd5e1; padding: 10px; border-radius: 8px; font-size: 12.5px; color: #475569; margin-bottom: 16px;">
-          🔑 <strong>Tài khoản Seeder có sẵn:</strong><br>
-          Email: <code>admin@menstyle.vn</code><br>
-          Mật khẩu: <code>AdminPassword123@</code>
+          <div style="position: relative; display: flex; align-items: center;">
+            <input type="password" id="adminPassword" class="form-input" placeholder="Nhập mật khẩu quản trị..." required autocomplete="current-password" style="padding-right: 42px;">
+            <button type="button" onclick="toggleAdminPasswordVisibility()" style="position: absolute; right: 10px; background: none; border: none; cursor: pointer; font-size: 16px; color: #64748b; padding: 4px;" title="Ẩn/Hiện mật khẩu">👁️</button>
+          </div>
         </div>
         <button type="submit" id="btnAdminLogin" class="btn-checkout-start">
           Xác Thực & Truy Cập Dashboard
@@ -954,8 +952,14 @@
             </div>
             <div class="form-group" style="flex: 1;">
               <label class="form-label">Link Hình Ảnh (URL)</label>
-              <input type="url" id="pImage" class="form-input" placeholder="https://images.unsplash.com/...">
+              <input type="url" id="pImage" class="form-input" placeholder="https://images.unsplash.com/..." oninput="updateImagePreview(this.value)">
             </div>
+          </div>
+
+          <!-- Xem trước ảnh trực tiếp (Live Image Preview) -->
+          <div id="pImagePreviewContainer" style="margin-bottom: 14px; display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px;">
+            <img id="pImagePreview" src="" alt="Xem trước ảnh" style="width: 55px; height: 55px; object-fit: cover; border-radius: 6px; border: 1px solid #e2e8f0; display: none;" onerror="this.style.display='none'; document.getElementById('pImagePreviewText').innerHTML='⚠️ <span style=\'color:#ef4444; font-weight:700;\'>Link ảnh bị lỗi hoặc không tải được!</span>';">
+            <span id="pImagePreviewText" style="font-size: 12.5px; color: #64748b;">🖼️ Dán link ảnh vào ô trên để xem trước hình sản phẩm</span>
           </div>
 
           <div class="form-group">
@@ -1170,16 +1174,60 @@
       checkAdminAuthGuard();
     });
 
-    // ================= 1. BẢO MẬT & PHÂN QUYỀN (RUBRIC VI.7) =================
-    function checkAdminAuthGuard() {
+    function toggleAdminPasswordVisibility() {
+      const passInput = document.getElementById('adminPassword');
+      if (!passInput) return;
+      passInput.type = passInput.type === 'password' ? 'text' : 'password';
+    }
+
+    // ================= 1. BẢO MẬT & PHÂN QUYỀN (CHUẨN THỰC TẾ) =================
+    async function checkAdminAuthGuard() {
       const guardModal = document.getElementById('adminAuthGuard');
       if (!adminToken || !adminUser || adminUser.role !== 'admin') {
         if (guardModal) guardModal.classList.remove('hidden');
-      } else {
-        if (guardModal) guardModal.classList.add('hidden');
-        document.getElementById('adminProfileName').innerText = adminUser.name || 'Admin';
-        loadAdminInitialData();
+        return;
       }
+
+      // Xác thực JWT Token trực tiếp với Server để chống giả mạo F12
+      try {
+        const verifyRes = await API.getMe(adminToken);
+        if (!verifyRes.success || !verifyRes.data || verifyRes.data.role !== 'admin') {
+          console.warn('⛔ Token Admin không hợp lệ hoặc đã hết hạn.');
+          localStorage.removeItem('MENSTYLE_TOKEN');
+          localStorage.removeItem('MENSTYLE_USER');
+          adminToken = '';
+          adminUser = null;
+          if (guardModal) guardModal.classList.remove('hidden');
+          return;
+        }
+
+        // Cập nhật thông tin Admin mới nhất từ MongoDB
+        adminUser = verifyRes.data;
+        localStorage.setItem('MENSTYLE_USER', JSON.stringify(adminUser));
+      } catch (err) {
+        console.error('Lỗi kiểm tra phiên đăng nhập Admin:', err);
+      }
+
+      if (guardModal) guardModal.classList.add('hidden');
+      document.getElementById('adminProfileName').innerText = adminUser.name || 'Admin';
+      loadAdminInitialData();
+      startAdminActivityTimer();
+    }
+
+    // Tự động đăng xuất sau 45 phút không hoạt động để bảo vệ dữ liệu kinh doanh
+    let inactivityTimer = null;
+    function resetAdminActivityTimer() {
+      if (inactivityTimer) clearTimeout(inactivityTimer);
+      inactivityTimer = setTimeout(() => {
+        alert('⏰ Phiên làm việc đã hết hạn sau 45 phút không hoạt động để đảm bảo an toàn. Vui lòng đăng nhập lại!');
+        handleAdminLogout(false);
+      }, 45 * 60 * 1000);
+    }
+    function startAdminActivityTimer() {
+      ['mousemove', 'keydown', 'click', 'scroll'].forEach(evt => {
+        window.addEventListener(evt, resetAdminActivityTimer, { passive: true });
+      });
+      resetAdminActivityTimer();
     }
 
     async function handleAdminLogin(e) {
@@ -1209,17 +1257,19 @@
         document.getElementById('adminAuthGuard').classList.add('hidden');
         document.getElementById('adminProfileName').innerText = adminUser.name;
         loadAdminInitialData();
+        startAdminActivityTimer();
       } else {
         alert('❌ Đăng nhập thất bại: ' + (res.message || 'Sai email hoặc mật khẩu'));
       }
     }
 
-    function handleAdminLogout() {
-      if (!confirm('Bạn có chắc chắn muốn đăng xuất khỏi trang Quản trị?')) return;
+    function handleAdminLogout(confirmNeeded = true) {
+      if (confirmNeeded && !confirm('Bạn có chắc chắn muốn đăng xuất khỏi trang Quản trị?')) return;
       localStorage.removeItem('MENSTYLE_TOKEN');
       localStorage.removeItem('MENSTYLE_USER');
       adminToken = '';
       adminUser = null;
+      if (inactivityTimer) clearTimeout(inactivityTimer);
       checkAdminAuthGuard();
     }
 

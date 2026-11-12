@@ -27,7 +27,7 @@ const seedData = async () => {
     const adminUser = await User.create({
       name: "Quản Trị Viên MENSTYLE",
       email: "admin@menstyle.vn",
-      password: "AdminPassword123@",
+      password: process.env.ADMIN_PASSWORD || "AdminSecret2026@",
       phone: "0901234567",
       role: "admin",
     });
@@ -60,7 +60,7 @@ const seedData = async () => {
     });
 
     console.log("✅ Tạo tài khoản thành công:");
-    console.log(" 👑 Admin: admin@menstyle.vn / AdminPassword123@");
+    console.log(" 👑 Admin: admin@menstyle.vn / (Mật khẩu bảo mật cá nhân)");
     console.log(" 👤 Khách 1: hung.nguyen@gmail.com / KhachPassword123@");
     console.log(" 👤 Khách 2: nam.le@gmail.com / KhachPassword123@");
 
