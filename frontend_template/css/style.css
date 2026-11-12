@@ -718,12 +718,19 @@ header {
   color: var(--accent-red);
 }
 
-/* ================= 6. PRODUCT CARDS & 6-COLUMN GRID ================= */
+/* ================= 6. PRODUCT CARDS & 5/6-COLUMN GRID ================= */
 .product-grid-6 {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   gap: 16px;
   margin-bottom: 40px;
+}
+
+.product-grid-5 {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  margin-bottom: 30px;
 }
 
 .product-card {
@@ -1796,7 +1803,8 @@ footer {
 
 /* ================= 13. RESPONSIVE MEDIA QUERIES ================= */
 @media (max-width: 1200px) {
-  .product-grid-6 {
+  .product-grid-6,
+  .product-grid-5 {
     grid-template-columns: repeat(4, 1fr);
   }
 }
@@ -1806,7 +1814,8 @@ footer {
     grid-template-columns: repeat(4, 1fr);
     gap: 14px;
   }
-  .product-grid-6 {
+  .product-grid-6,
+  .product-grid-5 {
     grid-template-columns: repeat(3, 1fr);
   }
   .promo-grid {
@@ -1861,7 +1870,8 @@ footer {
   .hero-script-accent {
     display: none;
   }
-  .product-grid-6 {
+  .product-grid-6,
+  .product-grid-5 {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
   }

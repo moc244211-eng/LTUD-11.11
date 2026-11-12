@@ -31,6 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initCategories();
   initPriceFilters();
   loadBestSellers();
+  loadPromoProducts();
   loadProducts();
   updateCartUI();
   setupEventListeners();
@@ -202,19 +203,45 @@ function renderProductCard(p) {
   `;
 }
 
-// ================= 4. SẢN PHẨM BÁN CHẠY (BEST SELLERS TOP 6) =================
+// ================= 4. SẢN PHẨM BÁN CHẠY (CHỈ GỒM CÁC SẢN PHẨM KHÔNG GIẢM GIÁ) =================
 async function loadBestSellers() {
   const bestGrid = document.getElementById("bestSellerGrid");
   if (!bestGrid) return;
 
   bestGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 24px; color: #6b7280;">⏳ Đang tải sản phẩm bán chạy...</div>`;
 
-  const res = await API.getProducts({ limit: 6, sort: "rating" });
+  const res = await API.getProducts({ all: "true", sort: "rating" });
   if (res.success && Array.isArray(res.data) && res.data.length > 0) {
-    const top6 = res.data.slice(0, 6);
+    // Loại trừ các sản phẩm khuyến mãi vì sản phẩm khuyến mãi CHỈ HIỆN ở khu vực Khuyến Mãi
+    const regularProds = res.data.filter((p) => !DISCOUNTED_PRODUCT_NAMES.includes(p.name));
+    const top6 = regularProds.slice(0, 6);
     bestGrid.innerHTML = top6.map(renderProductCard).join("");
   } else {
     bestGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 24px; color: #9ca3af;">Chưa có sản phẩm nổi bật</div>`;
+  }
+}
+
+// ================= 4B. TẢI VÀ HIỂN THỊ SẢN PHẨM KHUYẾN MÃI (CHỈ XUẤT HIỆN TẠI ĐÂY) =================
+async function loadPromoProducts() {
+  const promoGrid = document.getElementById("promoProductsGrid");
+  if (!promoGrid) return;
+
+  promoGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 24px; color: #6b7280;">⏳ Đang tải sản phẩm khuyến mãi...</div>`;
+
+  try {
+    const res = await API.getProducts({ all: "true" });
+    const allProds = res && res.success && Array.isArray(res.data) ? res.data : [];
+
+    // Chỉ lấy đúng 5 sản phẩm khuyến mãi
+    const promoProds = allProds.filter((p) => DISCOUNTED_PRODUCT_NAMES.includes(p.name));
+
+    if (promoProds.length > 0) {
+      promoGrid.innerHTML = promoProds.map(renderProductCard).join("");
+    } else {
+      promoGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 24px; color: #9ca3af;">Hiện tại chưa có chương trình khuyến mãi</div>`;
+    }
+  } catch (err) {
+    console.error("Lỗi loadPromoProducts:", err);
   }
 }
 
@@ -233,27 +260,35 @@ async function loadProducts() {
     minPrice: currentMinPrice,
     maxPrice: currentMaxPrice,
     sort: currentSort,
-    page: currentPage,
-    limit: PAGE_LIMIT,
+    all: "true",
   });
 
   if (res.success && Array.isArray(res.data) && res.data.length > 0) {
-    const total = res.total || res.data.length;
-    const totalPages = res.totalPages || 1;
-    if (countEl) countEl.innerText = `Tìm thấy ${total} sản phẩm (Trang ${currentPage}/${totalPages})`;
+    // Loại trừ các sản phẩm khuyến mãi vì sản phẩm khuyến mãi CHỈ HIỆN ở khu vực Khuyến Mãi
+    const regularProds = res.data.filter((p) => !DISCOUNTED_PRODUCT_NAMES.includes(p.name));
 
-    grid.innerHTML = res.data.map(renderProductCard).join("");
-    renderPagination(totalPages);
-  } else {
-    if (countEl) countEl.innerText = "0 sản phẩm";
-    grid.innerHTML = `
-      <div style="grid-column: 1/-1; text-align: center; padding: 50px 20px; background: #ffffff; border-radius: 12px; border: 1px dashed #d1d5db;">
-        <h3 style="font-size: 18px; margin-bottom: 8px;">🔍 Không tìm thấy sản phẩm phù hợp!</h3>
-        <p style="color: #6b7280; font-size: 13.5px;">Vui lòng thử chọn khoảng giá khác hoặc bấm 'Tất cả sản phẩm'.</p>
-      </div>
-    `;
-    if (paginationWrapper) paginationWrapper.innerHTML = "";
+    if (regularProds.length > 0) {
+      const total = regularProds.length;
+      const totalPages = Math.ceil(total / PAGE_LIMIT) || 1;
+      const startIndex = (currentPage - 1) * PAGE_LIMIT;
+      const paginatedProds = regularProds.slice(startIndex, startIndex + PAGE_LIMIT);
+
+      if (countEl) countEl.innerText = `Tìm thấy ${total} sản phẩm (Trang ${currentPage}/${totalPages})`;
+
+      grid.innerHTML = paginatedProds.map(renderProductCard).join("");
+      renderPagination(totalPages);
+      return;
+    }
   }
+
+  if (countEl) countEl.innerText = "0 sản phẩm";
+  grid.innerHTML = `
+    <div style="grid-column: 1/-1; text-align: center; padding: 50px 20px; background: #ffffff; border-radius: 12px; border: 1px dashed #d1d5db;">
+      <h3 style="font-size: 18px; margin-bottom: 8px;">🔍 Không tìm thấy sản phẩm phù hợp!</h3>
+      <p style="color: #6b7280; font-size: 13.5px;">Vui lòng thử chọn khoảng giá khác hoặc bấm 'Tất cả sản phẩm'.</p>
+    </div>
+  `;
+  if (paginationWrapper) paginationWrapper.innerHTML = "";
 }
 
 function renderPagination(totalPages) {
