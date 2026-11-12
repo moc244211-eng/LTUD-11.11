@@ -64,6 +64,12 @@ app.get("/sitemap.xml", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend_template/sitemap.xml"));
 });
 
+// Google Search Console HTML Verification File
+app.get("/google5c0a95efb5bbd70b.html", (req, res) => {
+  res.type("text/html");
+  res.sendFile(path.join(__dirname, "../frontend_template/google5c0a95efb5bbd70b.html"));
+});
+
 // 7. Xử lý fallback cho SPA / Giao diện Frontend
 app.get("/admin", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend_template/admin.html"));
