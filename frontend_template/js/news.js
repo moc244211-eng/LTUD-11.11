@@ -357,6 +357,9 @@ async function openArticleDetail(slug, pushHistory = true) {
     // Cập nhật danh sách bài viết được quan tâm ở Sidebar
     loadSidebarPopular();
 
+    // Cập nhật SEO Head & Schema cho Google Crawler / AI Search
+    updateArticleSeoMeta(art);
+
     // Push URL History
     if (pushHistory) {
       const url = new URL(window.location);
@@ -380,7 +383,68 @@ function closeArticleDetail() {
     const url = new URL(window.location);
     url.searchParams.delete('slug');
     window.history.pushState({}, '', url);
+
+    // Reset SEO title & dynamic schema
+    resetArticleSeoMeta();
   }
+}
+
+// Cập nhật thẻ meta & Schema JSON-LD động phục vụ Google AI & Bot tìm kiếm
+function updateArticleSeoMeta(art) {
+  document.title = `${art.title} | MENSTYLE Magazine`;
+  
+  const descMeta = document.querySelector('meta[name="description"]');
+  if (descMeta) descMeta.setAttribute('content', art.excerpt);
+
+  const ogTitle = document.querySelector('meta[property="og:title"]');
+  if (ogTitle) ogTitle.setAttribute('content', art.title);
+
+  const ogDesc = document.querySelector('meta[property="og:description"]');
+  if (ogDesc) ogDesc.setAttribute('content', art.excerpt);
+
+  const ogImg = document.querySelector('meta[property="og:image"]');
+  if (ogImg) ogImg.setAttribute('content', art.image);
+
+  let schemaScript = document.getElementById('articleJsonLd');
+  if (!schemaScript) {
+    schemaScript = document.createElement('script');
+    schemaScript.id = 'articleJsonLd';
+    schemaScript.type = 'application/ld+json';
+    document.head.appendChild(schemaScript);
+  }
+
+  const jsonLdData = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": art.title,
+    "description": art.excerpt,
+    "image": [art.image],
+    "datePublished": art.createdAt,
+    "dateModified": art.updatedAt || art.createdAt,
+    "author": [{
+      "@type": "Person",
+      "name": art.author || "MENSTYLE Editorial Team"
+    }],
+    "publisher": {
+      "@type": "Organization",
+      "name": "MENSTYLE – FASHION FOR MEN",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600"
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": window.location.href
+    }
+  };
+  schemaScript.textContent = JSON.stringify(jsonLdData);
+}
+
+function resetArticleSeoMeta() {
+  document.title = 'MENSTYLE Magazine – Tạp Chí Xu Hướng & Cẩm Nang Thời Trang Nam';
+  const schemaScript = document.getElementById('articleJsonLd');
+  if (schemaScript) schemaScript.remove();
 }
 
 // Cuộn mượt đến mục lục bài viết
