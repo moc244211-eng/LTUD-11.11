@@ -554,24 +554,24 @@
 
           <div class="contact-form-panel">
             <h4 style="font-size: 13.5px; font-weight: 800; text-transform: uppercase; margin-bottom: 14px; color: #0b0b0b; letter-spacing: 0.5px;">Gửi Yêu Cầu Liên Hệ</h4>
-            <form id="contactForm" onsubmit="event.preventDefault(); alert('Cảm ơn quý anh đã liên hệ! Chuyên viên MENSTYLE sẽ gọi lại hỗ trợ ngay.'); closeContactModal();">
+            <form id="contactForm" onsubmit="handleNewsContactSubmit(event)">
               <div class="form-group">
                 <label class="form-label">Họ và Tên (*)</label>
-                <input type="text" class="form-input" placeholder="Ví dụ: Nguyễn Văn Hùng" required>
+                <input type="text" id="newsContactName" class="form-input" placeholder="Ví dụ: Nguyễn Văn Hùng" required>
               </div>
               <div style="display: flex; gap: 10px;">
                 <div class="form-group" style="flex: 1;">
                   <label class="form-label">Số Điện Thoại (*)</label>
-                  <input type="tel" class="form-input" placeholder="09xxxxxxxx" required>
+                  <input type="tel" id="newsContactPhone" class="form-input" placeholder="09xxxxxxxx" required>
                 </div>
                 <div class="form-group" style="flex: 1;">
                   <label class="form-label">Email (*)</label>
-                  <input type="email" class="form-input" placeholder="email@gmail.com" required>
+                  <input type="email" id="newsContactEmail" class="form-input" placeholder="email@gmail.com" required>
                 </div>
               </div>
               <div class="form-group">
                 <label class="form-label">Chủ Đề Hỗ Trợ (*)</label>
-                <select class="form-select" required>
+                <select id="newsContactTopic" class="form-select" required>
                   <option value="Tư vấn phối đồ & Chọn size">Tư vấn phối đồ & Chọn size chuẩn</option>
                   <option value="Hỗ trợ đơn hàng & Đổi trả">Hỗ trợ đơn hàng & Đổi trả size</option>
                   <option value="Hợp tác kinh doanh">Hợp tác kinh doanh & Đối tác</option>
@@ -579,10 +579,13 @@
               </div>
               <div class="form-group">
                 <label class="form-label">Nội Dung Lời Nhắn (*)</label>
-                <textarea class="form-input" rows="3" placeholder="Nhập chi tiết yêu cầu của anh..." required style="resize: vertical; font-family: inherit; font-size: 13px;"></textarea>
+                <textarea id="newsContactMessage" class="form-input" rows="3" placeholder="Nhập chi tiết yêu cầu của anh..." required style="resize: vertical; font-family: inherit; font-size: 13px;"></textarea>
               </div>
               <button type="submit" class="btn-checkout-start" style="padding: 12px; font-size: 13.5px;">
                 Gửi Yêu Cầu Liên Hệ ➔
+              </button>
+            </form>
+          </div>
               </button>
             </form>
           </div>
@@ -621,7 +624,7 @@
     </form>
   </div>
 
-  <!-- Contact Modal Helpers -->
+  <!-- Contact Modal Helpers & Handler -->
   <script>
     function openContactModal() {
       const modal = document.getElementById('contactModal');
@@ -637,6 +640,69 @@
         document.body.style.overflow = '';
       }
     }
+
+    async function handleNewsContactSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('newsContactName')?.value.trim() || '';
+      const phone = document.getElementById('newsContactPhone')?.value.trim() || '';
+      const email = document.getElementById('newsContactEmail')?.value.trim() || '';
+      const topic = document.getElementById('newsContactTopic')?.value || 'Tư vấn';
+      const message = document.getElementById('newsContactMessage')?.value.trim() || '';
+
+      if (!name || !phone || !message) {
+        alert('Vui lòng nhập đầy đủ thông tin!');
+        return;
+      }
+
+      const btn = e.target.querySelector('button[type="submit"]');
+      if (btn) { btn.disabled = true; btn.innerText = '⏳ Đang gửi...'; }
+
+      try {
+        const res = await API.sendContact({ name, phone, email, topic, message });
+        if (res && res.success) {
+          closeContactModal();
+          alert(`🎉 Cảm ơn anh ${name}! MENSTYLE đã tiếp nhận yêu cầu và sẽ liên hệ qua SĐT ${phone} sớm nhất.`);
+          e.target.reset();
+        } else {
+          alert('❌ ' + (res?.message || 'Lỗi gửi yêu cầu, vui lòng thử lại'));
+        }
+      } catch (err) {
+        alert('❌ Không thể kết nối đến máy chủ');
+      } finally {
+        if (btn) { btn.disabled = false; btn.innerText = 'Gửi Yêu Cầu Liên Hệ ➔'; }
+      }
+    }
+
+    // Lắng nghe đăng ký nhận tin bản tin Tạp chí
+    document.addEventListener('DOMContentLoaded', () => {
+      const nlForm = document.getElementById('magNewsletterForm');
+      if (nlForm) {
+        nlForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const emailInput = document.getElementById('magNewsletterEmail');
+          const email = emailInput ? emailInput.value.trim() : '';
+          if (!email) return;
+
+          try {
+            const res = await API.sendContact({
+              name: 'Độc giả đăng ký Newsletter',
+              phone: 'Chưa cung cấp',
+              email,
+              topic: 'Đăng ký nhận tin tức & Xu hướng',
+              message: 'Khách hàng đăng ký nhận bản tin qua email từ chuyên trang Tạp chí MENSTYLE.'
+            });
+            if (res && res.success) {
+              alert(`🎉 Cảm ơn anh! MENSTYLE đã lưu email ${email} để gửi các bản tin xu hướng mới nhất.`);
+              nlForm.reset();
+            } else {
+              alert('❌ ' + (res?.message || 'Không thể đăng ký nhận tin lúc này'));
+            }
+          } catch (err) {
+            alert('❌ Lỗi kết nối máy chủ');
+          }
+        });
+      }
+    });
   </script>
 
   <!-- Scripts -->

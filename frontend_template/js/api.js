@@ -735,4 +735,67 @@ const API = {
       }
     ];
   },
+
+  // ================= 8. QUẢN LÝ YÊU CẦU LIÊN HỆ & TƯ VẤN =================
+  async sendContact(contactData) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/contacts`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(contactData),
+      });
+      return await res.json();
+    } catch (err) {
+      if (isLocal && API_BASE_URL.includes('localhost:5000')) {
+        API_BASE_URL = RENDER_FALLBACK_API;
+        return await this.sendContact(contactData);
+      }
+      console.error('Lỗi API sendContact:', err);
+      return { success: false, message: 'Không thể kết nối đến máy chủ API' };
+    }
+  },
+
+  async getContacts(token, query = {}) {
+    try {
+      const q = new URLSearchParams(query).toString();
+      const res = await fetch(`${API_BASE_URL}/contacts${q ? '?' + q : ''}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return await res.json();
+    } catch (err) {
+      if (isLocal && API_BASE_URL.includes('localhost:5000')) {
+        API_BASE_URL = RENDER_FALLBACK_API;
+        return await this.getContacts(token, query);
+      }
+      return { success: false, message: err.message, data: [] };
+    }
+  },
+
+  async updateContactStatus(id, updateData, token) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/contacts/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(updateData),
+      });
+      return await res.json();
+    } catch (err) {
+      return { success: false, message: err.message };
+    }
+  },
+
+  async deleteContact(id, token) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/contacts/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return await res.json();
+    } catch (err) {
+      return { success: false, message: err.message };
+    }
+  },
 };

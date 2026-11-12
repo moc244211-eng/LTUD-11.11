@@ -1043,17 +1043,44 @@ function closeContactModal() {
   if (modal) modal.classList.add("hidden");
 }
 
-function handleContactSubmit(e) {
+async function handleContactSubmit(e) {
   e.preventDefault();
   const name = document.getElementById("contactName")?.value.trim() || "";
   const phone = document.getElementById("contactPhone")?.value.trim() || "";
+  const email = document.getElementById("contactEmail")?.value.trim() || "";
   const topic = document.getElementById("contactTopic")?.value || "Tư vấn";
+  const message = document.getElementById("contactMessage")?.value.trim() || "";
 
-  closeContactModal();
-  showToast(`🎉 Cảm ơn anh ${name}! MENSTYLE đã nhận yêu cầu "${topic}" và sẽ liên hệ qua SĐT ${phone} sớm nhất.`);
+  if (!name || !phone || !message) {
+    alert("Vui lòng nhập đầy đủ họ tên, số điện thoại và nội dung lời nhắn!");
+    return;
+  }
 
-  const form = document.getElementById("contactForm");
-  if (form) form.reset();
+  const submitBtn = e.target.querySelector('button[type="submit"]');
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.innerText = "⏳ Đang gửi yêu cầu...";
+  }
+
+  try {
+    const res = await API.sendContact({ name, phone, email, topic, message });
+    if (res && res.success) {
+      closeContactModal();
+      showToast(`🎉 Cảm ơn anh ${name}! MENSTYLE đã tiếp nhận yêu cầu và sẽ gọi điện hỗ trợ sớm nhất.`);
+      const form = document.getElementById("contactForm");
+      if (form) form.reset();
+    } else {
+      alert("❌ " + (res?.message || "Không thể gửi liên hệ, vui lòng thử lại sau"));
+    }
+  } catch (err) {
+    console.error("Lỗi gửi liên hệ:", err);
+    alert("❌ Lỗi kết nối đến máy chủ.");
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerText = "Gửi Yêu Cầu Liên Hệ ➔";
+    }
+  }
 }
 
 function handleNewsletterSubmit(e) {
