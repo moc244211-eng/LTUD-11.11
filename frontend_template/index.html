@@ -209,7 +209,7 @@
         <h2 class="section-title">✦ SẢN PHẨM BÁN CHẠY</h2>
         <div class="section-divider"></div>
       </div>
-      <a href="#catalogSection" class="section-view-all">Xem tất cả ➔</a>
+      <a href="#catalogSection" onclick="resetToAllProducts()" class="section-view-all">Xem tất cả ➔</a>
     </div>
 
     <!-- 6 Column Grid cho Best Sellers -->
@@ -263,7 +263,7 @@
       <div class="filter-row" style="margin-bottom: 12px;">
         <span class="filter-label">🏷️ Danh mục:</span>
         <div class="filter-pills" id="categoryPills">
-          <button class="filter-pill active" data-id="">Tất cả sản phẩm</button>
+          <button class="filter-pill active" data-id="" onclick="resetToAllProducts(this)">Tất cả sản phẩm</button>
         </div>
       </div>
       <div class="filter-row">
@@ -760,8 +760,8 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/api.js?v=20261112"></script>
-  <script src="js/app.js?v=20261112"></script>
-  <script src="js/ai-chat.js?v=20261112"></script>
+  <script src="js/api.js?v=20261112b"></script>
+  <script src="js/app.js?v=20261112b"></script>
+  <script src="js/ai-chat.js?v=20261112b"></script>
 </body>
 </html>

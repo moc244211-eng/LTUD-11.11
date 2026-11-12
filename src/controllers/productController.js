@@ -1,4 +1,5 @@
 const Product = require("../models/Product");
+const Category = require("../models/Category");
 
 // 5 Sản phẩm DUY NHẤT được áp dụng chính sách giảm giá khuyến mãi
 const DISCOUNTED_PRODUCTS_MAP = {
@@ -56,9 +57,19 @@ exports.getProducts = async (req, res) => {
       filter.category = category;
     }
 
-    // 2. Tìm kiếm Regex tên sản phẩm không phân biệt hoa thường
+    // 2. Tìm kiếm Regex: tên sản phẩm, thương hiệu, mô tả hoặc theo danh mục tương ứng
     if (search) {
-      filter.name = { $regex: search.trim(), $options: "i" };
+      const trimmedSearch = search.trim();
+      const searchRegex = { $regex: trimmedSearch, $options: "i" };
+      const matchedCats = await Category.find({ name: searchRegex }).select("_id");
+      const matchedCatIds = matchedCats.map((c) => c._id);
+
+      filter.$or = [
+        { name: searchRegex },
+        { brand: searchRegex },
+        { description: searchRegex },
+        ...(matchedCatIds.length > 0 ? [{ category: { $in: matchedCatIds } }] : []),
+      ];
     }
 
     // 3. Lọc theo khoảng giá (salePrice $gte / $lte)

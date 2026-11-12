@@ -11,7 +11,7 @@ let currentMinPrice = "";
 let currentMaxPrice = "";
 let currentSort = "";
 let currentPage = 1;
-const PAGE_LIMIT = 12; // 2 hàng 6 cột trên màn hình lớn
+const PAGE_LIMIT = 24; // Hiển thị đầy đủ sản phẩm trên 1 trang (chuẩn 6 cột)
 
 let cart = JSON.parse(localStorage.getItem("MENSTYLE_CART") || "[]");
 let wishlist = JSON.parse(localStorage.getItem("MENSTYLE_WISHLIST") || "[]");
@@ -88,6 +88,14 @@ function scrollToProducts() {
 
 function filterByCategoryName(name) {
   scrollToProducts();
+  const sInput = document.getElementById("searchInput");
+  if (sInput) sInput.value = "";
+  currentSearch = "";
+  currentMinPrice = "";
+  currentMaxPrice = "";
+  document.querySelectorAll(".price-pill").forEach((b) => b.classList.remove("active"));
+  document.querySelector('.price-pill[data-min=""]')?.classList.add("active");
+
   const pills = document.querySelectorAll("#categoryPills .filter-pill");
   let matched = false;
   pills.forEach((p) => {
@@ -99,12 +107,31 @@ function filterByCategoryName(name) {
   });
 
   if (!matched) {
+    currentCategory = "";
     currentSearch = name;
-    const sInput = document.getElementById("searchInput");
     if (sInput) sInput.value = name;
     currentPage = 1;
     loadProducts();
   }
+}
+
+function resetToAllProducts(el) {
+  const catList = document.getElementById("categoryPills");
+  if (catList) {
+    catList.querySelectorAll(".filter-pill").forEach((b) => b.classList.remove("active"));
+    const allBtn = catList.querySelector('.filter-pill[data-id=""]') || el;
+    if (allBtn) allBtn.classList.add("active");
+  }
+  const sInput = document.getElementById("searchInput");
+  if (sInput) sInput.value = "";
+  currentCategory = "";
+  currentSearch = "";
+  currentMinPrice = "";
+  currentMaxPrice = "";
+  document.querySelectorAll(".price-pill").forEach((b) => b.classList.remove("active"));
+  document.querySelector('.price-pill[data-min=""]')?.classList.add("active");
+  currentPage = 1;
+  loadProducts();
 }
 
 function filterByCatSlug(slug) {
@@ -124,7 +151,7 @@ async function initCategories() {
 
   const res = await API.getCategories();
   if (res.success && Array.isArray(res.data)) {
-    let html = `<button class="filter-pill active" data-id="" data-slug="">Tất cả sản phẩm</button>`;
+    let html = `<button class="filter-pill active" data-id="" data-slug="" onclick="resetToAllProducts(this)">Tất cả sản phẩm</button>`;
     res.data.forEach((cat) => {
       html += `<button class="filter-pill" data-id="${cat._id}" data-slug="${cat.slug}">${cat.name}</button>`;
     });
@@ -134,7 +161,17 @@ async function initCategories() {
       btn.addEventListener("click", (e) => {
         catList.querySelectorAll(".filter-pill").forEach((b) => b.classList.remove("active"));
         e.currentTarget.classList.add("active");
-        currentCategory = e.currentTarget.getAttribute("data-id");
+        currentCategory = e.currentTarget.getAttribute("data-id") || "";
+
+        // Tự động dọn sạch từ khóa tìm kiếm & lọc giá để hiển thị đúng toàn bộ sản phẩm của danh mục
+        const sInput = document.getElementById("searchInput");
+        if (sInput) sInput.value = "";
+        currentSearch = "";
+        currentMinPrice = "";
+        currentMaxPrice = "";
+        document.querySelectorAll(".price-pill").forEach((b) => b.classList.remove("active"));
+        document.querySelector('.price-pill[data-min=""]')?.classList.add("active");
+
         currentPage = 1;
         loadProducts();
       });
@@ -264,28 +301,32 @@ async function loadProducts() {
   });
 
   if (res.success && Array.isArray(res.data) && res.data.length > 0) {
-    // Loại trừ các sản phẩm khuyến mãi vì sản phẩm khuyến mãi CHỈ HIỆN ở khu vực Khuyến Mãi
-    const regularProds = res.data.filter((p) => !DISCOUNTED_PRODUCT_NAMES.includes(p.name));
+    // Hiển thị đầy đủ tất cả sản phẩm (bao gồm cả sản phẩm giảm giá, phụ kiện, quần áo...)
+    const allProds = res.data;
+    const total = allProds.length;
+    const totalPages = Math.ceil(total / PAGE_LIMIT) || 1;
+    const startIndex = (currentPage - 1) * PAGE_LIMIT;
+    const paginatedProds = allProds.slice(startIndex, startIndex + PAGE_LIMIT);
 
-    if (regularProds.length > 0) {
-      const total = regularProds.length;
-      const totalPages = Math.ceil(total / PAGE_LIMIT) || 1;
-      const startIndex = (currentPage - 1) * PAGE_LIMIT;
-      const paginatedProds = regularProds.slice(startIndex, startIndex + PAGE_LIMIT);
-
-      if (countEl) countEl.innerText = `Tìm thấy ${total} sản phẩm (Trang ${currentPage}/${totalPages})`;
-
-      grid.innerHTML = paginatedProds.map(renderProductCard).join("");
-      renderPagination(totalPages);
-      return;
+    if (countEl) {
+      if (totalPages > 1) {
+        countEl.innerText = `Tìm thấy ${total} sản phẩm (Trang ${currentPage}/${totalPages})`;
+      } else {
+        countEl.innerText = `Tìm thấy ${total} sản phẩm`;
+      }
     }
+
+    grid.innerHTML = paginatedProds.map(renderProductCard).join("");
+    renderPagination(totalPages);
+    return;
   }
 
   if (countEl) countEl.innerText = "0 sản phẩm";
   grid.innerHTML = `
     <div style="grid-column: 1/-1; text-align: center; padding: 50px 20px; background: #ffffff; border-radius: 12px; border: 1px dashed #d1d5db;">
       <h3 style="font-size: 18px; margin-bottom: 8px;">🔍 Không tìm thấy sản phẩm phù hợp!</h3>
-      <p style="color: #6b7280; font-size: 13.5px;">Vui lòng thử chọn khoảng giá khác hoặc bấm 'Tất cả sản phẩm'.</p>
+      <p style="color: #6b7280; font-size: 13.5px; margin-bottom: 14px;">Vui lòng thử chọn khoảng giá khác hoặc bấm 'Tất cả sản phẩm'.</p>
+      <button class="hero-cta" style="padding: 8px 20px; font-size: 13px;" onclick="resetToAllProducts()">Xem Tất Cả Sản Phẩm ➔</button>
     </div>
   `;
   if (paginationWrapper) paginationWrapper.innerHTML = "";
