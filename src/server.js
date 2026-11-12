@@ -13,6 +13,7 @@ const aiRoutes = require("./routes/aiRoutes");
 const shippingRoutes = require("./routes/shippingRoutes");
 const userRoutes = require("./routes/userRoutes");
 const couponRoutes = require("./routes/couponRoutes");
+const articleRoutes = require("./routes/articleRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -48,10 +49,14 @@ app.use("/api/ai", aiRoutes);
 app.use("/api/shipping", shippingRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/coupons", couponRoutes);
+app.use("/api/articles", articleRoutes);
 
 // 6. Xử lý fallback cho SPA / Giao diện Frontend
 app.get("/admin", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend_template/admin.html"));
+});
+app.get(["/news", "/tin-tuc"], (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend_template/news.html"));
 });
 
 // 7. Bắt lỗi 404 cho API không tồn tại

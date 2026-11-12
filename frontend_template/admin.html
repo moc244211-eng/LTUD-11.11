@@ -425,6 +425,9 @@
         <li class="admin-menu-item" onclick="switchAdminTab('tabCoupons', this)">
           🎟️ Quản Lý Mã Giảm Giá
         </li>
+        <li class="admin-menu-item" onclick="switchAdminTab('tabArticles', this)">
+          📰 Tạp Chí & Bài Viết
+        </li>
       </ul>
       <div class="admin-sidebar-footer">
         <div style="margin-bottom: 10px;">
@@ -790,6 +793,40 @@
           </div>
         </div>
 
+        <!-- ================= TAB 8: QUẢN LÝ BÀI VIẾT TẠP CHÍ (MENSTYLE MAGAZINE) ================= -->
+        <div id="tabArticles" class="hidden">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div>
+              <h3 style="font-size: 18px; font-weight: 800; color: var(--secondary);">Danh Sách Bài Viết Tạp Chí (Magazine Editorial)</h3>
+              <p style="font-size: 13px; color: #64748b;">Quản lý toàn bộ nội dung biên tập, xu hướng thời trang và mẹo phối đồ phái mạnh</p>
+            </div>
+            <button class="btn-checkout-start" onclick="openArticleModal()" style="width: auto; padding: 10px 20px;">
+              + Viết Bài Mới
+            </button>
+          </div>
+
+          <!-- Bảng quản lý bài viết -->
+          <div class="table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Ảnh</th>
+                  <th>Tiêu đề & Slug</th>
+                  <th>Danh mục</th>
+                  <th>Tác giả</th>
+                  <th>Lượt xem</th>
+                  <th>Nổi bật</th>
+                  <th>Trạng thái</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="adminArticlesTableBody">
+                <tr><td colspan="8" style="text-align: center; padding: 25px;">Đang tải danh sách bài viết...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
       </main>
     </div>
   </div>
@@ -934,6 +971,84 @@
     </div>
   </div>
 
+  <!-- ================= MODAL THÊM / SỬA BÀI VIẾT TẠP CHÍ ================= -->
+  <div class="modal-overlay hidden" id="articleModal">
+    <div class="modal-content" style="max-width: 680px;">
+      <div class="modal-header">
+        <h3 id="articleModalTitle" style="font-size: 18px; font-weight: 800;">+ Viết Bài Viết Mới</h3>
+        <button class="btn-close" onclick="closeArticleModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="articleForm" onsubmit="handleArticleFormSubmit(event)">
+          <input type="hidden" id="editArticleId">
+          
+          <div class="form-group">
+            <label class="form-label">Tiêu Đề Bài Viết (*)</label>
+            <input type="text" id="artTitle" class="form-input" placeholder="Ví dụ: Xu Hướng Thời Trang Nam 2026..." required>
+          </div>
+
+          <div style="display: flex; gap: 12px;">
+            <div class="form-group" style="flex: 1;">
+              <label class="form-label">Danh Mục Bài Viết (*)</label>
+              <select id="artCategory" class="form-select" required>
+                <option value="Xu hướng thời trang">Xu hướng thời trang</option>
+                <option value="Bí quyết phối đồ">Bí quyết phối đồ</option>
+                <option value="Phong cách nam">Phong cách nam</option>
+                <option value="Mẹo chọn trang phục">Mẹo chọn trang phục</option>
+                <option value="Chăm sóc và bảo quản">Chăm sóc và bảo quản</option>
+                <option value="Tin tức MENSTYLE">Tin tức MENSTYLE</option>
+              </select>
+            </div>
+            <div class="form-group" style="flex: 1;">
+              <label class="form-label">Tác Giả</label>
+              <input type="text" id="artAuthor" class="form-input" value="MENSTYLE Editorial Team">
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 12px;">
+            <div class="form-group" style="flex: 1;">
+              <label class="form-label">Thời Gian Đọc Ước Tính</label>
+              <input type="text" id="artReadTime" class="form-input" value="5 phút đọc">
+            </div>
+            <div class="form-group" style="flex: 1;">
+              <label class="form-label">Trạng Thái</label>
+              <select id="artStatus" class="form-select">
+                <option value="PUBLISHED">PUBLISHED (Xuất bản)</option>
+                <option value="DRAFT">DRAFT (Bản nháp)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Link Ảnh Đại Diện (URL) (*)</label>
+            <input type="url" id="artImage" class="form-input" placeholder="https://images.unsplash.com/..." required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Mô Tả Ngắn Tóm Tắt (Excerpt) (*)</label>
+            <textarea id="artExcerpt" class="form-input" rows="2" placeholder="Tóm tắt 2-3 câu nội dung chính..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Nội Dung Chi Tiết (HTML / Đoạn văn) (*)</label>
+            <textarea id="artContent" class="form-input" rows="8" placeholder="<h2>1. Tiêu đề mục</h2><p>Nội dung đoạn văn...</p>" required style="font-family: monospace; font-size: 12.5px;"></textarea>
+          </div>
+
+          <div class="form-group" style="display: flex; align-items: center; gap: 8px;">
+            <input type="checkbox" id="artIsFeatured" style="width: 18px; height: 18px; cursor: pointer;">
+            <label for="artIsFeatured" style="font-size: 13.5px; font-weight: 700; cursor: pointer; color: #0b0b0b;">
+              Gắn vào khu vực "ĐÁNG CHÚ Ý" (Featured Article)
+            </label>
+          </div>
+
+          <button type="submit" class="btn-checkout-start">
+            Lưu Bài Viết Lên Hệ Thống
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <!-- ================= MODAL XEM CHI TIẾT KHÁCH HÀNG & LỊCH SỬ MUA HÀNG ================= -->
   <div class="modal-overlay hidden" id="customerDetailModal">
     <div class="modal-content" style="max-width: 650px;">
@@ -973,6 +1088,7 @@
     let cachedProducts = [];
     let cachedOrders = [];
     let cachedCustomers = [];
+    let cachedArticles = [];
 
     document.addEventListener('DOMContentLoaded', () => {
       checkAdminAuthGuard();
@@ -1036,7 +1152,7 @@
       document.querySelectorAll('.admin-menu-item').forEach(i => i.classList.remove('active'));
       el.classList.add('active');
 
-      const tabs = ['tabOverview', 'tabProducts', 'tabCategories', 'tabOrders', 'tabCustomers', 'tabInventory', 'tabCoupons'];
+      const tabs = ['tabOverview', 'tabProducts', 'tabCategories', 'tabOrders', 'tabCustomers', 'tabInventory', 'tabCoupons', 'tabArticles'];
       tabs.forEach(t => {
         const tabEl = document.getElementById(t);
         if (tabEl) tabEl.classList.add('hidden');
@@ -1052,7 +1168,8 @@
         tabOrders: 'Quản Lý & Duyệt Đơn Hàng',
         tabCustomers: 'Quản Lý Hồ Sơ Khách Hàng',
         tabInventory: 'Quản Lý Tồn Kho & Cảnh Báo Hết Hàng',
-        tabCoupons: 'Quản Lý Mã Giảm Giá & Khuyến Mãi'
+        tabCoupons: 'Quản Lý Mã Giảm Giá & Khuyến Mãi',
+        tabArticles: 'Quản Lý Bài Viết Tạp Chí (MENSTYLE Magazine)'
       };
       document.getElementById('adminPageHeading').innerText = headings[tabId] || 'Admin Dashboard';
 
@@ -1061,6 +1178,7 @@
       if (tabId === 'tabCustomers') loadAdminCustomers();
       if (tabId === 'tabInventory') loadAdminInventory();
       if (tabId === 'tabCoupons') loadAdminCoupons();
+      if (tabId === 'tabArticles') loadAdminArticles();
     }
 
     // ================= 3. KHỞI TẠO TẢI DỮ LIỆU TỔNG QUAN =================
@@ -1911,6 +2029,137 @@
 
     function closeOrderDetailModal() {
       document.getElementById('orderDetailModal').classList.add('hidden');
+    }
+
+    // ================= 9. QUẢN LÝ BÀI VIẾT TẠP CHÍ (MENSTYLE MAGAZINE) =================
+    async function loadAdminArticles() {
+      const tbody = document.getElementById('adminArticlesTableBody');
+      if (!tbody) return;
+
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:25px;">Đang tải danh sách bài viết...</td></tr>';
+      const res = await API.getAdminArticles(adminToken);
+      if (res && res.success && Array.isArray(res.data)) {
+        cachedArticles = res.data;
+        if (cachedArticles.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:25px;">Chưa có bài viết nào! Bấm "+ Viết Bài Mới" để tạo bài viết đầu tiên.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = cachedArticles.map(art => `
+          <tr>
+            <td>
+              <img src="${art.image}" alt="" style="width:50px; height:50px; object-fit:cover; border-radius:6px;">
+            </td>
+            <td>
+              <div style="font-weight:800; color:#0f172a; max-width:280px; line-height:1.35; margin-bottom:4px;">${art.title}</div>
+              <code style="font-size:11px; color:#64748b; background:#f1f5f9; padding:2px 6px; border-radius:4px;">${art.slug}</code>
+            </td>
+            <td><span class="brand-badge">${art.category}</span></td>
+            <td><span style="font-size:12.5px; font-weight:600;">${art.author || 'MENSTYLE'}</span></td>
+            <td><strong>${(art.views || 0).toLocaleString()}</strong></td>
+            <td>
+              <span class="badge-status ${art.isFeatured ? 'badge-active' : 'badge-pending'}">
+                ${art.isFeatured ? '★ Nổi bật' : 'Thường'}
+              </span>
+            </td>
+            <td>
+              <span class="badge-status ${art.status === 'PUBLISHED' ? 'badge-active' : 'badge-blocked'}">
+                ${art.status === 'PUBLISHED' ? 'Đã xuất bản' : 'Bản nháp'}
+              </span>
+            </td>
+            <td>
+              <div style="display:flex; gap:6px;">
+                <button class="btn-action btn-act-view" onclick="openArticleModal('${art._id}')" title="Sửa bài viết">
+                  ✏️ Sửa
+                </button>
+                <a href="news.html?slug=${art.slug}" target="_blank" class="btn-action btn-act-ship" title="Xem trên web">
+                  👁️ Xem
+                </a>
+                <button class="btn-action btn-act-del" onclick="handleDeleteArticle('${art._id}')" title="Xóa bài viết">
+                  🗑️
+                </button>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+      } else {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#dc2626; padding:25px;">Không thể tải danh sách bài viết!</td></tr>';
+      }
+    }
+
+    function openArticleModal(articleId = null) {
+      const modal = document.getElementById('articleModal');
+      const titleEl = document.getElementById('articleModalTitle');
+      const form = document.getElementById('articleForm');
+      form.reset();
+
+      if (articleId) {
+        const art = cachedArticles.find(a => a._id === articleId);
+        if (art) {
+          titleEl.innerText = '✏️ Chỉnh Sửa Bài Viết Tạp Chí';
+          document.getElementById('editArticleId').value = art._id;
+          document.getElementById('artTitle').value = art.title;
+          document.getElementById('artCategory').value = art.category;
+          document.getElementById('artAuthor').value = art.author || 'MENSTYLE Editorial Team';
+          document.getElementById('artReadTime').value = art.readTime || '5 phút đọc';
+          document.getElementById('artStatus').value = art.status || 'PUBLISHED';
+          document.getElementById('artImage').value = art.image;
+          document.getElementById('artExcerpt').value = art.excerpt;
+          document.getElementById('artContent').value = art.content;
+          document.getElementById('artIsFeatured').checked = Boolean(art.isFeatured);
+        }
+      } else {
+        titleEl.innerText = '+ Viết Bài Mới';
+        document.getElementById('editArticleId').value = '';
+      }
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeArticleModal() {
+      document.getElementById('articleModal').classList.add('hidden');
+    }
+
+    async function handleArticleFormSubmit(e) {
+      e.preventDefault();
+      const articleId = document.getElementById('editArticleId').value;
+      const data = {
+        title: document.getElementById('artTitle').value.trim(),
+        category: document.getElementById('artCategory').value,
+        author: document.getElementById('artAuthor').value.trim(),
+        readTime: document.getElementById('artReadTime').value.trim(),
+        status: document.getElementById('artStatus').value,
+        image: document.getElementById('artImage').value.trim(),
+        excerpt: document.getElementById('artExcerpt').value.trim(),
+        content: document.getElementById('artContent').value.trim(),
+        isFeatured: document.getElementById('artIsFeatured').checked,
+      };
+
+      let res;
+      if (articleId) {
+        res = await API.updateArticle(articleId, data, adminToken);
+      } else {
+        res = await API.createArticle(data, adminToken);
+      }
+
+      if (res && res.success) {
+        alert(articleId ? '🎉 Cập nhật bài viết thành công!' : '🎉 Tạo bài viết mới thành công!');
+        closeArticleModal();
+        loadAdminArticles();
+      } else {
+        alert('❌ Thất bại: ' + (res ? res.message : 'Lỗi hệ thống'));
+      }
+    }
+
+    async function handleDeleteArticle(id) {
+      if (!confirm('Bạn có chắc chắn muốn xóa bài viết này khỏi hệ thống tạp chí MENSTYLE?')) return;
+      const res = await API.deleteArticle(id, adminToken);
+      if (res && res.success) {
+        alert('🎉 Đã xóa bài viết thành công!');
+        loadAdminArticles();
+      } else {
+        alert('❌ Lỗi: ' + (res ? res.message : 'Không thể xóa'));
+      }
     }
 
     function escapeQuotes(str) {
