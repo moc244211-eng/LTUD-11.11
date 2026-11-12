@@ -99,15 +99,16 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 78px;
-  gap: 20px;
+  height: 74px;
+  gap: 16px;
+  max-width: 100%;
 }
 
 /* Brand Logo */
 .brand-logo {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   text-decoration: none;
   transition: opacity 0.2s;
   flex-shrink: 0;
@@ -127,7 +128,7 @@ header {
   align-items: center;
   justify-content: center;
   font-weight: 900;
-  font-size: 20px;
+  font-size: 19px;
   letter-spacing: -0.5px;
 }
 
@@ -137,45 +138,49 @@ header {
 }
 
 .brand-name-main {
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 900;
-  letter-spacing: 2px;
+  letter-spacing: 1.8px;
   color: #0b0b0b;
   line-height: 1;
 }
 
 .brand-name-sub {
-  font-size: 8.5px;
+  font-size: 8px;
   font-weight: 700;
-  letter-spacing: 2.2px;
+  letter-spacing: 2px;
   color: var(--text-muted);
   text-transform: uppercase;
-  margin-top: 3px;
+  margin-top: 2px;
 }
 
-/* Navigation Links */
+/* Navigation Links - Tinh gọn, hiện đại, không chiếm dụng chiều ngang */
 .nav-menu {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   list-style: none;
+  flex-shrink: 0;
+  margin: 0;
+  padding: 0;
 }
 
 .nav-link {
   text-decoration: none;
-  font-size: 15.5px;
-  font-weight: 800;
+  font-size: 14px;
+  font-weight: 700;
   color: #1f2937;
-  padding: 10px 18px;
+  padding: 8px 12px;
   border-radius: var(--radius-pill);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  letter-spacing: 0.2px;
+  gap: 4px;
+  letter-spacing: 0.1px;
   cursor: pointer;
   white-space: nowrap;
   user-select: none;
+  line-height: 1.2;
 }
 
 .nav-link:hover {
@@ -235,45 +240,50 @@ header {
 /* Search Box Pill (Nổi Bật, Tương Phản Cao & Hiện Đại) */
 .search-box {
   flex: 1;
-  max-width: 360px;
-  min-width: 250px;
+  max-width: 320px;
+  min-width: 170px;
   position: relative;
+  display: flex;
+  align-items: center;
+  height: 42px;
 }
 
 .search-input {
   width: 100%;
-  padding: 11px 50px 11px 20px;
+  height: 42px;
+  padding: 0 46px 0 16px;
   border: 1.5px solid #cbd5e1;
   border-radius: var(--radius-pill);
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 600;
   outline: none;
   background: #f1f5f9;
   color: #0b0b0b;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  box-sizing: border-box;
 }
 
 .search-input::placeholder {
-  color: #475569;
+  color: #64748b;
   font-weight: 500;
 }
 
 .search-input:hover {
   background: #ffffff;
   border-color: #0b0b0b;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
 }
 
 .search-input:focus {
   background: #ffffff;
   border-color: #0b0b0b;
-  box-shadow: 0 0 0 3.5px rgba(11, 11, 11, 0.12), 0 4px 14px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 0 0 3px rgba(11, 11, 11, 0.12), 0 3px 10px rgba(0, 0, 0, 0.08);
 }
 
 .search-icon {
   position: absolute;
-  right: 6px;
+  right: 5px;
   top: 50%;
   transform: translateY(-50%);
   width: 32px;
@@ -288,11 +298,12 @@ header {
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 2px 6px rgba(11, 11, 11, 0.25);
+  padding: 0;
 }
 
 .search-icon:hover {
   background: #1f2937;
-  transform: translateY(-50%) scale(1.08);
+  transform: translateY(-50%) scale(1.05);
 }
 
 .search-icon svg {
@@ -302,16 +313,22 @@ header {
   stroke-width: 2.2;
 }
 
-/* Header Action Icons (Nổi bật, Tròn nổi khối cao cấp) */
+/* Header Action Icons (Cân Chuẩn 42px x 42px, Căn Giữa Hoàn Hảo, Không Bao Giờ Tràn Mép) */
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+#authHeaderArea {
+  display: flex;
+  align-items: center;
 }
 
 .btn-header-icon {
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   background: #ffffff;
   border: 1.5px solid #e5e7eb;
@@ -321,22 +338,25 @@ header {
   color: #0b0b0b;
   cursor: pointer;
   position: relative;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.2s ease;
   text-decoration: none;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  box-sizing: border-box;
+  flex-shrink: 0;
+  padding: 0;
 }
 
 .btn-header-icon:hover {
   background: #0b0b0b;
   color: #ffffff;
   border-color: #0b0b0b;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
 }
 
 .btn-header-icon svg {
-  width: 20px;
-  height: 20px;
+  width: 19px;
+  height: 19px;
   stroke: currentColor;
   transition: stroke 0.2s ease;
 }
@@ -345,17 +365,17 @@ header {
   stroke: #ffffff;
 }
 
-/* Huy hiệu số lượng đếm (Nổi bật màu đỏ tươi) */
+/* Huy hiệu số lượng đếm (Nổi bật màu đỏ tươi, Cố định vị trí chuẩn) */
 .cart-count-badge {
   position: absolute;
-  top: -4px;
-  right: -4px;
+  top: -3px;
+  right: -3px;
   background: #dc2626;
   color: #ffffff;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 900;
-  min-width: 20px;
-  height: 20px;
+  min-width: 19px;
+  height: 19px;
   padding: 0 4px;
   border-radius: 9999px;
   display: flex;
@@ -374,7 +394,9 @@ header {
   background: #ffffff;
   border: 1.5px solid #e5e7eb;
   border-radius: var(--radius-pill);
-  padding: 5px 6px 5px 12px;
+  padding: 0 8px 0 12px;
+  height: 42px;
+  box-sizing: border-box;
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
@@ -403,8 +425,8 @@ header {
 }
 
 .user-chip-logout {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background: #f3f4f6;
   border: none;
@@ -423,16 +445,18 @@ header {
 
 /* Nút Quản Trị Hệ Thống (Nổi bật, Sang trọng) */
 .btn-admin-pill {
-  padding: 10px 20px;
+  height: 42px;
+  padding: 0 16px;
+  box-sizing: border-box;
   border-radius: var(--radius-pill);
   background: #0b0b0b;
   color: #ffffff;
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 800;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 0 3px 12px rgba(11, 11, 11, 0.25);
   border: 1.5px solid transparent;
@@ -442,10 +466,8 @@ header {
 .btn-admin-pill:hover {
   background: #1f2937;
   color: #ffffff;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(11, 11, 11, 0.35);
-}
   transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(11, 11, 11, 0.35);
 }
 
 /* ================= 3. HERO BANNER SLIDER (PREMIUM EDITORIAL REDESIGN 2026) ================= */
@@ -2018,6 +2040,21 @@ footer {
 
 /* ================= 13. RESPONSIVE MEDIA QUERIES ================= */
 @media (max-width: 1200px) {
+  .nav-container {
+    gap: 12px;
+  }
+  .nav-link {
+    font-size: 13px;
+    padding: 7px 10px;
+    gap: 3px;
+  }
+  .search-box {
+    max-width: 240px;
+    min-width: 150px;
+  }
+  .header-actions {
+    gap: 8px;
+  }
   .product-grid-6,
   .product-grid-5 {
     grid-template-columns: repeat(4, 1fr);
@@ -2025,6 +2062,34 @@ footer {
 }
 
 @media (max-width: 1024px) {
+  .nav-container {
+    gap: 10px;
+  }
+  .nav-link {
+    font-size: 12.5px;
+    padding: 6px 8px;
+  }
+  .search-box {
+    max-width: 190px;
+    min-width: 130px;
+  }
+  .search-input {
+    font-size: 12.5px;
+    padding: 0 38px 0 12px;
+  }
+  .search-icon {
+    width: 28px;
+    height: 28px;
+    right: 4px;
+  }
+  .btn-header-icon {
+    width: 38px;
+    height: 38px;
+  }
+  .btn-header-icon svg {
+    width: 17px;
+    height: 17px;
+  }
   .featured-cat-bar {
     grid-template-columns: repeat(4, 1fr);
     gap: 14px;
@@ -2044,7 +2109,7 @@ footer {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .featured-cat-bar {
     grid-template-columns: repeat(4, 1fr);
     gap: 10px;
