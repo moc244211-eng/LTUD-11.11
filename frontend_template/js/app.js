@@ -910,6 +910,17 @@ function closeQRModal() {
   if (modal) modal.classList.add("hidden");
 }
 
+// ================= HÀM XỬ LÝ AN TOÀN HTML XSS =================
+function escapeHtml(text) {
+  if (!text) return "";
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 // ================= TRA CỨU ĐƠN HÀNG THỜI GIAN THỰC (ORDER TRACKING) =================
 function openOrderTrackingModal(prefillQuery = "") {
   const modal = document.getElementById("orderTrackingModal");
@@ -939,11 +950,14 @@ async function handleTrackOrderSearch() {
   const container = document.getElementById("trackingResultArea");
   if (!input || !container) return;
 
-  const query = input.value.trim();
-  if (!query) {
+  const rawQuery = input.value.trim();
+  if (!rawQuery) {
     container.innerHTML = `<div style="text-align:center; padding:20px; color:#ef4444; font-weight:bold;">⚠️ Vui lòng nhập mã đơn hàng (MS...) hoặc số điện thoại!</div>`;
     return;
   }
+
+  // Tự động xử lý bỏ ký tự '#' nếu người dùng nhập kèm (VD: #MS33018786 -> MS33018786)
+  const query = rawQuery.replace(/^#+/, "").trim() || rawQuery;
 
   container.innerHTML = `<div style="text-align:center; padding:35px; color:#64748b;">⏳ Đang tra cứu thông tin đơn hàng trên hệ thống...</div>`;
 
@@ -953,8 +967,8 @@ async function handleTrackOrderSearch() {
       container.innerHTML = `
         <div style="text-align:center; padding:35px; background:#fff1f2; border:1px solid #fecdd3; border-radius:10px; color:#9f1239;">
           <span style="font-size:32px; display:block; margin-bottom:8px;">🔎</span>
-          <strong style="font-size:16px;">Không tìm thấy đơn hàng khớp với "${escapeHtml(query)}"!</strong>
-          <p style="font-size:13px; color:#be123c; margin-top:8px;">Vui lòng kiểm tra lại Mã đơn hàng (VD: MS10023456) hoặc Số điện thoại bạn đã dùng khi đặt hàng.</p>
+          <strong style="font-size:16px;">Không tìm thấy đơn hàng khớp với "${escapeHtml(rawQuery)}"!</strong>
+          <p style="font-size:13px; color:#be123c; margin-top:8px;">Vui lòng kiểm tra lại Mã đơn hàng (VD: MS33018786) hoặc Số điện thoại bạn đã dùng khi đặt hàng.</p>
         </div>
       `;
       return;
@@ -968,7 +982,7 @@ async function handleTrackOrderSearch() {
       ${orders.map(renderTrackingCard).join("")}
     `;
   } catch (err) {
-    container.innerHTML = `<div style="text-align:center; padding:20px; color:#ef4444;">❌ Lỗi kết nối: ${err.message}</div>`;
+    container.innerHTML = `<div style="text-align:center; padding:20px; color:#ef4444;">❌ Lỗi kết nối: ${escapeHtml(err.message)}</div>`;
   }
 }
 

@@ -603,3 +603,8 @@ function handleUserAccountClick() {
     window.location.href = 'index.html#authModal';
   }
 }
+
+function openOrderTrackingModal() {
+  sessionStorage.setItem("openTrackOrder", "true");
+  window.location.href = "index.html";
+}

@@ -479,12 +479,16 @@ exports.trackOrder = async (req, res) => {
       });
     }
 
-    // Tìm theo mã đơn hàng hoặc số điện thoại
-    const queryRegex = new RegExp(`^${rawQuery}$`, "i");
+    // Tìm theo mã đơn hàng hoặc số điện thoại (Hỗ trợ linh hoạt cả có # hoặc không có #)
+    const cleanQuery = rawQuery.replace(/^#+/, "").trim();
+    const queryRegex = new RegExp(`^#?${cleanQuery}$`, "i");
     const orders = await Order.find({
       $or: [
         { orderCode: queryRegex },
+        { orderCode: new RegExp(`^${rawQuery}$`, "i") },
+        { customerPhone: cleanQuery },
         { customerPhone: rawQuery },
+        ...(cleanQuery.match(/^[0-9a-fA-F]{24}$/) ? [{ _id: cleanQuery }] : []),
         ...(rawQuery.match(/^[0-9a-fA-F]{24}$/) ? [{ _id: rawQuery }] : []),
       ],
     }).sort({ createdAt: -1 });
