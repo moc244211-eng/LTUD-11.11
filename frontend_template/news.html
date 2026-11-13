@@ -22,7 +22,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=20261113a">
+  <link rel="stylesheet" href="css/style.css?v=20261113c">
   <link rel="stylesheet" href="css/news.css">
 
   <!-- Schema.org JSON-LD -->
@@ -622,6 +622,13 @@
         Dạ em chào anh! Em là <strong>MENSTYLE AI Stylist</strong>. Anh có câu hỏi nào về các bài viết xu hướng thời trang hoặc cần tư vấn phối outfit không ạ? 😊
       </div>
     </div>
+    <!-- Quick Prompts Gợi Ý Phong Cách 1 Chạm -->
+    <div class="ai-quick-prompts" id="aiQuickPrompts">
+      <button type="button" class="ai-prompt-chip" onclick="quickAskAI('Tối nay mình đi gặp đối tác ở khách sạn sang trọng, hãy gợi ý outfit chuẩn quý ông thành đạt!')">💼 Gặp đối tác</button>
+      <button type="button" class="ai-prompt-chip" onclick="quickAskAI('Gợi ý cho mình set đồ hẹn hò lãng mạn tối nay')">🍷 Đi hẹn hò</button>
+      <button type="button" class="ai-prompt-chip" onclick="quickAskAI('Gợi ý outfit dạo phố cafe cuối tuần phong cách Smart Casual')">☕ Dạo phố</button>
+      <button type="button" class="ai-prompt-chip" onclick="quickAskAI('Mình cao 1m72 nặng 65kg, mặc áo sơ mi và quần âu size gì chuẩn nhất?')">📏 Tư vấn size</button>
+    </div>
     <form class="ai-chat-input-area" onsubmit="sendAIMessage(event)">
       <input type="text" id="aiInput" class="ai-chat-input" placeholder="Hỏi AI Stylist: ví dụ 'xu hướng sơ mi hè 2026'..." autocomplete="off">
       <button type="submit" class="ai-chat-send">➤</button>
@@ -710,8 +717,8 @@
   </script>
 
   <!-- Scripts -->
-  <script src="js/api.js?v=20261113b"></script>
-  <script src="js/news.js?v=20261113b"></script>
-  <script src="js/ai-chat.js?v=20261113b"></script>
+  <script src="js/api.js?v=20261113c"></script>
+  <script src="js/news.js?v=20261113c"></script>
+  <script src="js/ai-chat.js?v=20261113c"></script>
 </body>
 </html>

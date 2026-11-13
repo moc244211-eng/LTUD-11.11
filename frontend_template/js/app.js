@@ -313,6 +313,7 @@ async function loadProducts() {
   if (res.success && Array.isArray(res.data) && res.data.length > 0) {
     // Hiển thị đầy đủ tất cả sản phẩm (bao gồm cả sản phẩm giảm giá, phụ kiện, quần áo...)
     const allProds = res.data;
+    window.cachedProducts = allProds;
     const total = allProds.length;
     const totalPages = Math.ceil(total / PAGE_LIMIT) || 1;
     const startIndex = (currentPage - 1) * PAGE_LIMIT;
@@ -424,6 +425,16 @@ async function viewProductDetail(id) {
   content.innerHTML = `<p style="text-align:center; padding:30px;">⏳ Đang tải thông tin sản phẩm...</p>`;
   modal.classList.remove("hidden");
 
+  // Đảm bảo có dữ liệu sản phẩm trong cache
+  if (!window.cachedProducts || window.cachedProducts.length === 0) {
+    try {
+      const allRes = await API.getProducts({ all: "true" });
+      if (allRes.success && Array.isArray(allRes.data)) {
+        window.cachedProducts = allRes.data;
+      }
+    } catch (e) {}
+  }
+
   const res = await API.getProductById(id);
   if (res.success && res.data) {
     const p = res.data;
@@ -447,37 +458,115 @@ async function viewProductDetail(id) {
     const isDiscounted =
       DISCOUNTED_PRODUCT_NAMES.includes(p.name) && p.originalPrice > p.salePrice;
 
+    // Sinh HTML Smart Outfit Mix & Match Upsell Combo
+    const mixMatchHtml = buildMixMatchHtml(p);
+
     content.innerHTML = `
       <div style="display: flex; gap: 24px; flex-wrap: wrap;">
-        <img src="${imgUrl}" style="width: 100%; max-width: 250px; height: 320px; object-fit: cover; border-radius: 12px;">
-        <div style="flex: 1; min-width: 240px;">
+        <img src="${imgUrl}" style="width: 100%; max-width: 260px; height: 340px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 14px rgba(0,0,0,0.06);">
+        <div style="flex: 1; min-width: 250px;">
           <span style="font-size: 11.5px; color: #6b7280; font-weight: 800; text-transform: uppercase;">${catName} • ${p.brand || "MENSTYLE"}</span>
-          <h3 style="font-size: 20px; font-weight: 800; margin: 6px 0 10px 0; color: #0b0b0b;">${p.name}</h3>
+          <h3 style="font-size: 21px; font-weight: 800; margin: 6px 0 10px 0; color: #0b0b0b;">${p.name}</h3>
           
           <div style="font-size: 22px; font-weight: 900; color: ${isDiscounted ? 'var(--accent-red)' : 'var(--secondary)'}; margin-bottom: 12px;">
             ${Number(p.salePrice).toLocaleString("vi-VN")} đ
             ${isDiscounted ? `<span style="font-size:14px; color:#94a3b8; text-decoration:line-through; margin-left:8px;">${Number(p.originalPrice).toLocaleString("vi-VN")} đ</span>` : ""}
           </div>
 
-          <div style="margin-bottom: 14px;">
-            <label class="form-label">Chọn Kích Thước (Size):</label>
+          <div style="margin-bottom: 12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <label class="form-label" style="margin:0;">Kích Thước (Size):</label>
+              <span style="font-size:12px; color:#64748b; font-weight:700;">Đang chọn: <strong id="selectedSizeLabel" style="color:#0b0b0b;">${selectedDetailSize}</strong></span>
+            </div>
             <div class="size-selector" style="display: flex; gap: 8px;">${sizesHtml}</div>
           </div>
 
-          <p style="font-size: 13.5px; color: #475569; line-height: 1.5; margin-bottom: 16px;">
+          <!-- ================= VIRTUAL FIT & SIZE FINDER 2.0 ================= -->
+          <div class="virtual-fit-trigger-bar">
+            <button type="button" class="btn-virtual-fit-toggle" onclick="toggleVirtualFitWidget()">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:16px;">📏</span>
+                <strong>Bộ Đo Size Thông Minh 1 Chạm (Virtual Fit 2.0)</strong>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span class="vf-badge-recom">Khuyên Dùng</span>
+                <span id="vfToggleArrow" style="font-size:13px; transition: transform 0.2s;">▾</span>
+              </div>
+            </button>
+            
+            <div class="virtual-fit-card hidden" id="virtualFitCard">
+              <div class="vf-slider-row">
+                <div class="vf-slider-header">
+                  <span>Chiều cao của anh:</span>
+                  <span class="vf-slider-bubble" id="vfHeightBubble">172 cm</span>
+                </div>
+                <input type="range" min="150" max="195" value="172" class="vf-range-input" id="vfHeightInput" oninput="onVirtualFitChange()">
+              </div>
+
+              <div class="vf-slider-row">
+                <div class="vf-slider-header">
+                  <span>Cân nặng của anh:</span>
+                  <span class="vf-slider-bubble" id="vfWeightBubble">65 kg</span>
+                </div>
+                <input type="range" min="45" max="105" value="65" class="vf-range-input" id="vfWeightInput" oninput="onVirtualFitChange()">
+              </div>
+
+              <div style="margin-bottom: 10px;">
+                <label class="vf-slider-header" style="margin-bottom:4px;">Dáng người:</label>
+                <div class="vf-pill-selector" id="vfBuildSelector">
+                  <button type="button" class="vf-pill-btn" data-val="slim" onclick="setVirtualFitBuild('slim')">Gầy (Slim)</button>
+                  <button type="button" class="vf-pill-btn active" data-val="regular" onclick="setVirtualFitBuild('regular')">Cân Đối</button>
+                  <button type="button" class="vf-pill-btn" data-val="solid" onclick="setVirtualFitBuild('solid')">Đậm / Có Bụng</button>
+                </div>
+              </div>
+
+              <div style="margin-bottom: 10px;">
+                <label class="vf-slider-header" style="margin-bottom:4px;">Sở thích mặc:</label>
+                <div class="vf-pill-selector" id="vfFitPrefSelector">
+                  <button type="button" class="vf-pill-btn" data-val="slim" onclick="setVirtualFitFitPref('slim')">Ôm vừa</button>
+                  <button type="button" class="vf-pill-btn active" data-val="regular" onclick="setVirtualFitFitPref('regular')">Tiêu chuẩn</button>
+                  <button type="button" class="vf-pill-btn" data-val="relaxed" onclick="setVirtualFitFitPref('relaxed')">Thoải mái</button>
+                </div>
+              </div>
+
+              <div class="vf-result-box">
+                <div class="vf-result-top">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:12px; color:#64748b; font-weight:700;">Form của anh:</span>
+                    <span class="vf-size-target" id="vfTargetSize">SIZE L</span>
+                  </div>
+                  <span class="vf-accuracy-badge" id="vfAccuracy">Độ chuẩn xác 98%</span>
+                </div>
+                <p class="vf-advice-text" id="vfAdviceText">
+                  Form L vừa vặn tuyệt đối ở vai và ngực, chiều dài vạt áo ngang hông thanh lịch, dễ sơ vin hoặc thả ngoài.
+                </p>
+                <button type="button" class="btn-vf-apply" id="vfApplyBtn" data-size="L" onclick="applyVirtualFitSize()">
+                  ✓ Áp Dụng Size L Này
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <p style="font-size: 13.5px; color: #475569; line-height: 1.5; margin-bottom: 14px;">
             ${p.description || "Chất vải may đo cao cấp, mềm mại, thoáng mát và giữ form chuẩn phong cách phái mạnh."}
           </p>
 
-          <div style="font-size: 13px; color: #64748b; margin-bottom: 18px; padding: 10px; background: #f8fafc; border-radius: 8px;">
+          <div style="font-size: 13px; color: #64748b; margin-bottom: 16px; padding: 10px; background: #f8fafc; border-radius: 8px;">
             📦 Kho: <strong>${p.stock || 0}</strong> sản phẩm sẵn có | ⭐ Đánh giá: <strong>${p.rating || 5.0} / 5.0</strong>
           </div>
 
-          <button class="btn-checkout-start" onclick="addCurrentDetailToCart()">
+          <button class="btn-checkout-start" onclick="addCurrentDetailToCart()" style="padding:13px; font-size:14.5px;">
             🛒 Thêm Vào Giỏ Hàng
           </button>
         </div>
       </div>
+
+      <!-- ================= SMART OUTFIT MIX & MATCH (UPSELL COMBO) ================= -->
+      ${mixMatchHtml}
     `;
+
+    // Khởi tạo tính toán ban đầu cho Virtual Fit
+    calcVirtualFitSize();
   }
 }
 
@@ -485,6 +574,10 @@ function selectSize(btn, size) {
   document.querySelectorAll(".size-selector .size-pill").forEach((b) => b.classList.remove("active"));
   btn.classList.add("active");
   selectedDetailSize = size;
+  const label = document.getElementById("selectedSizeLabel");
+  if (label) label.innerText = size;
+  const mixSize0 = document.getElementById("mixItemSize0");
+  if (mixSize0) mixSize0.innerText = size;
 }
 
 function addCurrentDetailToCart() {
@@ -502,6 +595,321 @@ function addCurrentDetailToCart() {
 function closeProductDetailModal() {
   const modal = document.getElementById("productDetailModal");
   if (modal) modal.classList.add("hidden");
+}
+
+// ================= VIRTUAL FIT 2.0 LOGIC =================
+let vfState = {
+  height: 172,
+  weight: 65,
+  build: "regular",
+  fitPref: "regular",
+};
+
+function toggleVirtualFitWidget() {
+  const card = document.getElementById("virtualFitCard");
+  const arrow = document.getElementById("vfToggleArrow");
+  if (!card) return;
+  const isHidden = card.classList.contains("hidden");
+  if (isHidden) {
+    card.classList.remove("hidden");
+    if (arrow) arrow.style.transform = "rotate(180deg)";
+    calcVirtualFitSize();
+  } else {
+    card.classList.add("hidden");
+    if (arrow) arrow.style.transform = "rotate(0deg)";
+  }
+}
+
+function onVirtualFitChange() {
+  const hInput = document.getElementById("vfHeightInput");
+  const wInput = document.getElementById("vfWeightInput");
+  const hBubble = document.getElementById("vfHeightBubble");
+  const wBubble = document.getElementById("vfWeightBubble");
+
+  if (hInput) {
+    vfState.height = parseInt(hInput.value, 10);
+    if (hBubble) hBubble.innerText = `${vfState.height} cm`;
+  }
+  if (wInput) {
+    vfState.weight = parseInt(wInput.value, 10);
+    if (wBubble) wBubble.innerText = `${vfState.weight} kg`;
+  }
+
+  calcVirtualFitSize();
+}
+
+function setVirtualFitBuild(val) {
+  vfState.build = val;
+  const container = document.getElementById("vfBuildSelector");
+  if (container) {
+    container.querySelectorAll(".vf-pill-btn").forEach((b) => {
+      b.classList.toggle("active", b.getAttribute("data-val") === val);
+    });
+  }
+  calcVirtualFitSize();
+}
+
+function setVirtualFitFitPref(val) {
+  vfState.fitPref = val;
+  const container = document.getElementById("vfFitPrefSelector");
+  if (container) {
+    container.querySelectorAll(".vf-pill-btn").forEach((b) => {
+      b.classList.toggle("active", b.getAttribute("data-val") === val);
+    });
+  }
+  calcVirtualFitSize();
+}
+
+function calcVirtualFitSize() {
+  const { height, weight, build, fitPref } = vfState;
+  const hM = height / 100;
+  let bmi = weight / (hM * hM);
+
+  if (build === "slim") bmi -= 1.3;
+  else if (build === "solid") bmi += 2.0;
+
+  if (fitPref === "slim") bmi -= 0.8;
+  else if (fitPref === "relaxed") bmi += 1.2;
+
+  let recSize = "L";
+  let accuracy = "98%";
+  let advice = "";
+
+  if (bmi < 20 || (height < 165 && weight < 56)) {
+    recSize = "S";
+    accuracy = "97%";
+    advice = "Form S ôm gọn gàng, tôn chiều cao, tay áo và vai áo vừa vặn không bị thùng thình.";
+  } else if (bmi < 22.8 || (height <= 172 && weight <= 67)) {
+    recSize = "M";
+    accuracy = "99%";
+    advice = "Form M ôm nhẹ vừa vặn ở vai và ngực, chiều dài thân áo chạm ngang thắt lưng rất chuẩn.";
+  } else if (bmi < 25.8 || (height <= 178 && weight <= 76)) {
+    recSize = "L";
+    accuracy = "98%";
+    advice = "Form L vừa vặn tuyệt đối ở vai và ngực, chiều dài vạt áo ngang hông thanh lịch, dễ sơ vin hoặc thả ngoài.";
+  } else if (bmi < 28.5 || (height <= 184 && weight <= 86)) {
+    recSize = "XL";
+    accuracy = "98%";
+    advice = "Form XL có độ rộng vai và bắp tay thoải mái, che khuyết điểm vùng bụng cực tốt, cử động linh hoạt.";
+  } else {
+    recSize = "2XL";
+    accuracy = "96%";
+    advice = "Form 2XL thiết kế form rộng thoáng khí, vai và vòng ngực rộng rãi tối đa, thoải mái cả ngày.";
+  }
+
+  // Khớp với size có sẵn của sản phẩm
+  if (selectedDetailProduct && Array.isArray(selectedDetailProduct.sizes) && selectedDetailProduct.sizes.length > 0) {
+    if (!selectedDetailProduct.sizes.includes(recSize)) {
+      if (recSize === "S" && selectedDetailProduct.sizes.includes("M")) recSize = "M";
+      else if (selectedDetailProduct.sizes.includes("L")) recSize = "L";
+      else recSize = selectedDetailProduct.sizes[0];
+    }
+  }
+
+  const targetEl = document.getElementById("vfTargetSize");
+  const accEl = document.getElementById("vfAccuracy");
+  const adviceEl = document.getElementById("vfAdviceText");
+  const applyBtn = document.getElementById("vfApplyBtn");
+
+  if (targetEl) targetEl.innerText = `SIZE ${recSize}`;
+  if (accEl) accEl.innerText = `Độ chuẩn xác ${accuracy}`;
+  if (adviceEl) adviceEl.innerText = advice;
+  if (applyBtn) {
+    applyBtn.innerText = `✓ Áp Dụng Size ${recSize} Này`;
+    applyBtn.setAttribute("data-size", recSize);
+  }
+}
+
+function applyVirtualFitSize() {
+  const applyBtn = document.getElementById("vfApplyBtn");
+  const size = applyBtn?.getAttribute("data-size") || "L";
+
+  const sizePills = document.querySelectorAll("#productDetailContent .size-selector .size-pill");
+  let found = false;
+  sizePills.forEach((btn) => {
+    if (btn.innerText.trim() === size) {
+      selectSize(btn, size);
+      found = true;
+    }
+  });
+
+  if (!found && sizePills.length > 0) {
+    selectSize(sizePills[0], sizePills[0].innerText.trim());
+  }
+
+  showToast(`🎉 Đã áp dụng Size ${size} chuẩn theo vóc dáng của bạn!`);
+}
+
+// ================= SMART OUTFIT MIX & MATCH LOGIC =================
+window.activeComboItems = [];
+
+function buildMixMatchHtml(mainProd) {
+  const all = window.cachedProducts || [];
+  if (!all || all.length < 2) return "";
+
+  const mainCat = (mainProd.category?.name || mainProd.category || "").toLowerCase();
+  const mainName = mainProd.name.toLowerCase();
+
+  let comp1 = null;
+  let comp2 = null;
+
+  if (mainName.includes("áo") || mainCat.includes("áo")) {
+    comp1 = all.find((p) => p._id !== mainProd._id && (p.name.toLowerCase().includes("quần") || (p.category?.name || "").toLowerCase().includes("quần")));
+    comp2 = all.find((p) => p._id !== mainProd._id && p._id !== comp1?._id && (p.name.toLowerCase().includes("thắt lưng") || p.name.toLowerCase().includes("ví") || p.name.toLowerCase().includes("blazer") || p.name.toLowerCase().includes("khoác")));
+  } else if (mainName.includes("quần") || mainCat.includes("quần")) {
+    comp1 = all.find((p) => p._id !== mainProd._id && (p.name.toLowerCase().includes("sơ mi") || p.name.toLowerCase().includes("polo")));
+    comp2 = all.find((p) => p._id !== mainProd._id && p._id !== comp1?._id && (p.name.toLowerCase().includes("thắt lưng") || p.name.toLowerCase().includes("khoác") || p.name.toLowerCase().includes("blazer")));
+  } else {
+    comp1 = all.find((p) => p._id !== mainProd._id && p.name.toLowerCase().includes("sơ mi"));
+    comp2 = all.find((p) => p._id !== mainProd._id && p._id !== comp1?._id && p.name.toLowerCase().includes("quần"));
+  }
+
+  if (!comp1) comp1 = all.find((p) => p._id !== mainProd._id);
+  if (!comp2) comp2 = all.find((p) => p._id !== mainProd._id && p._id !== comp1?._id);
+
+  if (!comp1 || !comp2) return "";
+
+  window.activeComboItems = [
+    { ...mainProd, isAnchor: true, checked: true, chosenSize: selectedDetailSize || "L" },
+    { ...comp1, isAnchor: false, checked: true, chosenSize: comp1.sizes?.[0] || "L" },
+    { ...comp2, isAnchor: false, checked: true, chosenSize: comp2.sizes?.[0] || "L" },
+  ];
+
+  const totalRaw = mainProd.salePrice + comp1.salePrice + comp2.salePrice;
+  const comboPrice = Math.round((totalRaw * 0.90) / 1000) * 1000;
+  const savings = totalRaw - comboPrice;
+
+  return `
+    <div class="mix-match-section">
+      <div class="mix-match-header">
+        <div class="mix-match-title">
+          <span>🎩</span>
+          <span>Hoàn Thiện Phong Thái Quý Ông (Mix & Match)</span>
+        </div>
+        <span class="mix-match-badge">TIẾT KIỆM 10% + FREESHIP</span>
+      </div>
+
+      <div class="mix-match-grid">
+        <!-- Món 1: Sản phẩm chính -->
+        <div class="mix-item-card">
+          <input type="checkbox" checked disabled class="mix-item-checkbox" title="Sản phẩm đang chọn">
+          <img src="${mainProd.image || 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=200'}" class="mix-item-img">
+          <div class="mix-item-name">${escapeHtml(mainProd.name)}</div>
+          <div class="mix-item-price">${Number(mainProd.salePrice).toLocaleString("vi-VN")} đ</div>
+          <div style="font-size:11px; color:#64748b; font-weight:700;">Size: <span id="mixItemSize0">${selectedDetailSize || "L"}</span></div>
+        </div>
+
+        <!-- Món 2: Phối kèm 1 -->
+        <div class="mix-item-card">
+          <input type="checkbox" id="mixCheck1" checked class="mix-item-checkbox" onchange="recalculateMixMatchCombo()">
+          <img src="${comp1.image || 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=200'}" class="mix-item-img">
+          <div class="mix-item-name">${escapeHtml(comp1.name)}</div>
+          <div class="mix-item-price">${Number(comp1.salePrice).toLocaleString("vi-VN")} đ</div>
+          <select class="mix-item-size-select" id="mixSelectSize1" onchange="updateMixItemSize(1, this.value)">
+            ${(comp1.sizes || ["M", "L", "XL", "2XL"]).map((s) => `<option value="${s}" ${s === 'L' ? 'selected' : ''}>Size ${s}</option>`).join("")}
+          </select>
+        </div>
+
+        <!-- Món 3: Phối kèm 2 -->
+        <div class="mix-item-card">
+          <input type="checkbox" id="mixCheck2" checked class="mix-item-checkbox" onchange="recalculateMixMatchCombo()">
+          <img src="${comp2.image || 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200'}" class="mix-item-img">
+          <div class="mix-item-name">${escapeHtml(comp2.name)}</div>
+          <div class="mix-item-price">${Number(comp2.salePrice).toLocaleString("vi-VN")} đ</div>
+          <select class="mix-item-size-select" id="mixSelectSize2" onchange="updateMixItemSize(2, this.value)">
+            ${(comp2.sizes || ["M", "L", "XL", "2XL"]).map((s) => `<option value="${s}" ${s === 'L' ? 'selected' : ''}>Size ${s}</option>`).join("")}
+          </select>
+        </div>
+      </div>
+
+      <!-- Thanh tổng kết Combo -->
+      <div class="mix-match-summary-bar">
+        <div class="mix-summary-left">
+          <span class="mix-summary-old-price" id="mixOldPrice">${Number(totalRaw).toLocaleString("vi-VN")} đ</span>
+          <div style="display:flex; align-items:baseline; gap:8px;">
+            <span class="mix-summary-combo-price" id="mixComboPrice">${Number(comboPrice).toLocaleString("vi-VN")} đ</span>
+            <span class="mix-summary-perk" id="mixSavings">Tiết kiệm ${Number(savings).toLocaleString("vi-VN")} đ</span>
+          </div>
+          <span style="font-size:11px; color:#94a3b8;">🚚 Áp dụng Miễn Phí Vận Chuyển toàn quốc</span>
+        </div>
+
+        <button type="button" class="btn-buy-combo" onclick="buyMixMatchCombo()">
+          🛍️ Mua Cả Combo Tiết Kiệm ➔
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function updateMixItemSize(idx, size) {
+  if (window.activeComboItems && window.activeComboItems[idx]) {
+    window.activeComboItems[idx].chosenSize = size;
+  }
+}
+
+function recalculateMixMatchCombo() {
+  if (!window.activeComboItems || window.activeComboItems.length < 3) return;
+
+  const chk1 = document.getElementById("mixCheck1")?.checked ?? true;
+  const chk2 = document.getElementById("mixCheck2")?.checked ?? true;
+
+  window.activeComboItems[1].checked = chk1;
+  window.activeComboItems[2].checked = chk2;
+
+  let totalRaw = window.activeComboItems[0].salePrice;
+  let count = 1;
+
+  if (chk1) {
+    totalRaw += window.activeComboItems[1].salePrice;
+    count++;
+  }
+  if (chk2) {
+    totalRaw += window.activeComboItems[2].salePrice;
+    count++;
+  }
+
+  const discountRate = count >= 2 ? 0.10 : 0;
+  const comboPrice = Math.round((totalRaw * (1 - discountRate)) / 1000) * 1000;
+  const savings = totalRaw - comboPrice;
+
+  const oldPriceEl = document.getElementById("mixOldPrice");
+  const comboPriceEl = document.getElementById("mixComboPrice");
+  const savingsEl = document.getElementById("mixSavings");
+
+  if (oldPriceEl) oldPriceEl.innerText = `${Number(totalRaw).toLocaleString("vi-VN")} đ`;
+  if (comboPriceEl) comboPriceEl.innerText = `${Number(comboPrice).toLocaleString("vi-VN")} đ`;
+  if (savingsEl) {
+    savingsEl.innerText = discountRate > 0 ? `Tiết kiệm ${Number(savings).toLocaleString("vi-VN")} đ` : `Mua lẻ`;
+  }
+}
+
+function buyMixMatchCombo() {
+  if (!window.activeComboItems || window.activeComboItems.length === 0) return;
+
+  window.activeComboItems[0].chosenSize = selectedDetailSize || "L";
+
+  const checkedItems = window.activeComboItems.filter((item) => item.checked);
+  if (checkedItems.length === 0) return;
+
+  const discountRate = checkedItems.length >= 2 ? 0.90 : 1.0;
+  let addedCount = 0;
+
+  checkedItems.forEach((item) => {
+    const finalPrice = Math.round((Number(item.salePrice) * discountRate) / 1000) * 1000;
+    const tag = checkedItems.length >= 2 ? ` (Combo -10%)` : ``;
+    addToCart(
+      item._id,
+      `${item.name}${tag}`,
+      finalPrice,
+      item.image,
+      item.chosenSize || "L"
+    );
+    addedCount++;
+  });
+
+  closeProductDetailModal();
+  openCartDrawer();
+  showToast(`🎉 Đã thêm ${addedCount} món Combo vào giỏ! Tiết kiệm ngay 10%!`);
 }
 
 // ================= 8. QUẢN LÝ GIỎ HÀNG (SHOPPING CART) =================

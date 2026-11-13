@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=20261113a">
+  <link rel="stylesheet" href="css/style.css?v=20261113c">
 </head>
 <body>
 
@@ -543,13 +543,13 @@
 
   <!-- ================= 12. MODAL XEM CHI TIẾT SẢN PHẨM ================= -->
   <div class="modal-overlay hidden" id="productDetailModal">
-    <div class="modal-content" style="max-width: 650px;">
+    <div class="modal-content" style="max-width: 780px;">
       <div class="modal-header">
         <h3 style="font-size: 17px; font-weight: 800;">Thông Tin Chi Tiết Sản Phẩm</h3>
         <button class="btn-close" onclick="closeProductDetailModal()">✕</button>
       </div>
       <div class="modal-body" id="productDetailContent">
-        <!-- Render động chi tiết sản phẩm + chọn size -->
+        <!-- Render động chi tiết sản phẩm + chọn size + Virtual Fit 2.0 + Mix & Match Combo -->
       </div>
     </div>
   </div>
@@ -902,6 +902,13 @@
         Dạ em chào anh! Em là <strong>MENSTYLE AI Stylist</strong>. Anh đang cần tư vấn chọn size chuẩn hay gợi ý phối đồ đi làm, đi chơi, hẹn hò hôm nay ạ? 😊
       </div>
     </div>
+    <!-- Quick Prompts Gợi Ý Phong Cách 1 Chạm -->
+    <div class="ai-quick-prompts" id="aiQuickPrompts">
+      <button type="button" class="ai-prompt-chip" onclick="quickAskAI('Tối nay mình đi gặp đối tác ở khách sạn sang trọng, hãy gợi ý outfit chuẩn quý ông thành đạt!')">💼 Gặp đối tác</button>
+      <button type="button" class="ai-prompt-chip" onclick="quickAskAI('Gợi ý cho mình set đồ hẹn hò lãng mạn tối nay')">🍷 Đi hẹn hò</button>
+      <button type="button" class="ai-prompt-chip" onclick="quickAskAI('Gợi ý outfit dạo phố cafe cuối tuần phong cách Smart Casual')">☕ Dạo phố</button>
+      <button type="button" class="ai-prompt-chip" onclick="quickAskAI('Mình cao 1m72 nặng 65kg, mặc áo sơ mi và quần âu size gì chuẩn nhất?')">📏 Tư vấn size</button>
+    </div>
     <form class="ai-chat-input-area" onsubmit="sendAIMessage(event)">
       <input type="text" id="aiInput" class="ai-chat-input" placeholder="Hỏi AI Stylist: ví dụ 'cao 1m72 nặng 65kg mặc size gì?'..." autocomplete="off">
       <button type="submit" class="ai-chat-send">➤</button>
@@ -909,8 +916,8 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/api.js?v=20261113b"></script>
-  <script src="js/app.js?v=20261113b"></script>
-  <script src="js/ai-chat.js?v=20261113b"></script>
+  <script src="js/api.js?v=20261113c"></script>
+  <script src="js/app.js?v=20261113c"></script>
+  <script src="js/ai-chat.js?v=20261113c"></script>
 </body>
 </html>
