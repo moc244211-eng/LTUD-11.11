@@ -17,6 +17,9 @@ function maskName(name) {
   return parts[0].charAt(0) + "*** " + parts[parts.length - 1];
 }
 
+// Giảm giá Combo Mix & Match (10%) - đúng với giao diện storefront
+const COMBO_DISCOUNT_RATE = 0.1;
+
 // Thứ tự trạng thái hợp lệ (chỉ được đi tiến, CANCELLED/COMPLETED là trạng thái cuối)
 const ORDER_STATUS_RANK = { PENDING: 0, CONFIRMED: 1, SHIPPING: 2, COMPLETED: 3 };
 const crypto = require("crypto");
@@ -63,6 +66,7 @@ exports.createOrder = async (req, res) => {
 
     let subtotal = 0;
     const verifiedItems = [];
+    const comboLines = []; // các dòng khách đánh dấu mua theo Combo (Mix & Match)
 
     // 1. Kiểm tra tồn kho & Áp dụng Zero-Trust Pricing & Trừ kho nguyên tử $inc
     for (const item of items) {
@@ -135,6 +139,13 @@ exports.createOrder = async (req, res) => {
 
       // Zero-Trust Pricing: Server hoàn toàn tin tưởng giá bán `product.salePrice` từ Database
       subtotal += product.salePrice * quantityToBuy;
+      if (item.combo === true) {
+        comboLines.push({
+          productId: String(product._id),
+          categoryId: String(product.category || ""),
+          amount: product.salePrice * quantityToBuy,
+        });
+      }
 
       verifiedItems.push({
         productId: product._id,
@@ -145,6 +156,31 @@ exports.createOrder = async (req, res) => {
         image: product.image || "",
       });
     }
+
+    // 1b. Combo Mix & Match (server tự kiểm tra & tự tính, không tin giá/giảm giá từ client)
+    // Điều kiện: >= 2 sản phẩm khác nhau thuộc >= 2 danh mục khác nhau -> giảm 10% các dòng combo + miễn phí ship
+    let comboDiscount = 0;
+    let comboValid = false;
+    if (comboLines.length > 0) {
+      const distinctProducts = new Set(comboLines.map((l) => l.productId));
+      const distinctCategories = new Set(comboLines.map((l) => l.categoryId));
+      comboValid = distinctProducts.size >= 2 && distinctCategories.size >= 2;
+      if (!comboValid) {
+        for (const dec of decrementedProducts) {
+          await Product.findByIdAndUpdate(dec.productId, {
+            $inc: { stock: dec.quantity },
+          }).catch(() => {});
+        }
+        return res.status(400).json({
+          success: false,
+          message:
+            "Combo không hợp lệ: cần ít nhất 2 sản phẩm thuộc 2 danh mục khác nhau. Vui lòng thêm lại sản phẩm hoặc bỏ ưu đãi combo.",
+        });
+      }
+      const comboSum = comboLines.reduce((s, l) => s + l.amount, 0);
+      comboDiscount = Math.round((comboSum * COMBO_DISCOUNT_RATE) / 1000) * 1000;
+    }
+    const couponBase = Math.max(0, subtotal - comboDiscount);
 
     // 2. Kiểm tra & Áp dụng mã giảm giá (Coupons) nguyên tử
     let discountAmount = 0;
@@ -167,9 +203,9 @@ exports.createOrder = async (req, res) => {
         ) {
           if (coupon.discountType === "PERCENT") {
             const pct = Math.min(100, Math.max(1, Number(coupon.discountValue) || 0));
-            discountAmount = Math.round((subtotal * pct) / 100);
+            discountAmount = Math.round((couponBase * pct) / 100);
           } else {
-            discountAmount = Math.min(Number(coupon.discountValue) || 0, subtotal);
+            discountAmount = Math.min(Number(coupon.discountValue) || 0, couponBase);
           }
 
           // Cập nhật nguyên tử lượt dùng coupon với điều kiện usageCount < maxUsage
@@ -212,8 +248,9 @@ exports.createOrder = async (req, res) => {
     }
 
     // 3. Zero-Trust Shipping Fee: Server tự tính phí ship, không tin tưởng client
-    const finalShippingFee = subtotal >= 500000 ? 0 : 25000;
-    const totalAmount = Math.max(0, subtotal - discountAmount + finalShippingFee);
+    const finalShippingFee = subtotal >= 500000 || comboValid ? 0 : 25000;
+    const totalDiscount = comboDiscount + discountAmount;
+    const totalAmount = Math.max(0, subtotal - totalDiscount + finalShippingFee);
 
     // Sinh mã đơn hàng an toàn không thể đoán thứ tự (Cryptographically secure & Unique)
     const randomSuffix = crypto.randomBytes(3).toString("hex").toUpperCase();
@@ -229,7 +266,7 @@ exports.createOrder = async (req, res) => {
       shippingAddress: String(shippingAddress).trim(),
       items: verifiedItems,
       shippingFee: finalShippingFee,
-      discountAmount,
+      discountAmount: totalDiscount,
       couponCode: appliedCouponCode,
       totalAmount,
       paymentMethod: ["COD", "VIETQR", "MOMO_QR"].includes(paymentMethod)

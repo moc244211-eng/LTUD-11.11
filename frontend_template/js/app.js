@@ -776,8 +776,11 @@ function buildMixMatchHtml(mainProd) {
   ];
 
   const totalRaw = mainProd.salePrice + comp1.salePrice + comp2.salePrice;
-  const comboPrice = Math.round((totalRaw * 0.90) / 1000) * 1000;
-  const savings = totalRaw - comboPrice;
+  const initialCombo = evaluateCombo(
+    [mainProd, comp1, comp2].map((p) => ({ id: p._id, catId: getCategoryIdOf(p), amount: Number(p.salePrice) }))
+  );
+  const savings = initialCombo.discount;
+  const comboPrice = totalRaw - savings;
 
   return `
     <div class="mix-match-section">
@@ -857,20 +860,23 @@ function recalculateMixMatchCombo() {
   window.activeComboItems[2].checked = chk2;
 
   let totalRaw = window.activeComboItems[0].salePrice;
-  let count = 1;
+  const lines = [
+    { id: window.activeComboItems[0]._id, catId: getCategoryIdOf(window.activeComboItems[0]), amount: Number(window.activeComboItems[0].salePrice) },
+  ];
 
   if (chk1) {
     totalRaw += window.activeComboItems[1].salePrice;
-    count++;
+    lines.push({ id: window.activeComboItems[1]._id, catId: getCategoryIdOf(window.activeComboItems[1]), amount: Number(window.activeComboItems[1].salePrice) });
   }
   if (chk2) {
     totalRaw += window.activeComboItems[2].salePrice;
-    count++;
+    lines.push({ id: window.activeComboItems[2]._id, catId: getCategoryIdOf(window.activeComboItems[2]), amount: Number(window.activeComboItems[2].salePrice) });
   }
 
-  const discountRate = count >= 2 ? 0.10 : 0;
-  const comboPrice = Math.round((totalRaw * (1 - discountRate)) / 1000) * 1000;
-  const savings = totalRaw - comboPrice;
+  const comboInfo = evaluateCombo(lines);
+  const discountRate = comboInfo.valid ? COMBO_DISCOUNT_RATE : 0;
+  const savings = comboInfo.discount;
+  const comboPrice = totalRaw - savings;
 
   const oldPriceEl = document.getElementById("mixOldPrice");
   const comboPriceEl = document.getElementById("mixComboPrice");
@@ -891,25 +897,36 @@ function buyMixMatchCombo() {
   const checkedItems = window.activeComboItems.filter((item) => item.checked);
   if (checkedItems.length === 0) return;
 
-  const discountRate = checkedItems.length >= 2 ? 0.90 : 1.0;
+  const comboInfo = evaluateCombo(
+    checkedItems.map((item) => ({
+      id: item._id,
+      catId: getCategoryIdOf(item),
+      amount: Number(item.salePrice),
+    }))
+  );
+  const isCombo = comboInfo.valid;
   let addedCount = 0;
 
+  // Giá trong giỏ luôn là giá gốc; server tự áp giảm 10% + freeship cho các dòng combo hợp lệ
   checkedItems.forEach((item) => {
-    const finalPrice = Math.round((Number(item.salePrice) * discountRate) / 1000) * 1000;
-    const tag = checkedItems.length >= 2 ? ` (Combo -10%)` : ``;
     addToCart(
       item._id,
-      `${item.name}${tag}`,
-      finalPrice,
+      item.name,
+      Number(item.salePrice),
       item.image,
-      item.chosenSize || "L"
+      item.chosenSize || "L",
+      { combo: isCombo, catId: getCategoryIdOf(item) }
     );
     addedCount++;
   });
 
   closeProductDetailModal();
   openCartDrawer();
-  showToast(`🎉 Đã thêm ${addedCount} món Combo vào giỏ! Tiết kiệm ngay 10%!`);
+  showToast(
+    isCombo
+      ? `🎉 Đã thêm ${addedCount} món Combo vào giỏ! Giảm 10% + Freeship sẽ áp dụng khi thanh toán.`
+      : `🛍️ Đã thêm ${addedCount} món vào giỏ! Chọn từ 2 món khác loại để được giảm giá combo.`
+  );
 }
 
 // ================= 8. QUẢN LÝ GIỎ HÀNG (SHOPPING CART) =================
@@ -917,8 +934,37 @@ function quickAddToCart(id, name, price, image) {
   addToCart(id, name, price, image, "L");
 }
 
-function addToCart(id, name, price, image, size = "L") {
-  const itemKey = `${id}_${size}`;
+// ===== Combo Mix & Match: quy tắc PHẢI trùng với server (orderController.js) =====
+// >= 2 sản phẩm khác nhau thuộc >= 2 danh mục khác nhau -> giảm 10% các dòng combo + miễn phí ship
+const COMBO_DISCOUNT_RATE = 0.1;
+
+function getCategoryIdOf(p) {
+  const c = p && p.category;
+  return String((c && c._id) || c || "");
+}
+
+// lines: [{ id, catId, amount }] -> { valid, discount }
+function evaluateCombo(lines) {
+  if (!lines || lines.length === 0) return { valid: false, discount: 0 };
+  const ids = new Set(lines.map((l) => String(l.id)));
+  const cats = new Set(lines.map((l) => String(l.catId || "")));
+  const valid = ids.size >= 2 && cats.size >= 2;
+  if (!valid) return { valid: false, discount: 0 };
+  const sum = lines.reduce((s, l) => s + l.amount, 0);
+  return { valid: true, discount: Math.round((sum * COMBO_DISCOUNT_RATE) / 1000) * 1000 };
+}
+
+function getCartComboInfo() {
+  return evaluateCombo(
+    cart
+      .filter((i) => i.combo)
+      .map((i) => ({ id: i.id, catId: i.catId, amount: i.price * i.quantity }))
+  );
+}
+
+function addToCart(id, name, price, image, size = "L", opts = {}) {
+  const isCombo = !!(opts && opts.combo);
+  const itemKey = `${id}_${size}${isCombo ? "_combo" : ""}`;
   const existing = cart.find((item) => item.key === itemKey);
 
   if (existing) {
@@ -932,6 +978,8 @@ function addToCart(id, name, price, image, size = "L") {
       image,
       size,
       quantity: 1,
+      combo: isCombo,
+      catId: isCombo ? String((opts && opts.catId) || "") : "",
     });
   }
 
@@ -989,7 +1037,7 @@ function updateCartUI() {
         <div class="cart-item">
           <img src="${i.image}" class="cart-item-img" alt="${i.name}">
           <div class="cart-item-info">
-            <h5 class="cart-item-name">${i.name}</h5>
+            <h5 class="cart-item-name">${escapeHtml(i.name)}${i.combo ? ' <span style="font-size:10px; font-weight:800; color:#b91c1c; background:#fee2e2; padding:2px 6px; border-radius:6px;">COMBO -10%</span>' : ''}</h5>
             <div class="cart-item-meta">Size: <strong>${i.size}</strong></div>
             <div class="cart-item-price">${(i.price * i.quantity).toLocaleString("vi-VN")} đ</div>
             <div class="qty-control">
@@ -1032,16 +1080,20 @@ let currentAppliedCoupon = null;
 
 function updateCheckoutSummaryUI() {
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const shippingFee = subtotal >= 500000 ? 0 : 25000;
-  let discountAmount = 0;
+  const comboInfo = getCartComboInfo();
+  const comboDiscount = comboInfo.discount;
+  const shippingFee = subtotal >= 500000 || comboInfo.valid ? 0 : 25000;
+  const couponBase = Math.max(0, subtotal - comboDiscount);
+  let couponDiscount = 0;
 
   if (currentAppliedCoupon) {
     if (currentAppliedCoupon.discountType === "PERCENT") {
-      discountAmount = Math.round((subtotal * currentAppliedCoupon.discountValue) / 100);
+      couponDiscount = Math.round((couponBase * currentAppliedCoupon.discountValue) / 100);
     } else {
-      discountAmount = currentAppliedCoupon.discountValue;
+      couponDiscount = Math.min(currentAppliedCoupon.discountValue, couponBase);
     }
   }
+  const discountAmount = comboDiscount + couponDiscount;
 
   const finalTotal = Math.max(0, subtotal - discountAmount + shippingFee);
 
@@ -1175,6 +1227,7 @@ async function handleCheckoutSubmit(e) {
       name: i.name,
       quantity: i.quantity,
       size: i.size,
+      combo: !!i.combo,
     })),
     shippingFee,
   };
