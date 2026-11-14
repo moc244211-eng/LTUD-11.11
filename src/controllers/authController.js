@@ -7,19 +7,30 @@ const generateToken = (id) => {
   });
 };
 
-// [POST] /api/auth/register - Đăng ký tài khoản
+// [POST] /api/auth/register - Đăng ký tài khoản (Chống NoSQL Injection)
 exports.register = async (req, res) => {
   try {
     const { name, email, password, phone } = req.body;
 
-    if (!name || !email || !password) {
+    if (
+      !name ||
+      !email ||
+      !password ||
+      typeof name !== "string" ||
+      typeof email !== "string" ||
+      typeof password !== "string"
+    ) {
       return res.status(400).json({
         success: false,
-        message: "Vui lòng nhập đầy đủ họ tên, email và mật khẩu!",
+        message: "Vui lòng nhập đầy đủ và chính xác: họ tên, email và mật khẩu!",
       });
     }
 
-    const existing = await User.findOne({ email });
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanName = name.trim();
+    const cleanPhone = typeof phone === "string" ? phone.trim() : "";
+
+    const existing = await User.findOne({ email: cleanEmail });
 
     if (existing) {
       return res.status(400).json({
@@ -29,10 +40,10 @@ exports.register = async (req, res) => {
     }
 
     const user = await User.create({
-      name,
-      email,
-      password,
-      phone,
+      name: cleanName,
+      email: cleanEmail,
+      password: password,
+      phone: cleanPhone,
       role: "customer",
     });
 
@@ -54,19 +65,25 @@ exports.register = async (req, res) => {
   }
 };
 
-// [POST] /api/auth/login - Đăng nhập nhận Token
+// [POST] /api/auth/login - Đăng nhập nhận Token (Chống NoSQL Injection)
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
+    if (
+      !email ||
+      !password ||
+      typeof email !== "string" ||
+      typeof password !== "string"
+    ) {
       return res.status(400).json({
         success: false,
-        message: "Vui lòng nhập email và mật khẩu!",
+        message: "Vui lòng cung cấp email và mật khẩu hợp lệ!",
       });
     }
 
-    const user = await User.findOne({ email });
+    const cleanEmail = email.trim().toLowerCase();
+    const user = await User.findOne({ email: cleanEmail });
 
     if (!user || !(await user.matchPassword(password))) {
       return res.status(401).json({

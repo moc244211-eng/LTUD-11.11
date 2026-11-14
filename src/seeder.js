@@ -9,6 +9,12 @@ const Article = require("./models/Article");
 const articlesData = require("./data/articlesData");
 
 const seedData = async () => {
+  if (process.env.NODE_ENV === "production" && !process.env.FORCE_SEED) {
+    console.error("❌ BẢO VỆ DỮ LIỆU: Nghiêm cấm chạy Seeder xóa sạch Database trên môi trường PRODUCTION!");
+    console.error("💡 Nếu bạn thực sự muốn khởi tạo lại dữ liệu, hãy đặt FORCE_SEED=true trong môi trường.");
+    process.exit(1);
+  }
+
   try {
     console.log("⏳ Đang kết nối MongoDB Atlas...");
     await mongoose.connect(process.env.MONGODB_URI);

@@ -212,8 +212,9 @@ exports.getArticles = async (req, res) => {
       query.category = category;
     }
 
-    if (search && search.trim() !== "") {
-      const searchRegex = new RegExp(search.trim(), "i");
+    if (search && typeof search === "string" && search.trim() !== "") {
+      const safeSearch = search.trim().replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+      const searchRegex = new RegExp(safeSearch, "i");
       query.$or = [
         { title: searchRegex },
         { excerpt: searchRegex },
@@ -228,8 +229,8 @@ exports.getArticles = async (req, res) => {
       sortOptions = { createdAt: 1 };
     }
 
-    const pageNum = parseInt(page, 10) || 1;
-    const limitNum = parseInt(limit, 10) || 9;
+    const pageNum = Math.max(1, parseInt(page, 10) || 1);
+    const limitNum = Math.min(Math.max(1, parseInt(limit, 10) || 9), 50);
     const skip = (pageNum - 1) * limitNum;
 
     const total = await Article.countDocuments(query);

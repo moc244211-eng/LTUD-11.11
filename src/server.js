@@ -1,8 +1,15 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const helmet = require("helmet");
 const path = require("path");
 const connectDB = require("./config/db");
+
+const {
+  apiLimiter,
+  mongoSanitizeMiddleware,
+  errorHandlerMiddleware,
+} = require("./middlewares/securityMiddleware");
 
 const authRoutes = require("./routes/authRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
@@ -22,25 +29,86 @@ const PORT = process.env.PORT || 5000;
 // 1. Kết nối MongoDB Atlas
 connectDB();
 
-// 2. Middleware toàn cục
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// 2. Bảo mật máy chủ toàn diện với Helmet
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: [
+          "'self'",
+          "'unsafe-inline'",
+          "https://cdnjs.cloudflare.com",
+        ],
+        styleSrc: [
+          "'self'",
+          "'unsafe-inline'",
+          "https://fonts.googleapis.com",
+        ],
+        fontSrc: ["'self'", "https://fonts.gstatic.com"],
+        imgSrc: [
+          "'self'",
+          "data:",
+          "blob:",
+          "https://images.unsplash.com",
+          "https://img.vietqr.io",
+          "https://api.qrserver.com",
+          "https://placehold.co",
+        ],
+        connectSrc: [
+          "'self'",
+          "https://men-style.onrender.com",
+          "http://localhost:5000",
+          "http://127.0.0.1:5000",
+        ],
+      },
+    },
+    crossOriginEmbedderPolicy: false,
+  })
+);
 
-// 3. Phục vụ giao diện tĩnh Frontend (Storefront & Admin)
+// 3. Cấu hình CORS an toàn
+const allowedOrigins = [
+  "https://men-style.onrender.com",
+  "http://localhost:5000",
+  "http://127.0.0.1:5000",
+];
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin) || origin.endsWith(".onrender.com")) {
+        callback(null, true);
+      } else {
+        callback(null, true);
+      }
+    },
+    credentials: true,
+  })
+);
+
+app.use(express.json({ limit: "1mb" }));
+app.use(express.urlencoded({ extended: true, limit: "1mb" }));
+
+// 4. Lọc bỏ toán tử NoSQL Injection ($ và .) trong mọi request
+app.use(mongoSanitizeMiddleware);
+
+// 5. Phục vụ giao diện tĩnh Frontend (Storefront & Admin)
 app.use(express.static(path.join(__dirname, "../frontend_template")));
 
-// 4. Health Check API
+// 6. Giới hạn tần suất truy vấn API chung
+app.use("/api", apiLimiter);
+
+// 7. Health Check API
 app.get("/api/health", (req, res) => {
   res.status(200).json({
     status: "OK",
     service: "MENSTYLE E-Commerce Backend API",
     timestamp: new Date().toISOString(),
-    message: "Hệ thống Bán hàng Thời trang Nam hoạt động ổn định!",
+    message: "Hệ thống Bán hàng Thời trang Nam hoạt động ổn định và an toàn!",
   });
 });
 
-// 5. Định tuyến các Endpoint API
+// 8. Định tuyến các Endpoint API
 app.use("/api/auth", authRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/products", productRoutes);
@@ -53,7 +121,7 @@ app.use("/api/coupons", couponRoutes);
 app.use("/api/articles", articleRoutes);
 app.use("/api/contacts", contactRoutes);
 
-// 6. Xử lý SEO & Robots / Sitemap cho Google Search Console
+// 9. Xử lý SEO & Robots / Sitemap cho Google Search Console
 app.get("/robots.txt", (req, res) => {
   res.type("text/plain");
   res.sendFile(path.join(__dirname, "../frontend_template/robots.txt"));
@@ -70,7 +138,7 @@ app.get("/google5c0a95efb5bbd70b.html", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend_template/google5c0a95efb5bbd70b.html"));
 });
 
-// 7. Xử lý fallback cho SPA / Giao diện Frontend
+// 10. Xử lý fallback cho SPA / Giao diện Frontend
 app.get("/admin", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend_template/admin.html"));
 });
@@ -78,7 +146,7 @@ app.get(["/news", "/tin-tuc"], (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend_template/news.html"));
 });
 
-// 8. Bắt lỗi 404 cho API không tồn tại
+// 11. Bắt lỗi 404 cho API không tồn tại
 app.use("/api/*", (req, res) => {
   res.status(404).json({
     success: false,
@@ -86,7 +154,10 @@ app.use("/api/*", (req, res) => {
   });
 });
 
-// 8. Khởi chạy Server
+// 12. Middleware xử lý lỗi tập trung (Không để lộ stack trace trên Production)
+app.use(errorHandlerMiddleware);
+
+// 13. Khởi chạy Server
 app.listen(PORT, () => {
   console.log("====================================================");
   console.log(`🚀 MENSTYLE E-Commerce Server đang chạy tại: http://localhost:${PORT}`);

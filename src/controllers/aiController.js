@@ -50,10 +50,15 @@ QUY TẮC TƯ VẤN CỦA STYLIST:
 5. CHỈ giới thiệu các sản phẩm có thật trong danh sách trên, nêu chính xác giá bán và số lượng size còn lại.
 `;
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = (process.env.GEMINI_API_KEY || "").trim();
+    const isConfiguredKey =
+      Boolean(apiKey) &&
+      apiKey.length > 20 &&
+      !apiKey.toLowerCase().includes("demo") &&
+      !apiKey.toLowerCase().includes("your");
 
-    // 2. Gọi Google Gemini AI Model
-    if (apiKey && apiKey !== "AIzaSyDemoKeyYourGeminiApiKeyHere12345") {
+    // 2. Gọi Google Gemini AI Model (Nếu có cấu hình GEMINI_API_KEY)
+    if (isConfiguredKey) {
       const modelsToTry = ["gemini-3.5-flash", "gemini-3.5-flash-lite"];
       const genAI = new GoogleGenerativeAI(apiKey);
 

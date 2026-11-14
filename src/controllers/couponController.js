@@ -22,6 +22,21 @@ exports.createCoupon = async (req, res) => {
       });
     }
 
+    const val = Number(discountValue);
+    const type = discountType === "FIXED" ? "FIXED" : "PERCENT";
+    if (type === "PERCENT" && (val < 1 || val > 100)) {
+      return res.status(400).json({
+        success: false,
+        message: "Mã giảm giá phần trăm phải có giá trị từ 1% đến 100%!",
+      });
+    }
+    if (type === "FIXED" && val <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Giá trị giảm tiền mặt phải lớn hơn 0đ!",
+      });
+    }
+
     const existing = await Coupon.findOne({ code: code.toUpperCase() });
     if (existing) {
       return res.status(400).json({
@@ -31,11 +46,11 @@ exports.createCoupon = async (req, res) => {
     }
 
     const coupon = await Coupon.create({
-      code: code.toUpperCase(),
-      discountType: discountType || "PERCENT",
-      discountValue: Number(discountValue),
-      minOrderValue: Number(minOrderValue) || 0,
-      maxUsage: Number(maxUsage) || 100,
+      code: code.toUpperCase().trim(),
+      discountType: type,
+      discountValue: val,
+      minOrderValue: Math.max(0, Number(minOrderValue) || 0),
+      maxUsage: Math.max(1, Number(maxUsage) || 100),
       expiryDate: new Date(expiryDate),
     });
 
@@ -116,9 +131,10 @@ exports.validateCoupon = async (req, res) => {
 
     let discountAmount = 0;
     if (coupon.discountType === "PERCENT") {
-      discountAmount = Math.round((currentTotal * coupon.discountValue) / 100);
+      const pct = Math.min(100, Math.max(1, Number(coupon.discountValue) || 0));
+      discountAmount = Math.round((currentTotal * pct) / 100);
     } else {
-      discountAmount = coupon.discountValue;
+      discountAmount = Math.min(Number(coupon.discountValue) || 0, currentTotal);
     }
 
     res.status(200).json({

@@ -113,9 +113,19 @@ exports.updateCategory = async (req, res) => {
   }
 };
 
-// [DELETE] /api/categories/:id - Xóa danh mục
+// [DELETE] /api/categories/:id - Xóa danh mục an toàn (Kiểm tra sản phẩm mồ côi)
 exports.deleteCategory = async (req, res) => {
   try {
+    const Product = require("../models/Product");
+    const productCount = await Product.countDocuments({ category: req.params.id });
+
+    if (productCount > 0) {
+      return res.status(400).json({
+        success: false,
+        message: `Không thể xóa danh mục này vì còn ${productCount} sản phẩm đang thuộc danh mục. Vui lòng chuyển hoặc xóa các sản phẩm đó trước!`,
+      });
+    }
+
     const category = await Category.findByIdAndDelete(req.params.id);
 
     if (!category) {

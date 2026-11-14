@@ -60,4 +60,11 @@ const productSchema = new mongoose.Schema(
   }
 );
 
+// Tối ưu hóa truy vấn danh mục, lọc giá và tìm kiếm
+productSchema.index({ category: 1 });
+productSchema.index({ brand: 1 });
+productSchema.index({ salePrice: 1 });
+productSchema.index({ isFeatured: 1 });
+productSchema.index({ createdAt: -1 });
+
 module.exports = mongoose.model("Product", productSchema);

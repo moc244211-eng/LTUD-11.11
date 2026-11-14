@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
   <title>Bảng Điều Khiển Quản Trị - MENSTYLE Admin Dashboard</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
@@ -1159,6 +1160,16 @@
   <!-- Scripts -->
   <script src="js/api.js"></script>
   <script>
+    function escapeHtml(text) {
+      if (text === null || text === undefined) return '';
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
     /**
      * HỆ THỐNG TOÀN DIỆN CHO ADMIN DASHBOARD MENSTYLE
      * Quản lý Sản phẩm, Danh mục, Đơn hàng, Khách hàng, Tồn kho, Mã giảm giá, Doanh thu
@@ -1380,8 +1391,8 @@
         <div class="top-list-item">
           <div style="width:28px; height:28px; border-radius:50%; background:#eff6ff; color:#2563eb; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:12px;">${i + 1}</div>
           <div class="top-list-info">
-            <div class="top-list-title">${c.name}</div>
-            <div class="top-list-sub">${c.email} • ${c.orderCount} đơn hàng</div>
+            <div class="top-list-title">${escapeHtml(c.name)}</div>
+            <div class="top-list-sub">${escapeHtml(c.email)} • ${c.orderCount} đơn hàng</div>
           </div>
           <strong style="color:var(--danger); font-size:13px;">${Number(c.totalSpent).toLocaleString('vi-VN')} đ</strong>
         </div>
@@ -1397,9 +1408,9 @@
       }
       el.innerHTML = products.map((p, i) => `
         <div class="top-list-item">
-          <img src="${p.image || 'https://via.placeholder.com/50'}" class="top-list-img">
+          <img src="${p.image || 'https://via.placeholder.com/50'}" class="top-list-img" alt="${escapeHtml(p.name)}">
           <div class="top-list-info">
-            <div class="top-list-title">${p.name}</div>
+            <div class="top-list-title">${escapeHtml(p.name)}</div>
             <div class="top-list-sub">Đơn giá: ${Number(p.price).toLocaleString('vi-VN')} đ</div>
           </div>
           <div style="text-align:right;">
@@ -1421,10 +1432,10 @@
         <div class="top-list-item">
           <div style="font-size:20px;">📦</div>
           <div class="top-list-info">
-            <div class="top-list-title">Đơn #${o.orderCode} - ${o.customerName}</div>
-            <div class="top-list-sub">${new Date(o.createdAt).toLocaleTimeString('vi-VN')} • ${o.paymentMethod}</div>
+            <div class="top-list-title">Đơn #${escapeHtml(o.orderCode || o._id.slice(-6).toUpperCase())} - ${escapeHtml(o.customerName)}</div>
+            <div class="top-list-sub">${new Date(o.createdAt).toLocaleTimeString('vi-VN')} • ${escapeHtml(o.paymentMethod)}</div>
           </div>
-          <span class="badge-status status-${o.orderStatus}">${o.orderStatus}</span>
+          <span class="badge-status status-${o.orderStatus}">${escapeHtml(o.orderStatus)}</span>
         </div>
       `).join('');
     }
@@ -1446,12 +1457,12 @@
               const dateStr = new Date(u.createdAt).toLocaleDateString('vi-VN');
               return `
                 <tr>
-                  <td><code>${u._id.slice(-6).toUpperCase()}</code></td>
+                  <td><code>${escapeHtml(u._id.slice(-6).toUpperCase())}</code></td>
                   <td>
-                    <strong>${u.name}</strong>
+                    <strong>${escapeHtml(u.name)}</strong>
                   </td>
-                  <td>${u.email}</td>
-                  <td>${u.phone}</td>
+                  <td>${escapeHtml(u.email)}</td>
+                  <td>${escapeHtml(u.phone)}</td>
                   <td style="color:#64748b; font-size:12.5px;">${dateStr}</td>
                   <td><strong>${u.totalOrders} đơn</strong></td>
                   <td><strong style="color:var(--danger);">${Number(u.totalSpent).toLocaleString('vi-VN')} đ</strong></td>
@@ -1526,9 +1537,9 @@
               ${(u.name || 'U').charAt(0).toUpperCase()}
             </div>
             <div>
-              <h4 style="font-size:17px; font-weight:800; margin-bottom:2px;">${u.name}</h4>
-              <p style="font-size:13px; color:#64748b;">${u.email} • SĐT: ${u.phone || 'Chưa cập nhật'}</p>
-              <p style="font-size:12.5px; color:#64748b;">Địa chỉ: ${u.address || 'Chưa có địa chỉ mặc định'}</p>
+              <h4 style="font-size:17px; font-weight:800; margin-bottom:2px;">${escapeHtml(u.name)}</h4>
+              <p style="font-size:13px; color:#64748b;">${escapeHtml(u.email)} • SĐT: ${escapeHtml(u.phone || 'Chưa cập nhật')}</p>
+              <p style="font-size:12.5px; color:#64748b;">Địa chỉ: ${escapeHtml(u.address || 'Chưa có địa chỉ mặc định')}</p>
             </div>
           </div>
 
@@ -1651,7 +1662,7 @@
           } else {
             tbody.innerHTML = res.data.map(c => `
               <tr>
-                <td><code style="background:#f1f5f9; padding:4px 8px; border-radius:4px; font-weight:800; color:#1e3a8a;">${c.code}</code></td>
+                <td><code style="background:#f1f5f9; padding:4px 8px; border-radius:4px; font-weight:800; color:#1e3a8a;">${escapeHtml(c.code)}</code></td>
                 <td>${c.discountType === 'PERCENT' ? 'Giảm %' : 'Giảm tiền mặt'}</td>
                 <td><strong>${c.discountType === 'PERCENT' ? `${c.discountValue}%` : `${Number(c.discountValue).toLocaleString('vi-VN')} đ`}</strong></td>
                 <td>${Number(c.minOrderValue).toLocaleString('vi-VN')} đ</td>
@@ -1739,11 +1750,11 @@
         const filterCatSelect = document.getElementById('adminProductCatFilter');
         if (pCatSelect) {
           pCatSelect.innerHTML = '<option value="">-- Chọn danh mục --</option>' +
-            res.data.map(c => `<option value="${c._id}">${c.name}</option>`).join('');
+            res.data.map(c => `<option value="${escapeHtml(c._id)}">${escapeHtml(c.name)}</option>`).join('');
         }
         if (filterCatSelect) {
           filterCatSelect.innerHTML = '<option value="">Tất cả danh mục</option>' +
-            res.data.map(c => `<option value="${c._id}">${c.name}</option>`).join('');
+            res.data.map(c => `<option value="${escapeHtml(c._id)}">${escapeHtml(c.name)}</option>`).join('');
         }
 
         if (tbody) {
@@ -1752,10 +1763,10 @@
           } else {
             tbody.innerHTML = res.data.map(c => `
               <tr>
-                <td><img src="${c.image || 'https://via.placeholder.com/50'}" style="width:48px; height:48px; object-fit:cover; border-radius:6px;"></td>
-                <td><strong>${c.name}</strong></td>
-                <td><code style="background:#f1f5f9; padding:2px 6px; border-radius:4px;">${c.slug}</code></td>
-                <td style="color:#64748b; font-size:13px;">${c.description || '-'}</td>
+                <td><img src="${c.image || 'https://via.placeholder.com/50'}" style="width:48px; height:48px; object-fit:cover; border-radius:6px;" alt="${escapeHtml(c.name)}"></td>
+                <td><strong>${escapeHtml(c.name)}</strong></td>
+                <td><code style="background:#f1f5f9; padding:2px 6px; border-radius:4px;">${escapeHtml(c.slug)}</code></td>
+                <td style="color:#64748b; font-size:13px;">${escapeHtml(c.description || '-')}</td>
                 <td>
                   <div style="display:flex; gap:6px;">
                     <button class="btn-action btn-act-edit" onclick="openEditCategoryModal('${c._id}', '${escapeQuotes(c.name)}', '${escapeQuotes(c.image)}', '${escapeQuotes(c.description)}')">✏️ Sửa</button>
@@ -1886,12 +1897,12 @@
           const catId = p.category ? (p.category._id || p.category) : '';
           return `
             <tr>
-              <td><img src="${p.image || 'https://via.placeholder.com/50'}" style="width:48px; height:58px; object-fit:cover; border-radius:6px;"></td>
+              <td><img src="${p.image || 'https://via.placeholder.com/50'}" style="width:48px; height:58px; object-fit:cover; border-radius:6px;" alt="${escapeHtml(p.name)}"></td>
               <td>
-                <strong>${p.name}</strong>
+                <strong>${escapeHtml(p.name)}</strong>
               </td>
-              <td><span style="font-size:12.5px; font-weight:700; color:#1e3a8a;">${p.brand || 'MENSTYLE'}</span></td>
-              <td><span class="brand-badge">${catName}</span></td>
+              <td><span style="font-size:12.5px; font-weight:700; color:#1e3a8a;">${escapeHtml(p.brand || 'MENSTYLE')}</span></td>
+              <td><span class="brand-badge">${escapeHtml(catName)}</span></td>
               <td><strong style="color:var(--danger);">${Number(p.salePrice).toLocaleString('vi-VN')} đ</strong></td>
               <td><span style="color:#94a3b8; text-decoration:line-through;">${Number(p.originalPrice).toLocaleString('vi-VN')} đ</span></td>
               <td>
@@ -2019,15 +2030,15 @@
 
           return `
             <tr>
-              <td><strong>#${o.orderCode || o._id.slice(-6).toUpperCase()}</strong></td>
+              <td><strong>#${escapeHtml(o.orderCode || o._id.slice(-6).toUpperCase())}</strong></td>
               <td style="font-size:12px; color:#64748b;">${dateStr}</td>
-              <td><strong>${o.customerName}</strong></td>
+              <td><strong>${escapeHtml(o.customerName)}</strong></td>
               <td style="font-size:12px;">
-                📞 ${o.customerPhone}<br>
-                📍 <span style="color:#64748b;">${o.shippingAddress}</span>
+                📞 ${escapeHtml(o.customerPhone)}<br>
+                📍 <span style="color:#64748b;">${escapeHtml(o.shippingAddress)}</span>
               </td>
               <td><strong style="color:var(--danger);">${Number(o.totalAmount).toLocaleString('vi-VN')} đ</strong></td>
-              <td><span class="brand-badge">${o.paymentMethod}</span></td>
+              <td><span class="brand-badge">${escapeHtml(o.paymentMethod)}</span></td>
               <td>
                 <span class="badge-status status-${o.paymentStatus}">
                   ${isPaid ? '✓ Đã TT' : 'Chưa TT'}
@@ -2035,7 +2046,7 @@
               </td>
               <td>
                 <span class="badge-status status-${o.orderStatus}">
-                  ${o.orderStatus}
+                  ${escapeHtml(o.orderStatus)}
                 </span>
               </td>
               <td>
@@ -2107,12 +2118,12 @@
       body.innerHTML = `
         <div style="background:#f8fafc; padding:14px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:16px;">
           <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-            <div><strong>Khách hàng:</strong> ${order.customerName}</div>
-            <div><strong>SĐT:</strong> ${order.customerPhone}</div>
+            <div><strong>Khách hàng:</strong> ${escapeHtml(order.customerName)}</div>
+            <div><strong>SĐT:</strong> ${escapeHtml(order.customerPhone)}</div>
           </div>
-          <div style="font-size:13px; color:#475569; margin-bottom:4px;"><strong>Email:</strong> ${order.customerEmail}</div>
-          <div style="font-size:13px; color:#475569; margin-bottom:4px;"><strong>Địa chỉ giao:</strong> ${order.shippingAddress}</div>
-          <div style="font-size:13px; color:#475569;"><strong>Ghi chú:</strong> ${order.note || 'Không có'}</div>
+          <div style="font-size:13px; color:#475569; margin-bottom:4px;"><strong>Email:</strong> ${escapeHtml(order.customerEmail)}</div>
+          <div style="font-size:13px; color:#475569; margin-bottom:4px;"><strong>Địa chỉ giao:</strong> ${escapeHtml(order.shippingAddress)}</div>
+          <div style="font-size:13px; color:#475569;"><strong>Ghi chú:</strong> ${escapeHtml(order.note || 'Không có')}</div>
         </div>
 
         <h4 style="font-size:14.5px; font-weight:800; margin-bottom:10px;">Sản Phẩm Trong Đơn:</h4>
@@ -2130,8 +2141,8 @@
             <tbody>
               ${(order.items || []).map(item => `
                 <tr>
-                  <td><strong>${item.name}</strong></td>
-                  <td><span class="brand-badge">${item.size || 'L'}</span></td>
+                  <td><strong>${escapeHtml(item.name)}</strong></td>
+                  <td><span class="brand-badge">${escapeHtml(item.size || 'L')}</span></td>
                   <td>${Number(item.price).toLocaleString('vi-VN')} đ</td>
                   <td><strong>x${item.quantity}</strong></td>
                   <td><strong style="color:var(--danger);">${Number(item.price * item.quantity).toLocaleString('vi-VN')} đ</strong></td>
@@ -2259,10 +2270,10 @@
       </div>
       <div class="info-panel">
         <h4>THÔNG TIN NGƯỜI NHẬN HÀNG</h4>
-        <div><strong>Họ tên:</strong> ${order.customerName}</div>
-        <div><strong>Số điện thoại:</strong> ${order.customerPhone}</div>
-        <div><strong>Địa chỉ:</strong> ${order.shippingAddress}</div>
-        <div><strong>Ghi chú đơn:</strong> ${order.note || 'Không có'}</div>
+        <div><strong>Họ tên:</strong> ${escapeHtml(order.customerName)}</div>
+        <div><strong>Số điện thoại:</strong> ${escapeHtml(order.customerPhone)}</div>
+        <div><strong>Địa chỉ:</strong> ${escapeHtml(order.shippingAddress)}</div>
+        <div><strong>Ghi chú đơn:</strong> ${escapeHtml(order.note || 'Không có')}</div>
       </div>
     </div>
 
@@ -2281,8 +2292,8 @@
         ${(order.items || []).map((it, idx) => `
           <tr>
             <td style="text-align: center;">${idx + 1}</td>
-            <td><strong>${it.name}</strong></td>
-            <td style="text-align: center; font-weight: bold;">${it.size || 'L'}</td>
+            <td><strong>${escapeHtml(it.name)}</strong></td>
+            <td style="text-align: center; font-weight: bold;">${escapeHtml(it.size || 'L')}</td>
             <td style="text-align: center; font-weight: bold;">${it.quantity}</td>
             <td style="text-align: right;">${Number(it.price).toLocaleString('vi-VN')} đ</td>
             <td style="text-align: right; font-weight: bold;">${Number(it.price * it.quantity).toLocaleString('vi-VN')} đ</td>
@@ -2368,11 +2379,11 @@
               <img src="${art.image}" alt="" style="width:50px; height:50px; object-fit:cover; border-radius:6px;">
             </td>
             <td>
-              <div style="font-weight:800; color:#0f172a; max-width:280px; line-height:1.35; margin-bottom:4px;">${art.title}</div>
-              <code style="font-size:11px; color:#64748b; background:#f1f5f9; padding:2px 6px; border-radius:4px;">${art.slug}</code>
+              <div style="font-weight:800; color:#0f172a; max-width:280px; line-height:1.35; margin-bottom:4px;">${escapeHtml(art.title)}</div>
+              <code style="font-size:11px; color:#64748b; background:#f1f5f9; padding:2px 6px; border-radius:4px;">${escapeHtml(art.slug)}</code>
             </td>
-            <td><span class="brand-badge">${art.category}</span></td>
-            <td><span style="font-size:12.5px; font-weight:600;">${art.author || 'MENSTYLE'}</span></td>
+            <td><span class="brand-badge">${escapeHtml(art.category)}</span></td>
+            <td><span style="font-size:12.5px; font-weight:600;">${escapeHtml(art.author || 'MENSTYLE')}</span></td>
             <td><strong>${(art.views || 0).toLocaleString()}</strong></td>
             <td>
               <span class="badge-status ${art.isFeatured ? 'badge-active' : 'badge-pending'}">
@@ -2587,17 +2598,17 @@
               <div style="font-size:12.5px; font-weight:700; color:#0f172a;">${dateStr}</div>
             </td>
             <td>
-              <div style="font-weight:800; color:#0b0b0b; font-size:13.5px; margin-bottom:2px;">${c.name}</div>
+              <div style="font-weight:800; color:#0b0b0b; font-size:13.5px; margin-bottom:2px;">${escapeHtml(c.name)}</div>
               <div style="font-size:12px; margin-bottom:2px;">
-                📞 <a href="tel:${c.phone}" style="color:var(--primary); font-weight:700; text-decoration:none;" title="Bấm để gọi ngay">${c.phone}</a>
+                📞 <a href="tel:${escapeHtml(c.phone)}" style="color:var(--primary); font-weight:700; text-decoration:none;" title="Bấm để gọi ngay">${escapeHtml(c.phone)}</a>
               </div>
-              ${c.email ? `<div style="font-size:11.5px; color:#64748b;">✉️ ${c.email}</div>` : ''}
+              ${c.email ? `<div style="font-size:11.5px; color:#64748b;">✉️ ${escapeHtml(c.email)}</div>` : ''}
             </td>
             <td>
-              <span class="brand-badge" style="background:#f1f5f9; color:#0f172a; font-weight:700;">${c.topic || 'Tư vấn'}</span>
+              <span class="brand-badge" style="background:#f1f5f9; color:#0f172a; font-weight:700;">${escapeHtml(c.topic || 'Tư vấn')}</span>
             </td>
             <td>
-              <div style="font-size:13px; color:#334155; line-height:1.5; max-width:320px; white-space:pre-wrap;">${c.message || ''}</div>
+              <div style="font-size:13px; color:#334155; line-height:1.5; max-width:320px; white-space:pre-wrap;">${escapeHtml(c.message || '')}</div>
             </td>
             <td>
               <select class="admin-form-select" style="font-size:12px; padding:4px 8px; border-radius:6px; font-weight:700;" onchange="handleUpdateContactStatus('${c._id}', this.value)">

@@ -7,9 +7,10 @@ const {
   deleteContact,
 } = require("../controllers/contactController");
 const { protect, authorize } = require("../middlewares/authMiddleware");
+const { contactLimiter } = require("../middlewares/securityMiddleware");
 
-// 1. Gửi yêu cầu liên hệ (Công khai cho toàn bộ khách hàng ghé thăm website)
-router.post("/", createContact);
+// 1. Gửi yêu cầu liên hệ (Rate-limited chống spam thư rác)
+router.post("/", contactLimiter, createContact);
 
 // 2. Các thao tác quản trị hộp thư liên hệ (Yêu cầu xác thực tài khoản Admin)
 router.get("/", protect, authorize("admin"), getContacts);

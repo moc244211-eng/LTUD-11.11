@@ -226,7 +226,7 @@ function renderProductCard(p) {
   return `
     <div class="product-card">
       <div class="product-thumb-wrap" onclick="viewProductDetail('${p._id}')">
-        <img src="${imgUrl}" alt="${p.name}" class="product-thumb" onerror="this.src='https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600'">
+        <img src="${imgUrl}" alt="${escapeHtml(p.name)}" class="product-thumb" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600'">
         ${discount > 0 ? `<span class="discount-tag">-${discount}%</span>` : ""}
         <button class="btn-wishlist ${isWishlisted ? "active" : ""}" onclick="toggleWishlist(event, '${p._id}')" title="Yêu thích">
           ${isWishlisted ? "❤️" : "♡"}
@@ -793,7 +793,7 @@ function buildMixMatchHtml(mainProd) {
         <!-- Món 1: Sản phẩm chính -->
         <div class="mix-item-card">
           <input type="checkbox" checked disabled class="mix-item-checkbox" title="Sản phẩm đang chọn">
-          <img src="${mainProd.image || 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=200'}" class="mix-item-img">
+          <img src="${mainProd.image || 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=200'}" alt="${escapeHtml(mainProd.name)}" class="mix-item-img" loading="lazy">
           <div class="mix-item-name">${escapeHtml(mainProd.name)}</div>
           <div class="mix-item-price">${Number(mainProd.salePrice).toLocaleString("vi-VN")} đ</div>
           <div style="font-size:11px; color:#64748b; font-weight:700;">Size: <span id="mixItemSize0">${selectedDetailSize || "L"}</span></div>
@@ -802,7 +802,7 @@ function buildMixMatchHtml(mainProd) {
         <!-- Món 2: Phối kèm 1 -->
         <div class="mix-item-card">
           <input type="checkbox" id="mixCheck1" checked class="mix-item-checkbox" onchange="recalculateMixMatchCombo()">
-          <img src="${comp1.image || 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=200'}" class="mix-item-img">
+          <img src="${comp1.image || 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=200'}" alt="${escapeHtml(comp1.name)}" class="mix-item-img" loading="lazy">
           <div class="mix-item-name">${escapeHtml(comp1.name)}</div>
           <div class="mix-item-price">${Number(comp1.salePrice).toLocaleString("vi-VN")} đ</div>
           <select class="mix-item-size-select" id="mixSelectSize1" onchange="updateMixItemSize(1, this.value)">
@@ -813,7 +813,7 @@ function buildMixMatchHtml(mainProd) {
         <!-- Món 3: Phối kèm 2 -->
         <div class="mix-item-card">
           <input type="checkbox" id="mixCheck2" checked class="mix-item-checkbox" onchange="recalculateMixMatchCombo()">
-          <img src="${comp2.image || 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200'}" class="mix-item-img">
+          <img src="${comp2.image || 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200'}" alt="${escapeHtml(comp2.name)}" class="mix-item-img" loading="lazy">
           <div class="mix-item-name">${escapeHtml(comp2.name)}</div>
           <div class="mix-item-price">${Number(comp2.salePrice).toLocaleString("vi-VN")} đ</div>
           <select class="mix-item-size-select" id="mixSelectSize2" onchange="updateMixItemSize(2, this.value)">

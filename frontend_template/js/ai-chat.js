@@ -151,8 +151,9 @@ function appendMessage(text, sender) {
     }
   }
 
-  // Format cơ bản Markdown: **bold** thành <strong> và xuống dòng
-  let formatted = cleanText
+  // Chống XSS: Thoát toàn bộ ký tự HTML đặc biệt trước khi định dạng Markdown
+  const safeText = escapeHtml(cleanText);
+  let formatted = safeText
     .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
     .replace(/\n/g, "<br>");
 

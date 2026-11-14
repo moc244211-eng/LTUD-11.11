@@ -61,10 +61,6 @@ const API = {
       const res = await fetch(`${API_BASE_URL}/categories`);
       return await res.json();
     } catch (err) {
-      if (isLocal && API_BASE_URL.includes('localhost:5000')) {
-        API_BASE_URL = RENDER_FALLBACK_API;
-        return await this.getCategories();
-      }
       console.error('Lỗi API Lấy danh mục:', err);
       return { success: false, data: [] };
     }
@@ -140,10 +136,6 @@ const API = {
       const res = await fetch(url);
       return await res.json();
     } catch (err) {
-      if (isLocal && API_BASE_URL.includes('localhost:5000')) {
-        API_BASE_URL = RENDER_FALLBACK_API;
-        return await this.getProducts(params);
-      }
       console.error('Lỗi API Lấy sản phẩm:', err);
       return { success: false, data: [] };
     }
@@ -249,10 +241,6 @@ const API = {
       const res = await fetch(`${API_BASE_URL}/orders/track/${q}`);
       return await res.json();
     } catch (err) {
-      if (isLocal && API_BASE_URL.includes('localhost:5000')) {
-        API_BASE_URL = RENDER_FALLBACK_API;
-        return await this.trackOrder(query);
-      }
       return { success: false, message: 'Không thể kết nối đến máy chủ tra cứu: ' + err.message };
     }
   },
@@ -775,10 +763,6 @@ const API = {
       });
       return await res.json();
     } catch (err) {
-      if (isLocal && API_BASE_URL.includes('localhost:5000')) {
-        API_BASE_URL = RENDER_FALLBACK_API;
-        return await this.sendContact(contactData);
-      }
       console.error('Lỗi API sendContact:', err);
       return { success: false, message: 'Không thể kết nối đến máy chủ API' };
     }
@@ -792,10 +776,6 @@ const API = {
       });
       return await res.json();
     } catch (err) {
-      if (isLocal && API_BASE_URL.includes('localhost:5000')) {
-        API_BASE_URL = RENDER_FALLBACK_API;
-        return await this.getContacts(token, query);
-      }
       return { success: false, message: err.message, data: [] };
     }
   },

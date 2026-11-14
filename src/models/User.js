@@ -43,6 +43,10 @@ const userSchema = new mongoose.Schema(
   },
 );
 
+userSchema.index({ role: 1 });
+userSchema.index({ phone: 1 });
+userSchema.index({ createdAt: -1 });
+
 // Tự động mã hóa mật khẩu trước khi lưu CSDL (pre-save hook)
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();

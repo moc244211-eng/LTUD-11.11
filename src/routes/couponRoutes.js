@@ -8,9 +8,10 @@ const {
   validateCoupon,
 } = require("../controllers/couponController");
 const { protect, authorize } = require("../middlewares/authMiddleware");
+const { couponLimiter } = require("../middlewares/securityMiddleware");
 
-// Kiểm tra mã giảm giá (áp dụng cho cả khách và admin)
-router.post("/validate", validateCoupon);
+// Kiểm tra mã giảm giá (Rate-limited chống dò quét mã)
+router.post("/validate", couponLimiter, validateCoupon);
 
 // Các thao tác quản trị yêu cầu quyền Admin
 router.get("/", protect, authorize("admin"), getCoupons);

@@ -82,7 +82,6 @@ exports.createContact = async (req, res) => {
 // [GET] /api/contacts - Quản trị viên lấy danh sách yêu cầu liên hệ (Lọc trạng thái, Tìm kiếm)
 exports.getContacts = async (req, res) => {
   try {
-    await ensureSampleContacts();
     const { status, search } = req.query;
     const filter = {};
 
@@ -90,8 +89,9 @@ exports.getContacts = async (req, res) => {
       filter.status = status;
     }
 
-    if (search) {
-      const regex = { $regex: search.trim(), $options: "i" };
+    if (search && typeof search === "string" && search.trim()) {
+      const safeSearch = search.trim().replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+      const regex = { $regex: safeSearch, $options: "i" };
       filter.$or = [
         { name: regex },
         { phone: regex },

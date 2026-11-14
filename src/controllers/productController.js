@@ -45,22 +45,26 @@ async function ensureOnly5DiscountedProducts() {
   }
 }
 
-// [GET] /api/products - Lấy danh sách sản phẩm (Phân trang, Lọc danh mục, Lọc khoảng giá, Tìm kiếm Regex)
+function escapeRegex(text) {
+  if (typeof text !== "string") return "";
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+}
+
+// [GET] /api/products - Lấy danh sách sản phẩm (Phân trang an toàn, Lọc danh mục, Lọc khoảng giá, Chống ReDoS)
 exports.getProducts = async (req, res) => {
   try {
-    await ensureOnly5DiscountedProducts();
     const { category, search, minPrice, maxPrice, sort, all } = req.query;
     const filter = {};
 
-    // 1. Lọc theo danh mục
-    if (category) {
-      filter.category = category;
+    // 1. Lọc theo danh mục (Kiểm tra kiểu dữ liệu chuỗi để chống NoSQL Injection)
+    if (category && typeof category === "string") {
+      filter.category = category.trim();
     }
 
-    // 2. Tìm kiếm Regex: tên sản phẩm, thương hiệu, mô tả hoặc theo danh mục tương ứng
-    if (search) {
-      const trimmedSearch = search.trim();
-      const searchRegex = { $regex: trimmedSearch, $options: "i" };
+    // 2. Tìm kiếm Regex an toàn chống ReDoS
+    if (search && typeof search === "string" && search.trim()) {
+      const safeSearch = escapeRegex(search.trim());
+      const searchRegex = { $regex: safeSearch, $options: "i" };
       const matchedCats = await Category.find({ name: searchRegex }).select("_id");
       const matchedCatIds = matchedCats.map((c) => c._id);
 
@@ -75,11 +79,11 @@ exports.getProducts = async (req, res) => {
     // 3. Lọc theo khoảng giá (salePrice $gte / $lte)
     if (minPrice || maxPrice) {
       filter.salePrice = {};
-      if (minPrice !== undefined && minPrice !== "") {
-        filter.salePrice.$gte = Number(minPrice);
+      if (minPrice !== undefined && minPrice !== "" && !isNaN(Number(minPrice))) {
+        filter.salePrice.$gte = Math.max(0, Number(minPrice));
       }
-      if (maxPrice !== undefined && maxPrice !== "") {
-        filter.salePrice.$lte = Number(maxPrice);
+      if (maxPrice !== undefined && maxPrice !== "" && !isNaN(Number(maxPrice))) {
+        filter.salePrice.$lte = Math.max(0, Number(maxPrice));
       }
     }
 
@@ -89,11 +93,12 @@ exports.getProducts = async (req, res) => {
     if (sort === "price_desc") sortQuery = { salePrice: -1 };
     if (sort === "rating") sortQuery = { rating: -1 };
 
-    // 5. Nếu yêu cầu lấy toàn bộ (dành cho Admin hoặc AI RAG)
+    // 5. Nếu yêu cầu lấy toàn bộ (dành cho Admin hoặc AI RAG, giới hạn trần 100 sản phẩm để bảo vệ RAM)
     if (all === "true") {
       const products = await Product.find(filter)
         .populate("category", "name slug")
-        .sort(sortQuery);
+        .sort(sortQuery)
+        .limit(100);
 
       return res.status(200).json({
         success: true,
@@ -106,9 +111,9 @@ exports.getProducts = async (req, res) => {
       });
     }
 
-    // 6. Thuật toán Phân trang chuyên nghiệp (Pagination)
-    const page = Math.max(1, parseInt(req.query.page) || 1);
-    const limit = Math.max(1, parseInt(req.query.limit) || 8);
+    // 6. Phân trang có kiểm soát giới hạn trần tối đa 50 sản phẩm/trang
+    const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+    const limit = Math.min(Math.max(1, parseInt(req.query.limit, 10) || 8), 50);
     const skip = (page - 1) * limit;
 
     const total = await Product.countDocuments(filter);

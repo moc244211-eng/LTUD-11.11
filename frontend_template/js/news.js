@@ -405,6 +405,19 @@ function updateArticleSeoMeta(art) {
   const ogImg = document.querySelector('meta[property="og:image"]');
   if (ogImg) ogImg.setAttribute('content', art.image);
 
+  // Cập nhật Canonical & OG:URL chuẩn xác cho từng bài viết tránh lỗi trùng lặp nội dung
+  const articleUrl = `https://men-style.onrender.com/news.html?slug=${art.slug}`;
+  let canonicalTag = document.querySelector('link[rel="canonical"]');
+  if (!canonicalTag) {
+    canonicalTag = document.createElement('link');
+    canonicalTag.setAttribute('rel', 'canonical');
+    document.head.appendChild(canonicalTag);
+  }
+  canonicalTag.setAttribute('href', articleUrl);
+
+  let ogUrl = document.querySelector('meta[property="og:url"]');
+  if (ogUrl) ogUrl.setAttribute('content', articleUrl);
+
   let schemaScript = document.getElementById('articleJsonLd');
   if (!schemaScript) {
     schemaScript = document.createElement('script');
@@ -435,7 +448,7 @@ function updateArticleSeoMeta(art) {
     },
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": window.location.href
+      "@id": articleUrl
     }
   };
   schemaScript.textContent = JSON.stringify(jsonLdData);
@@ -443,6 +456,12 @@ function updateArticleSeoMeta(art) {
 
 function resetArticleSeoMeta() {
   document.title = 'MENSTYLE Magazine – Tạp Chí Xu Hướng & Cẩm Nang Thời Trang Nam';
+  const defaultUrl = 'https://men-style.onrender.com/news.html';
+  const canonicalTag = document.querySelector('link[rel="canonical"]');
+  if (canonicalTag) canonicalTag.setAttribute('href', defaultUrl);
+  const ogUrl = document.querySelector('meta[property="og:url"]');
+  if (ogUrl) ogUrl.setAttribute('content', defaultUrl);
+
   const schemaScript = document.getElementById('articleJsonLd');
   if (schemaScript) schemaScript.remove();
 }
