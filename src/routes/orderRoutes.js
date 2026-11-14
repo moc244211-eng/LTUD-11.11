@@ -13,9 +13,10 @@ const {
   trackOrder,
 } = require("../controllers/orderController");
 const { protect, authorize, optionalAuth } = require("../middlewares/authMiddleware");
+const { orderLimiter } = require("../middlewares/securityMiddleware");
 
 // 1. Đặt hàng (khách vãng lai hoặc thành viên đã đăng nhập)
-router.post("/", optionalAuth, createOrder);
+router.post("/", orderLimiter, optionalAuth, createOrder);
 
 // 2. Tra cứu đơn hàng công khai theo mã đơn hàng hoặc số điện thoại (Guest Tracking)
 router.get("/track/:query", trackOrder);

@@ -1,3 +1,4 @@
+const { sendServerError } = require("../utils/errorResponse");
 const User = require("../models/User");
 const Order = require("../models/Order");
 
@@ -44,6 +45,14 @@ exports.getUsers = async (req, res) => {
       ],
     }).select("user customerEmail paymentStatus orderStatus totalAmount");
 
+    const userIdByEmail = {};
+    const emailByUserId = {};
+    for (const u of users) {
+      const em = (u.email || "").toLowerCase();
+      userIdByEmail[em] = u._id.toString();
+      emailByUserId[u._id.toString()] = em;
+    }
+
     const statsMap = {};
     for (const o of allOrders) {
       const uId = o.user ? o.user.toString() : null;
@@ -52,7 +61,8 @@ exports.getUsers = async (req, res) => {
         o.paymentStatus === "PAID" || o.orderStatus === "COMPLETED";
       const amount = Number(o.totalAmount) || 0;
 
-      const key = uId || email;
+      // BUG-08: gom đơn đăng nhập + đơn vãng lai (cùng email) về đúng 1 khách hàng
+      const key = (uId && emailByUserId[uId] !== undefined ? uId : null) || userIdByEmail[email] || null;
       if (key) {
         if (!statsMap[key]) statsMap[key] = { totalOrders: 0, totalSpent: 0 };
         statsMap[key].totalOrders += 1;
@@ -63,7 +73,7 @@ exports.getUsers = async (req, res) => {
     const usersWithStats = users.map((u) => {
       const uId = u._id.toString();
       const email = (u.email || "").toLowerCase();
-      const stats = statsMap[uId] || statsMap[email] || { totalOrders: 0, totalSpent: 0 };
+      const stats = statsMap[uId] || { totalOrders: 0, totalSpent: 0 };
 
       return {
         _id: u._id,
@@ -84,7 +94,7 @@ exports.getUsers = async (req, res) => {
       data: usersWithStats,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 };
 
@@ -125,7 +135,7 @@ exports.getUserById = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 };
 
@@ -156,7 +166,7 @@ exports.toggleBlockUser = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 };
 
@@ -182,6 +192,6 @@ exports.deleteUser = async (req, res) => {
       message: "Đã xóa tài khoản khách hàng thành công!",
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 };

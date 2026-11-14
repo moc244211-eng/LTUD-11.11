@@ -572,7 +572,7 @@ function escapeHtml(text) {
 // 12. Tích hợp Header (Giỏ hàng & User profile)
 function updateHeaderCartAndWishlist() {
   try {
-    const cart = JSON.parse(localStorage.getItem('menstyle_cart') || '[]');
+    const cart = JSON.parse(localStorage.getItem('MENSTYLE_CART') || '[]');
     const totalCount = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
     const badge = document.getElementById('cartBadge');
     if (badge) {
@@ -587,8 +587,8 @@ function renderUserHeader() {
   const adminBtn = document.getElementById('newsHeaderAdminBtn');
 
   try {
-    const userStr = localStorage.getItem('MENSTYLE_USER') || localStorage.getItem('menstyle_user');
-    const token = localStorage.getItem('MENSTYLE_TOKEN') || localStorage.getItem('menstyle_token');
+    const userStr = localStorage.getItem('MENSTYLE_USER') || localStorage.getItem('MENSTYLE_USER');
+    const token = localStorage.getItem('MENSTYLE_TOKEN') || localStorage.getItem('MENSTYLE_TOKEN');
     if (userStr && token) {
       const user = JSON.parse(userStr);
       if (authArea) {
@@ -609,13 +609,13 @@ function renderUserHeader() {
 }
 
 function handleUserAccountClick() {
-  const token = localStorage.getItem('menstyle_token');
+  const token = localStorage.getItem('MENSTYLE_TOKEN');
   if (token) {
     if (confirm('Quý khách muốn xem lịch sử đơn hàng hay Đăng xuất khỏi tài khoản?\n\n• Bấm OK: Về trang chủ xem đơn hàng\n• Bấm Cancel: Đăng xuất')) {
       window.location.href = 'index.html#myOrdersModal';
     } else {
-      localStorage.removeItem('menstyle_token');
-      localStorage.removeItem('menstyle_user');
+      localStorage.removeItem('MENSTYLE_TOKEN');
+      localStorage.removeItem('MENSTYLE_USER');
       window.location.reload();
     }
   } else {

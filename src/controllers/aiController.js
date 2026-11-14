@@ -5,12 +5,18 @@ const Product = require("../models/Product");
 // [POST] /api/ai/chat - Trợ lý ảo AI Stylist Thời trang Nam (Gemini RAG)
 exports.chatWithAI = async (req, res) => {
   try {
-    const { message } = req.body;
+    const { message } = req.body || {};
 
     if (!message) {
       return res.status(400).json({
         success: false,
         message: "Vui lòng nhập câu hỏi!",
+      });
+    }
+    if (typeof message !== "string" || message.length > 500) {
+      return res.status(400).json({
+        success: false,
+        message: "Câu hỏi không hợp lệ (tối đa 500 ký tự).",
       });
     }
 
@@ -140,9 +146,10 @@ QUY TẮC TƯ VẤN CỦA STYLIST:
       reply: reply + comboTag,
     });
   } catch (error) {
+    console.error("Lỗi aiChat:", error);
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Trợ lý AI đang tạm thời gián đoạn. Vui lòng thử lại sau!",
     });
   }
 };

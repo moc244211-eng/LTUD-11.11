@@ -1,3 +1,4 @@
+const { sendServerError } = require("../utils/errorResponse");
 const Coupon = require("../models/Coupon");
 
 // [GET] /api/coupons - Danh sách mã giảm giá (Admin)
@@ -6,14 +7,14 @@ exports.getCoupons = async (req, res) => {
     const coupons = await Coupon.find().sort({ createdAt: -1 });
     res.status(200).json({ success: true, count: coupons.length, data: coupons });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 };
 
 // [POST] /api/coupons - Tạo mã giảm giá mới (Admin)
 exports.createCoupon = async (req, res) => {
   try {
-    const { code, discountType, discountValue, minOrderValue, maxUsage, expiryDate } = req.body;
+    const { code, discountType, discountValue, minOrderValue, maxUsage, expiryDate } = req.body || {};
 
     if (!code || !discountValue || !expiryDate) {
       return res.status(400).json({
@@ -21,8 +22,23 @@ exports.createCoupon = async (req, res) => {
         message: "Vui lòng nhập đầy đủ: Mã giảm giá, Giá trị giảm và Ngày hết hạn!",
       });
     }
+    if (typeof code !== "string" || code.trim().length === 0 || code.length > 50) {
+      return res.status(400).json({ success: false, message: "Mã giảm giá không hợp lệ (tối đa 50 ký tự)!" });
+    }
 
     const val = Number(discountValue);
+    if (!Number.isFinite(val)) {
+      return res.status(400).json({ success: false, message: "Giá trị giảm phải là số hợp lệ!" });
+    }
+
+    // BUG-16: ngày dạng YYYY-MM-DD hết hạn vào cuối ngày (23:59:59.999 giờ Việt Nam)
+    const expiry =
+      typeof expiryDate === "string" && /^\d{4}-\d{2}-\d{2}$/.test(expiryDate)
+        ? new Date(`${expiryDate}T23:59:59.999+07:00`)
+        : new Date(expiryDate);
+    if (Number.isNaN(expiry.getTime())) {
+      return res.status(400).json({ success: false, message: "Ngày hết hạn không hợp lệ!" });
+    }
     const type = discountType === "FIXED" ? "FIXED" : "PERCENT";
     if (type === "PERCENT" && (val < 1 || val > 100)) {
       return res.status(400).json({
@@ -51,7 +67,7 @@ exports.createCoupon = async (req, res) => {
       discountValue: val,
       minOrderValue: Math.max(0, Number(minOrderValue) || 0),
       maxUsage: Math.max(1, Number(maxUsage) || 100),
-      expiryDate: new Date(expiryDate),
+      expiryDate: expiry,
     });
 
     res.status(201).json({
@@ -60,7 +76,7 @@ exports.createCoupon = async (req, res) => {
       data: coupon,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 };
 
@@ -73,7 +89,7 @@ exports.deleteCoupon = async (req, res) => {
     }
     res.status(200).json({ success: true, message: "Đã xóa mã giảm giá thành công!" });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 };
 
@@ -92,15 +108,15 @@ exports.toggleCouponStatus = async (req, res) => {
       data: coupon,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 };
 
 // [POST] /api/coupons/validate - Kiểm tra mã giảm giá khi thanh toán (Khách & Admin)
 exports.validateCoupon = async (req, res) => {
   try {
-    const { code, orderTotal } = req.body;
-    if (!code) {
+    const { code, orderTotal } = req.body || {};
+    if (!code || typeof code !== "string" || code.length > 50) {
       return res.status(400).json({ success: false, message: "Vui lòng nhập mã giảm giá!" });
     }
 
@@ -149,6 +165,6 @@ exports.validateCoupon = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 };

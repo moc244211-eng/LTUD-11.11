@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+const { sendServerError } = require("../utils/errorResponse");
 const Product = require("../models/Product");
 const Category = require("../models/Category");
 
@@ -58,6 +60,9 @@ exports.getProducts = async (req, res) => {
 
     // 1. Lọc theo danh mục (Kiểm tra kiểu dữ liệu chuỗi để chống NoSQL Injection)
     if (category && typeof category === "string") {
+      if (!mongoose.isValidObjectId(category.trim())) {
+        return res.status(400).json({ success: false, message: "Mã danh mục không hợp lệ!" });
+      }
       filter.category = category.trim();
     }
 
@@ -77,16 +82,16 @@ exports.getProducts = async (req, res) => {
     }
 
     // 3. Lọc theo khoảng giá (salePrice $gte / $lte)
-    if (minPrice || maxPrice) {
-      filter.salePrice = {};
-      if (minPrice !== undefined && minPrice !== "" && !isNaN(Number(minPrice))) {
-        filter.salePrice.$gte = Math.max(0, Number(minPrice));
-      }
-      if (maxPrice !== undefined && maxPrice !== "" && !isNaN(Number(maxPrice))) {
-        filter.salePrice.$lte = Math.max(0, Number(maxPrice));
-      }
+    const priceFilter = {};
+    if (minPrice !== undefined && minPrice !== "" && !isNaN(Number(minPrice))) {
+      priceFilter.$gte = Math.max(0, Number(minPrice));
     }
-
+    if (maxPrice !== undefined && maxPrice !== "" && !isNaN(Number(maxPrice))) {
+      priceFilter.$lte = Math.max(0, Number(maxPrice));
+    }
+    if (Object.keys(priceFilter).length > 0) {
+      filter.salePrice = priceFilter;
+    }
     // 4. Sắp xếp
     let sortQuery = { createdAt: -1 };
     if (sort === "price_asc") sortQuery = { salePrice: 1 };
@@ -136,7 +141,7 @@ exports.getProducts = async (req, res) => {
       data: products,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 };
 
@@ -161,7 +166,7 @@ exports.getProductById = async (req, res) => {
       data: product,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 };
 
@@ -212,7 +217,7 @@ exports.createProduct = async (req, res) => {
       data: populated,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 };
 
@@ -242,7 +247,7 @@ exports.updateProduct = async (req, res) => {
       data: updated,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 };
 
@@ -264,6 +269,6 @@ exports.deleteProduct = async (req, res) => {
       data: product,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 };

@@ -1,3 +1,24 @@
+const { sendServerError } = require("../utils/errorResponse");
+// Hoàn lại 1 lượt dùng coupon khi đơn bị hủy (không để usageCount âm)
+async function restoreCouponUsage(order) {
+  if (order && order.couponCode) {
+    await Coupon.updateOne(
+      { code: order.couponCode, usageCount: { $gt: 0 } },
+      { $inc: { usageCount: -1 } }
+    ).catch(() => {});
+  }
+}
+
+// Che tên khách trong API tra cứu công khai: "Nguyễn Văn An" -> "N*** An"
+function maskName(name) {
+  const parts = String(name || "").trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "";
+  if (parts.length === 1) return parts[0].charAt(0) + "***";
+  return parts[0].charAt(0) + "*** " + parts[parts.length - 1];
+}
+
+// Thứ tự trạng thái hợp lệ (chỉ được đi tiến, CANCELLED/COMPLETED là trạng thái cuối)
+const ORDER_STATUS_RANK = { PENDING: 0, CONFIRMED: 1, SHIPPING: 2, COMPLETED: 3 };
 const crypto = require("crypto");
 const Order = require("../models/Order");
 const Product = require("../models/Product");
@@ -265,7 +286,7 @@ exports.getMyOrders = async (req, res) => {
       data: orders,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 };
 
@@ -313,7 +334,7 @@ exports.getOrders = async (req, res) => {
       data: orders,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 };
 
@@ -343,7 +364,7 @@ exports.getOrderById = async (req, res) => {
 
     res.status(200).json({ success: true, data: order });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 };
 
@@ -359,6 +380,9 @@ exports.payOrder = async (req, res) => {
       });
     }
 
+    if (order.orderStatus === "CANCELLED") {
+      return res.status(400).json({ success: false, message: "Đơn hàng đã hủy, không thể duyệt thanh toán!" });
+    }
     order.paymentStatus = "PAID";
     if (order.orderStatus === "PENDING") {
       order.orderStatus = "CONFIRMED";
@@ -372,7 +396,7 @@ exports.payOrder = async (req, res) => {
       data: order,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 };
 
@@ -388,6 +412,13 @@ exports.deliverOrder = async (req, res) => {
       });
     }
 
+    if (["CANCELLED", "COMPLETED"].includes(order.orderStatus)) {
+      return res.status(400).json({
+        success: false,
+        message: `Không thể chuyển sang Đang Giao khi đơn đang ở trạng thái ${order.orderStatus}!`,
+      });
+    }
+
     order.orderStatus = "SHIPPING";
     await order.save();
 
@@ -397,14 +428,14 @@ exports.deliverOrder = async (req, res) => {
       data: order,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 };
 
 // [PUT] /api/orders/:id/status - Cập nhật trạng thái tổng thể (Validate Enum & Hoàn Kho An Toàn)
 exports.updateOrderStatus = async (req, res) => {
   try {
-    const { status, paymentStatus } = req.body;
+    const { status, paymentStatus } = req.body || {};
     const ALLOWED_ORDER_STATUSES = [
       "PENDING",
       "CONFIRMED",
@@ -431,7 +462,7 @@ exports.updateOrderStatus = async (req, res) => {
     // Nếu chuyển sang CANCELLED, thực hiện hoàn trả kho nguyên tử
     if (status === "CANCELLED") {
       const prevOrder = await Order.findOneAndUpdate(
-        { _id: req.params.id, orderStatus: { $ne: "CANCELLED" } },
+        { _id: req.params.id, orderStatus: { $nin: ["CANCELLED", "COMPLETED"] } },
         {
           $set: {
             orderStatus: "CANCELLED",
@@ -444,11 +475,12 @@ exports.updateOrderStatus = async (req, res) => {
       if (!prevOrder) {
         return res.status(400).json({
           success: false,
-          message: "Đơn hàng không tồn tại hoặc đã ở trạng thái ĐÃ HỦY trước đó!",
+          message: "Chỉ hủy được đơn chưa hoàn tất và chưa bị hủy trước đó!",
         });
       }
 
-      // Hoàn trả kho an toàn
+      // Hoàn trả kho + lượt dùng coupon
+      await restoreCouponUsage(prevOrder);
       for (const item of prevOrder.items || []) {
         if (item.productId) {
           await Product.findByIdAndUpdate(item.productId, {
@@ -469,6 +501,35 @@ exports.updateOrderStatus = async (req, res) => {
     if (status) updateData.orderStatus = status;
     if (paymentStatus) updateData.paymentStatus = paymentStatus;
 
+    // BUG-03: chỉ cho đi tiến (PENDING→CONFIRMED→SHIPPING→COMPLETED); CANCELLED là trạng thái cuối
+    const current = await Order.findById(req.params.id).select("orderStatus");
+    if (!current) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy đơn hàng!",
+      });
+    }
+    if (status && status !== current.orderStatus) {
+      if (current.orderStatus === "CANCELLED" || current.orderStatus === "COMPLETED") {
+        return res.status(400).json({
+          success: false,
+          message: `Đơn hàng đã ${current.orderStatus === "CANCELLED" ? "hủy" : "hoàn tất"}, không thể đổi trạng thái nữa!`,
+        });
+      }
+      if (ORDER_STATUS_RANK[status] < ORDER_STATUS_RANK[current.orderStatus]) {
+        return res.status(400).json({
+          success: false,
+          message: "Không thể lùi trạng thái đơn hàng về bước trước đó!",
+        });
+      }
+    }
+    if (paymentStatus && current.orderStatus === "CANCELLED") {
+      return res.status(400).json({
+        success: false,
+        message: "Đơn hàng đã hủy, không thể đổi trạng thái thanh toán!",
+      });
+    }
+
     const order = await Order.findByIdAndUpdate(req.params.id, updateData, {
       new: true,
     });
@@ -486,7 +547,7 @@ exports.updateOrderStatus = async (req, res) => {
       data: order,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 };
 
@@ -495,7 +556,7 @@ exports.cancelOrder = async (req, res) => {
   try {
     // Atomic test-and-set: Chỉ update nếu chưa phải CANCELLED
     const order = await Order.findOneAndUpdate(
-      { _id: req.params.id, orderStatus: { $ne: "CANCELLED" } },
+      { _id: req.params.id, orderStatus: { $nin: ["CANCELLED", "COMPLETED"] } },
       { $set: { orderStatus: "CANCELLED" } },
       { new: false }
     );
@@ -503,9 +564,11 @@ exports.cancelOrder = async (req, res) => {
     if (!order) {
       return res.status(400).json({
         success: false,
-        message: "Đơn hàng này không tồn tại hoặc đã bị hủy trước đó!",
+        message: "Chỉ hủy được đơn chưa hoàn tất và chưa bị hủy trước đó!",
       });
     }
+
+    await restoreCouponUsage(order);
 
     // Hoàn lại tồn kho cho các sản phẩm trong đơn
     for (const item of order.items || []) {
@@ -524,7 +587,7 @@ exports.cancelOrder = async (req, res) => {
       data: updated,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 };
 
@@ -555,7 +618,7 @@ exports.getDashboardAnalytics = async (req, res) => {
       if (ordersByStatus[o.orderStatus] !== undefined) {
         ordersByStatus[o.orderStatus]++;
       }
-      if (o.paymentStatus === "PAID" || o.orderStatus === "COMPLETED") {
+      if (o.orderStatus !== "CANCELLED" && (o.paymentStatus === "PAID" || o.orderStatus === "COMPLETED")) {
         totalRevenue += o.totalAmount || 0;
       }
     });
@@ -603,7 +666,7 @@ exports.getDashboardAnalytics = async (req, res) => {
         };
       }
       customerSpendingMap[email].orderCount++;
-      if (o.paymentStatus === "PAID" || o.orderStatus === "COMPLETED") {
+      if (o.orderStatus !== "CANCELLED" && (o.paymentStatus === "PAID" || o.orderStatus === "COMPLETED")) {
         customerSpendingMap[email].totalSpent += o.totalAmount || 0;
       }
     });
@@ -631,7 +694,7 @@ exports.getDashboardAnalytics = async (req, res) => {
           o.orderStatus !== "CANCELLED"
         ) {
           count++;
-          if (o.paymentStatus === "PAID" || o.orderStatus === "COMPLETED") {
+          if (o.orderStatus !== "CANCELLED" && (o.paymentStatus === "PAID" || o.orderStatus === "COMPLETED")) {
             rev += o.totalAmount || 0;
           }
         }
@@ -659,7 +722,7 @@ exports.getDashboardAnalytics = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 };
 
@@ -721,7 +784,7 @@ exports.trackOrder = async (req, res) => {
         paymentStatus: ord.paymentStatus,
         paymentMethod: ord.paymentMethod,
         createdAt: ord.createdAt,
-        customerName: ord.customerName,
+        customerName: maskName(ord.customerName),
         customerPhone: maskedPhone,
         customerPhoneMasked: maskedPhone,
         customerEmail: maskedEmail,
@@ -747,6 +810,6 @@ exports.trackOrder = async (req, res) => {
       data: sanitizedOrders,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 };

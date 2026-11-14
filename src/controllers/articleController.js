@@ -168,8 +168,12 @@ const DEFAULT_INITIAL_ARTICLES = [
   }
 ];
 
-// Hàm tự động nạp bài viết mẫu nếu cơ sở dữ liệu MongoDB chưa có bài nào
+// BUG-04: KHÔNG tự nạp lại bài viết mỗi request (làm "hồi sinh" bài admin đã xóa).
+// Chỉ nạp mẫu khi bật AUTO_SEED_ARTICLES=true, và tối đa 1 lần cho mỗi lần khởi động server.
+let articleSeedChecked = false;
 async function autoSeedIfEmpty() {
+  if (articleSeedChecked || process.env.AUTO_SEED_ARTICLES !== "true") return;
+  articleSeedChecked = true;
   try {
     const count = await Article.countDocuments();
     if (count === 0) {
@@ -208,7 +212,7 @@ exports.getArticles = async (req, res) => {
 
     let query = { status: "PUBLISHED" };
 
-    if (category && category.trim() !== "" && category !== "Tất cả") {
+    if (typeof category === "string" && category.trim() !== "" && category !== "Tất cả") {
       query.category = category;
     }
 
@@ -251,7 +255,6 @@ exports.getArticles = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Lỗi máy chủ khi lấy danh sách bài viết",
-      error: error.message,
     });
   }
 };
@@ -291,7 +294,6 @@ exports.getFeaturedArticles = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Lỗi khi lấy bài viết nổi bật",
-      error: error.message,
     });
   }
 };
@@ -306,9 +308,9 @@ exports.getArticleBySlug = async (req, res) => {
     await autoSeedIfEmpty();
     const { slug } = req.params;
 
-    // Tìm bài viết và tăng lượt xem tự động
+    // Chỉ bài PUBLISHED mới xem được công khai (bài nháp trả 404 và không tăng lượt xem)
     const article = await Article.findOneAndUpdate(
-      { slug: slug.toLowerCase() },
+      { slug: String(slug).toLowerCase(), status: "PUBLISHED" },
       { $inc: { views: 1 } },
       { new: true }
     );
@@ -339,7 +341,6 @@ exports.getArticleBySlug = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Lỗi khi lấy thông tin chi tiết bài viết",
-      error: error.message,
     });
   }
 };
@@ -404,7 +405,6 @@ exports.createArticle = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Lỗi khi tạo bài viết",
-      error: error.message,
     });
   }
 };
@@ -451,7 +451,6 @@ exports.updateArticle = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Lỗi khi cập nhật bài viết",
-      error: error.message,
     });
   }
 };
@@ -482,7 +481,6 @@ exports.deleteArticle = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Lỗi khi xóa bài viết",
-      error: error.message,
     });
   }
 };
@@ -505,7 +503,6 @@ exports.getAdminArticles = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Lỗi khi lấy danh sách quản trị bài viết",
-      error: error.message,
     });
   }
 };

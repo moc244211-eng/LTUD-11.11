@@ -20,6 +20,14 @@ exports.createPaymentQR = async (req, res) => {
       });
     }
 
+    // SEC-11: chỉ sinh QR cho đơn còn cần thanh toán
+    if (order.paymentStatus === "PAID" || order.orderStatus === "CANCELLED") {
+      return res.status(400).json({
+        success: false,
+        message: "Đơn hàng đã thanh toán hoặc đã hủy, không cần tạo mã QR!",
+      });
+    }
+
     const totalAmount = order.totalAmount;
     const orderCode = order.orderCode;
     let qrUrl = "";

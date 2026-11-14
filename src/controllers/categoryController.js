@@ -1,3 +1,4 @@
+const { sendServerError } = require("../utils/errorResponse");
 const Category = require("../models/Category");
 
 // [GET] /api/categories - Lấy tất cả danh mục
@@ -12,7 +13,7 @@ exports.getCategories = async (req, res) => {
       data: categories,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 };
 
@@ -32,16 +33,16 @@ exports.getCategoryById = async (req, res) => {
       data: category,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 };
 
 // [POST] /api/categories - Tạo danh mục mới
 exports.createCategory = async (req, res) => {
   try {
-    const { name, description, image } = req.body;
+    const { name, description, image } = req.body || {};
 
-    if (!name) {
+    if (!name || typeof name !== "string" || name.length > 100) {
       return res.status(400).json({
         success: false,
         message: "Vui lòng nhập tên danh mục!",
@@ -69,15 +70,18 @@ exports.createCategory = async (req, res) => {
       data: category,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 };
 
 // [PUT] /api/categories/:id - Cập nhật danh mục
 exports.updateCategory = async (req, res) => {
   try {
-    const { name, description, image } = req.body;
+    const { name, description, image } = req.body || {};
     const updateData = {};
+    if (name !== undefined && (typeof name !== "string" || !name.trim() || name.length > 100)) {
+      return res.status(400).json({ success: false, message: "Tên danh mục không hợp lệ!" });
+    }
     if (name) {
       updateData.name = name;
       updateData.slug = name
@@ -109,7 +113,7 @@ exports.updateCategory = async (req, res) => {
       data: category,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 };
 
@@ -141,6 +145,6 @@ exports.deleteCategory = async (req, res) => {
       data: category,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 };

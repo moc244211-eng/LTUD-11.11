@@ -1,3 +1,4 @@
+const { sendServerError } = require("../utils/errorResponse");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
@@ -61,7 +62,7 @@ exports.register = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 };
 
@@ -113,7 +114,7 @@ exports.login = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 };
 
@@ -129,9 +130,9 @@ exports.getMe = async (req, res) => {
 // [PUT] /api/auth/update-password - Đổi mật khẩu tài khoản (Chuẩn bảo mật thực tế)
 exports.updatePassword = async (req, res) => {
   try {
-    const { currentPassword, newPassword } = req.body;
+    const { currentPassword, newPassword } = req.body || {};
 
-    if (!currentPassword || !newPassword) {
+    if (!currentPassword || !newPassword || typeof currentPassword !== "string" || typeof newPassword !== "string") {
       return res.status(400).json({
         success: false,
         message: "Vui lòng nhập mật khẩu hiện tại và mật khẩu mới!",
@@ -164,6 +165,6 @@ exports.updatePassword = async (req, res) => {
       token,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 };

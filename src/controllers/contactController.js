@@ -107,7 +107,6 @@ exports.createContact = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Lỗi hệ thống khi gửi yêu cầu liên hệ",
-      error: err.message,
     });
   }
 };
@@ -158,7 +157,6 @@ exports.getContacts = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Lỗi lấy danh sách liên hệ",
-      error: err.message,
     });
   }
 };
@@ -208,7 +206,6 @@ exports.updateContactStatus = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Lỗi cập nhật trạng thái liên hệ",
-      error: err.message,
     });
   }
 };
@@ -235,7 +232,6 @@ exports.deleteContact = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Lỗi xóa yêu cầu liên hệ",
-      error: err.message,
     });
   }
 };

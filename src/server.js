@@ -26,6 +26,9 @@ const contactRoutes = require("./routes/contactRoutes");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// SEC-08: chạy sau proxy của Render -> tin 1 lớp proxy để rate-limit đọc đúng IP từng người dùng
+app.set("trust proxy", 1);
+
 // 1. Kết nối MongoDB Atlas
 connectDB();
 
@@ -61,19 +64,22 @@ app.use(
   })
 );
 
-// 3. Cấu hình CORS an toàn
+// 3. Cấu hình CORS: frontend được phục vụ cùng origin nên không cần mở cho origin lạ.
+// Có thể thêm origin riêng qua biến môi trường CORS_ORIGINS (phân tách bằng dấu phẩy).
 const allowedOrigins = [
   "https://men-style.onrender.com",
   "http://localhost:5000",
   "http://127.0.0.1:5000",
+  ...(process.env.CORS_ORIGINS || "").split(",").map((s) => s.trim()).filter(Boolean),
 ];
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin) || origin.endsWith(".onrender.com")) {
+      // Không có Origin (cùng origin, curl, server-to-server) hoặc nằm trong danh sách -> cho phép
+      if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
-        callback(null, true);
+        callback(null, false); // không gắn header CORS -> trình duyệt chặn
       }
     },
     credentials: true,

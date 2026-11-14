@@ -1217,7 +1217,11 @@
         adminUser = verifyRes.data;
         localStorage.setItem('MENSTYLE_USER', JSON.stringify(adminUser));
       } catch (err) {
+        // BUG-11: không xác minh được phiên -> KHÔNG mở dashboard bằng dữ liệu localStorage chưa kiểm chứng
         console.error('Lỗi kiểm tra phiên đăng nhập Admin:', err);
+        if (guardModal) guardModal.classList.remove('hidden');
+        alert('Không thể xác minh phiên đăng nhập (lỗi mạng hoặc máy chủ). Vui lòng kiểm tra kết nối và tải lại trang.');
+        return;
       }
 
       if (guardModal) guardModal.classList.add('hidden');

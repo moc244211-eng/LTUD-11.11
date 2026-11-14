@@ -1,8 +1,8 @@
 exports.calculateShipping = (req, res) => {
   try {
-    const { province, orderTotal } = req.body;
+    const { province, orderTotal } = req.body || {};
 
-    if (!province) {
+    if (!province || typeof province !== "string" || province.length > 100) {
       return res.status(400).json({
         success: false,
         message: "Vui lòng cung cấp tỉnh thành!",
@@ -44,9 +44,10 @@ exports.calculateShipping = (req, res) => {
       },
     });
   } catch (error) {
+    console.error("Lỗi calculateShipping:", error);
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Không thể tính phí vận chuyển lúc này.",
     });
   }
 };
