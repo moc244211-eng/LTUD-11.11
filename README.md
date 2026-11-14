@@ -67,3 +67,13 @@ npm start
 ## 🔒 4. QUY CHUẨN BẢO MẬT & BẢN QUYỀN
 * Tuyệt đối không commit file cấu hình bí mật `.env` lên kho lưu trữ Git.
 * Bản quyền thuộc về **MENSTYLE FASHION VIETNAM**. Bảo lưu mọi quyền thương hiệu.
+
+---
+
+## ⚠️ Lưu ý quan trọng khi triển khai
+
+* **Seeder xóa sạch dữ liệu.** Chỉ chạy 
+ode src/seeder.js --confirm trên **DB thử nghiệm** (tên DB chứa 	est hoặc dev) và khi đã đặt ADMIN_PASSWORD. Seeder tự từ chối chạy trên DB khác hoặc khi `NODE_ENV=production`.
+* Xem file `.env.example` để biết đầy đủ các biến môi trường: `JWT_EXPIRE`, `BANK_*`, `MOMO_PHONE`, `EMAIL_USER`, `EMAIL_PASS`, `CORS_ORIGINS`, `AUTO_SEED_ARTICLES`.
+* Trên Render hãy đặt `NODE_ENV=production`.
+* Nếu từng chia sẻ file `.env` hoặc mã nguồn kèm khóa bí mật, hãy **đổi toàn bộ** mật khẩu MongoDB, `JWT_SECRET`, `GEMINI_API_KEY` và mật khẩu admin.

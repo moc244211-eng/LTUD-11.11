@@ -28,6 +28,14 @@ exports.createPaymentQR = async (req, res) => {
       });
     }
 
+    // Phương thức QR phải hợp lệ và khớp với phương thức của đơn
+    if (paymentMethod !== undefined && !["VIETQR", "MOMO_QR"].includes(paymentMethod)) {
+      return res.status(400).json({ success: false, message: "Phương thức thanh toán QR không hợp lệ!" });
+    }
+    if (paymentMethod && order.paymentMethod && order.paymentMethod !== paymentMethod) {
+      return res.status(400).json({ success: false, message: "Phương thức QR không khớp với đơn hàng!" });
+    }
+
     const totalAmount = order.totalAmount;
     const orderCode = order.orderCode;
     let qrUrl = "";
@@ -44,9 +52,9 @@ exports.createPaymentQR = async (req, res) => {
     } else if (paymentMethod === "MOMO_QR") {
       // 2. Mã QR Ví MoMo
       const momoPhone = process.env.MOMO_PHONE || accountNo;
-      const momoName = encodeURIComponent(rawAccountName);
+      // Chỉ mã hóa MỘT lần (bên trong chuỗi dữ liệu QR, không mã hóa tên trước đó)
       const momoData = encodeURIComponent(
-        `2|99|${momoPhone}|${momoName}||0|0|${totalAmount}|DH ${orderCode}|transfer_myqr`
+        `2|99|${momoPhone}|${rawAccountName}||0|0|${totalAmount}|DH ${orderCode}|transfer_myqr`
       );
       qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=${momoData}`;
     }

@@ -163,7 +163,7 @@ async function initCategories() {
   if (res.success && Array.isArray(res.data)) {
     let html = `<button class="filter-pill active" data-id="" data-slug="" onclick="resetToAllProducts(this)">Tất cả sản phẩm</button>`;
     res.data.forEach((cat) => {
-      html += `<button class="filter-pill" data-id="${cat._id}" data-slug="${cat.slug}">${cat.name}</button>`;
+      html += `<button class="filter-pill" data-id="${cat._id}" data-slug="${escapeHtml(cat.slug)}">${escapeHtml(cat.name)}</button>`;
     });
     catList.innerHTML = html;
 
@@ -234,7 +234,7 @@ function renderProductCard(p) {
       </div>
       <div class="product-details">
         <span class="product-category-name">${catName}</span>
-        <h4 class="product-name" onclick="viewProductDetail('${p._id}')" title="${p.name}">${p.name}</h4>
+        <h4 class="product-name" onclick="viewProductDetail('${p._id}')" title="${escapeHtml(p.name)}">${escapeHtml(p.name)}</h4>
         <div class="price-container">
           <span class="sale-price">${Number(p.salePrice).toLocaleString("vi-VN")} đ</span>
           ${isDiscounted ? `<span class="original-price">${Number(p.originalPrice).toLocaleString("vi-VN")} đ</span>` : ""}
@@ -466,7 +466,7 @@ async function viewProductDetail(id) {
         <img src="${imgUrl}" style="width: 100%; max-width: 260px; height: 340px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 14px rgba(0,0,0,0.06);">
         <div style="flex: 1; min-width: 250px;">
           <span style="font-size: 11.5px; color: #6b7280; font-weight: 800; text-transform: uppercase;">${catName} • ${p.brand || "MENSTYLE"}</span>
-          <h3 style="font-size: 21px; font-weight: 800; margin: 6px 0 10px 0; color: #0b0b0b;">${p.name}</h3>
+          <h3 style="font-size: 21px; font-weight: 800; margin: 6px 0 10px 0; color: #0b0b0b;">${escapeHtml(p.name)}</h3>
           
           <div style="font-size: 22px; font-weight: 900; color: ${isDiscounted ? 'var(--accent-red)' : 'var(--secondary)'}; margin-bottom: 12px;">
             ${Number(p.salePrice).toLocaleString("vi-VN")} đ
@@ -1035,7 +1035,7 @@ function updateCartUI() {
         .map(
           (i) => `
         <div class="cart-item">
-          <img src="${i.image}" class="cart-item-img" alt="${i.name}">
+          <img src="${i.image}" class="cart-item-img" alt="${escapeHtml(i.name)}">
           <div class="cart-item-info">
             <h5 class="cart-item-name">${escapeHtml(i.name)}${i.combo ? ' <span style="font-size:10px; font-weight:800; color:#b91c1c; background:#fee2e2; padding:2px 6px; border-radius:6px;">COMBO -10%</span>' : ''}</h5>
             <div class="cart-item-meta">Size: <strong>${i.size}</strong></div>
@@ -1909,5 +1909,13 @@ function setupEventListeners() {
 }
 
 function escapeQuotes(str) {
-  return (str || "").replace(/'/g, "\\'").replace(/"/g, "&quot;");
+  // Escape cho chuỗi JS trong onclick='...' : \\ , ' , xuống dòng; sau đó escape HTML cho thuộc tính
+  return String(str === undefined || str === null ? "" : str)
+    .replace(/\\/g, "\\\\")
+    .replace(/'/g, "\\'")
+    .replace(/\r?\n/g, " ")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }

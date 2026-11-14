@@ -1,49 +1,6 @@
 const mongoose = require("mongoose");
 const Contact = require("../models/Contact");
 
-// Tự động khởi tạo dữ liệu mẫu nếu hộp thư trống để quản trị viên trải nghiệm ngay
-let hasSeededContacts = false;
-async function ensureSampleContacts() {
-  if (hasSeededContacts) return;
-  try {
-    const count = await Contact.countDocuments();
-    if (count === 0) {
-      await Contact.insertMany([
-        {
-          name: "Trần Minh Quang",
-          phone: "0912345678",
-          email: "quang.tran@gmail.com",
-          topic: "Tư vấn phối đồ & Chọn size",
-          message: "Tôi cao 1m75, nặng 68kg, chuẩn bị đi dự tiệc cưới thì nên mặc Áo Sơ Mi Oxford hay Blazer? Tư vấn giúp tôi size áo vừa vặn với.",
-          status: "PENDING",
-        },
-        {
-          name: "Vũ Hải Đăng",
-          phone: "0987654321",
-          email: "haidang.vu@gmail.com",
-          topic: "Hỗ trợ đơn hàng & Đổi trả",
-          message: "Tôi vừa nhận đơn hàng nhưng mặc Áo Polo size L hơi rộng, MENSTYLE có thể hỗ trợ đổi sang size M được không?",
-          status: "CONTACTED",
-          notes: "Đã liên hệ qua điện thoại, chuẩn bị gửi shipper giao size M đổi tận nơi.",
-        },
-        {
-          name: "Phạm Quốc Tuấn",
-          phone: "0909123888",
-          email: "tuan.pham@fpt.com",
-          topic: "Đặt may số lượng lớn / B2B",
-          message: "Công ty chúng tôi cần đặt may 50 áo polo bo dệt pique làm đồng phục team building. Xin MENSTYLE gửi báo giá chiết khấu doanh nghiệp.",
-          status: "RESOLVED",
-          notes: "Đã gửi email báo giá chiết khấu 15% kèm mẫu vải dệt.",
-        },
-      ]);
-      console.log("✅ Đã tự động khởi tạo dữ liệu mẫu cho Hộp thư liên hệ Admin.");
-    }
-    hasSeededContacts = true;
-  } catch (err) {
-    console.warn("Lỗi auto-seed contacts:", err.message);
-  }
-}
-
 // [POST] /api/contacts - Khách hàng gửi yêu cầu liên hệ hoặc đăng ký nhận tin
 exports.createContact = async (req, res) => {
   try {

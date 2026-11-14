@@ -593,9 +593,9 @@ function renderUserHeader() {
       const user = JSON.parse(userStr);
       if (authArea) {
         authArea.innerHTML = `
-          <div class="user-profile-chip" onclick="handleUserAccountClick()" title="${user.name}">
-            <div class="user-avatar-circle">${(user.name || 'U').charAt(0).toUpperCase()}</div>
-            <span class="user-chip-name">${user.name.split(' ').slice(-1)[0]}</span>
+          <div class="user-profile-chip" onclick="handleUserAccountClick()" title="${escapeHtml(user.name)}">
+            <div class="user-avatar-circle">${escapeHtml((user.name || 'U').charAt(0).toUpperCase())}</div>
+            <span class="user-chip-name">${escapeHtml((user.name || '').split(' ').slice(-1)[0])}</span>
           </div>
         `;
       }

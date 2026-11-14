@@ -3,48 +3,38 @@ const { sendServerError } = require("../utils/errorResponse");
 const Product = require("../models/Product");
 const Category = require("../models/Category");
 
-// 5 Sản phẩm DUY NHẤT được áp dụng chính sách giảm giá khuyến mãi
-const DISCOUNTED_PRODUCTS_MAP = {
-  "Áo Sơ Mi Nam Oxford Slimfit Chống Nhăn": { originalPrice: 380000, salePrice: 289000 },
-  "Áo Polo Nam Bo Cổ Dệt Kim Pique Cao Cấp": { originalPrice: 320000, salePrice: 249000 },
-  "Áo Thun Nam Oversize Cotton 100% Định Lượng 250gsm": { originalPrice: 250000, salePrice: 179000 },
-  "Quần Tây Nam Ống Đứng Cạp Chun Thông Minh": { originalPrice: 450000, salePrice: 329000 },
-  "Áo Khoác Blazer Nam 2 Cúc Phong Cách Hàn Quốc": { originalPrice: 790000, salePrice: 589000 },
-};
-
-let hasSyncedDiscounts = false;
-async function ensureOnly5DiscountedProducts() {
-  if (hasSyncedDiscounts) return;
-  try {
-    const discountedNames = Object.keys(DISCOUNTED_PRODUCTS_MAP);
-
-    // 1. Cập nhật 5 sản phẩm giảm giá
-    for (const name of discountedNames) {
-      await Product.updateMany(
-        { name },
-        {
-          $set: {
-            originalPrice: DISCOUNTED_PRODUCTS_MAP[name].originalPrice,
-            salePrice: DISCOUNTED_PRODUCTS_MAP[name].salePrice,
-          },
-        }
-      );
-    }
-
-    // 2. Tất cả các sản phẩm còn lại: đặt originalPrice = salePrice (không giảm giá)
-    const otherProducts = await Product.find({ name: { $nin: discountedNames } });
-    for (const prod of otherProducts) {
-      if (prod.originalPrice !== prod.salePrice) {
-        prod.originalPrice = prod.salePrice;
-        await prod.save();
-      }
-    }
-
-    hasSyncedDiscounts = true;
-    console.log("✅ Đã đồng bộ chính sách: Chỉ áp dụng giảm giá cho đúng 5 sản phẩm tiêu biểu.");
-  } catch (err) {
-    console.warn("Lỗi đồng bộ giá sản phẩm (không ảnh hưởng):", err.message);
+// BUG-15: kiểm tra dữ liệu sản phẩm (dùng cho tạo/sửa)
+function validateProductFields(b, isUpdate) {
+  const has = (k) => b[k] !== undefined;
+  if (!isUpdate || has("name")) {
+    if (typeof b.name !== "string" || !b.name.trim() || b.name.length > 200) return "Tên sản phẩm không hợp lệ (tối đa 200 ký tự)!";
   }
+  if (!isUpdate || has("category")) {
+    if (typeof b.category !== "string" || !mongoose.isValidObjectId(b.category)) return "Danh mục không hợp lệ!";
+  }
+  if (has("brand") && b.brand !== null && (typeof b.brand !== "string" || b.brand.length > 100)) return "Thương hiệu không hợp lệ!";
+  for (const k of ["originalPrice", "salePrice"]) {
+    if (!isUpdate || has(k)) {
+      const n = Number(b[k]);
+      if (b[k] === "" || b[k] === null || !Number.isFinite(n) || n < 0) return "Giá sản phẩm phải là số không âm!";
+    }
+  }
+  if (has("stock")) {
+    const s = Number(b.stock);
+    if (!Number.isInteger(s) || s < 0 || s > 1000000) return "Tồn kho phải là số nguyên không âm!";
+  }
+  if (has("sizes")) {
+    if (!Array.isArray(b.sizes) || b.sizes.length > 12 || b.sizes.some((x) => typeof x !== "string" || !x.trim() || x.length > 20)) {
+      return "Danh sách size không hợp lệ!";
+    }
+  }
+  if (has("image") && b.image) {
+    if (typeof b.image !== "string" || b.image.length > 2000 || !/^(https?:\/\/|\/)/i.test(b.image)) return "Ảnh sản phẩm phải là đường dẫn http(s)!";
+  }
+  if (has("description") && b.description !== null && (typeof b.description !== "string" || b.description.length > 5000)) {
+    return "Mô tả sản phẩm không hợp lệ (tối đa 5000 ký tự)!";
+  }
+  return null;
 }
 
 function escapeRegex(text) {
@@ -103,7 +93,7 @@ exports.getProducts = async (req, res) => {
       const products = await Product.find(filter)
         .populate("category", "name slug")
         .sort(sortQuery)
-        .limit(100);
+        .limit(500);
 
       return res.status(200).json({
         success: true,
@@ -192,6 +182,11 @@ exports.createProduct = async (req, res) => {
         message: "Vui lòng điền đầy đủ: Tên sản phẩm, Danh mục, Giá gốc và Giá bán!",
       });
     }
+    const invalidMsg = validateProductFields(req.body, false);
+    if (invalidMsg) return res.status(400).json({ success: false, message: invalidMsg });
+    if (Number(salePrice) > Number(originalPrice)) {
+      return res.status(400).json({ success: false, message: "Giá bán không được cao hơn giá gốc!" });
+    }
 
     const newProduct = await Product.create({
       name,
@@ -224,10 +219,27 @@ exports.createProduct = async (req, res) => {
 // [PUT] /api/products/:id - Cập nhật sản phẩm (Yêu cầu Admin)
 exports.updateProduct = async (req, res) => {
   try {
-    const updateData = { ...req.body };
-    if (updateData.originalPrice) updateData.originalPrice = Number(updateData.originalPrice);
-    if (updateData.salePrice) updateData.salePrice = Number(updateData.salePrice);
+    const body = req.body || {};
+    const invalidMsg = validateProductFields(body, true);
+    if (invalidMsg) return res.status(400).json({ success: false, message: invalidMsg });
+
+    // Chỉ cho phép sửa các trường được liệt kê (chống mass-assignment)
+    const ALLOWED = ["name", "category", "brand", "originalPrice", "salePrice", "stock", "sizes", "image", "description", "isFeatured"];
+    const updateData = {};
+    for (const k of ALLOWED) if (body[k] !== undefined) updateData[k] = body[k];
+    if (updateData.originalPrice !== undefined) updateData.originalPrice = Number(updateData.originalPrice);
+    if (updateData.salePrice !== undefined) updateData.salePrice = Number(updateData.salePrice);
     if (updateData.stock !== undefined) updateData.stock = Number(updateData.stock);
+    if (updateData.isFeatured !== undefined) updateData.isFeatured = !!updateData.isFeatured;
+
+    if (updateData.originalPrice !== undefined || updateData.salePrice !== undefined) {
+      const current = await Product.findById(req.params.id).select("originalPrice salePrice");
+      if (current) {
+        const o = updateData.originalPrice !== undefined ? updateData.originalPrice : current.originalPrice;
+        const s = updateData.salePrice !== undefined ? updateData.salePrice : current.salePrice;
+        if (s > o) return res.status(400).json({ success: false, message: "Giá bán không được cao hơn giá gốc!" });
+      }
+    }
 
     const updated = await Product.findByIdAndUpdate(req.params.id, updateData, {
       new: true,

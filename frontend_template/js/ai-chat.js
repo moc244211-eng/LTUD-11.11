@@ -105,10 +105,7 @@ function appendMessage(text, sender) {
       }
     });
 
-    // Nếu không tìm thấy trong cache, tìm theo từ khóa phổ thông
-    if (matchedProducts.length === 0 && allProds.length >= 2) {
-      matchedProducts.push(allProds[0], allProds[1]);
-    }
+    // Không khớp được sản phẩm nào -> không hiển thị thẻ combo (tránh gợi ý sai món)
 
     if (matchedProducts.length > 0) {
       let rawTotal = 0;
@@ -143,7 +140,7 @@ function appendMessage(text, sender) {
             <span style="color:#64748b;">Tổng combo:</span>
             <strong style="font-size:15px; color:#dc2626;">${comboTotal.toLocaleString("vi-VN")} đ</strong>
           </div>
-          <button type="button" class="btn-ai-add-outfit" onclick="addEntireOutfitToCart('${escapeHtml(outfitTitle)}', '${idsStr}')">
+          <button type="button" class="btn-ai-add-outfit" data-title="${escapeHtml(outfitTitle)}" data-ids="${escapeHtml(idsStr)}" onclick="addEntireOutfitToCart(this.dataset.title, this.dataset.ids)">
             🛍️ Thêm Toàn Bộ Outfit Vào Giỏ (1 Chạm) ➔
           </button>
         </div>

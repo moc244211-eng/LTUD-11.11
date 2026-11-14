@@ -28,6 +28,12 @@ exports.protect = async (req, res, next) => {
         message: "Tài khoản người dùng không tồn tại!",
       });
     }
+    if ((decoded.tv || 0) !== (req.user.tokenVersion || 0)) {
+      return res.status(401).json({
+        success: false,
+        message: "Phiên đăng nhập đã hết hiệu lực, vui lòng đăng nhập lại!",
+      });
+    }
     if (req.user.isBlocked) {
       return res.status(403).json({
         success: false,
@@ -58,7 +64,7 @@ exports.optionalAuth = async (req, res, next) => {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const u = await User.findById(decoded.id).select("-password");
-      if (u && !u.isBlocked) req.user = u;
+      if (u && !u.isBlocked && (decoded.tv || 0) === (u.tokenVersion || 0)) req.user = u;
     } catch (err) {
       // Bỏ qua lỗi token nếu chỉ là optional
     }

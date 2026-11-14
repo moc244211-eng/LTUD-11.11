@@ -37,6 +37,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    // Tăng khi đổi mật khẩu -> vô hiệu hóa mọi token cũ
+    tokenVersion: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,

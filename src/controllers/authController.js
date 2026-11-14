@@ -2,8 +2,8 @@ const { sendServerError } = require("../utils/errorResponse");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+const generateToken = (id, tokenVersion = 0) => {
+  return jwt.sign({ id, tv: tokenVersion || 0 }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE || "30d",
   });
 };
@@ -27,6 +27,24 @@ exports.register = async (req, res) => {
       });
     }
 
+    if (
+      email.length > 120 ||
+      !/^[^\s@<>"']+@[^\s@<>"']+\.[^\s@<>"']+$/.test(email.trim()) ||
+      name.trim().length === 0 ||
+      name.length > 100
+    ) {
+      return res.status(400).json({ success: false, message: "Họ tên hoặc email không hợp lệ!" });
+    }
+    if (password.length < 8 || password.length > 100 || !/[A-Za-z]/.test(password) || !/\d/.test(password)) {
+      return res.status(400).json({
+        success: false,
+        message: "Mật khẩu phải từ 8 ký tự, gồm cả chữ và số!",
+      });
+    }
+    if (phone !== undefined && phone !== "" && (typeof phone !== "string" || !/^[0-9+\-\s().]{8,20}$/.test(phone.trim()))) {
+      return res.status(400).json({ success: false, message: "Số điện thoại không hợp lệ!" });
+    }
+
     const cleanEmail = email.trim().toLowerCase();
     const cleanName = name.trim();
     const cleanPhone = typeof phone === "string" ? phone.trim() : "";
@@ -48,7 +66,7 @@ exports.register = async (req, res) => {
       role: "customer",
     });
 
-    const token = generateToken(user._id);
+    const token = generateToken(user._id, user.tokenVersion);
 
     res.status(201).json({
       success: true,
@@ -100,7 +118,7 @@ exports.login = async (req, res) => {
       });
     }
 
-    const token = generateToken(user._id);
+    const token = generateToken(user._id, user.tokenVersion);
 
     res.status(200).json({
       success: true,
@@ -139,10 +157,10 @@ exports.updatePassword = async (req, res) => {
       });
     }
 
-    if (newPassword.length < 6) {
+    if (newPassword.length < 8 || newPassword.length > 100 || !/[A-Za-z]/.test(newPassword) || !/\d/.test(newPassword)) {
       return res.status(400).json({
         success: false,
-        message: "Mật khẩu mới phải có ít nhất 6 ký tự!",
+        message: "Mật khẩu mới phải từ 8 ký tự, gồm cả chữ và số!",
       });
     }
 
@@ -155,9 +173,10 @@ exports.updatePassword = async (req, res) => {
     }
 
     user.password = newPassword;
+    user.tokenVersion = (user.tokenVersion || 0) + 1; // thu hồi mọi token cũ
     await user.save();
 
-    const token = generateToken(user._id);
+    const token = generateToken(user._id, user.tokenVersion);
 
     res.status(200).json({
       success: true,

@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "MENSTYLE - Nền tảng Thương mại Điện tử Thời trang Nam Cao cấp & Tạp chí Tin tức Chuẩn SEO",
   "main": "src/server.js",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",

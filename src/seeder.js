@@ -449,7 +449,7 @@ const seedData = async () => {
         discountValue: 10,
         minOrderValue: 300000,
         maxUsage: 100,
-        expiryDate: new Date("2026-12-31"),
+        expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
         isActive: true,
       },
       {
@@ -458,7 +458,7 @@ const seedData = async () => {
         discountValue: 50000,
         minOrderValue: 500000,
         maxUsage: 50,
-        expiryDate: new Date("2026-12-31"),
+        expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
         isActive: true,
       },
       {
@@ -467,7 +467,7 @@ const seedData = async () => {
         discountValue: 25000,
         minOrderValue: 250000,
         maxUsage: 200,
-        expiryDate: new Date("2026-12-31"),
+        expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
         isActive: true,
       },
     ]);

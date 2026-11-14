@@ -22,17 +22,8 @@ exports.calculateShipping = (req, res) => {
     }
 
     const p = province.toLowerCase();
-    let shippingFee = 30000;
+    let shippingFee = 25000; // đồng bộ với phí ship thực tính ở orderController (25.000đ, miễn phí từ 500.000đ)
 
-    if (
-      p.includes("đồng nai") ||
-      p.includes("biên hòa") ||
-      p.includes("hồ chí minh")
-    ) {
-      shippingFee = 20000;
-    } else if (p.includes("hà nội")) {
-      shippingFee = 35000;
-    }
 
     res.status(200).json({
       success: true,

@@ -22,6 +22,8 @@ exports.chatWithAI = async (req, res) => {
 
     // 1. Kỹ thuật RAG: Truy vấn thời gian thực danh mục & sản phẩm từ MongoDB Atlas
     const products = await Product.find()
+      .sort({ createdAt: -1 })
+      .limit(100) // giới hạn ngữ cảnh đưa vào prompt (tiết kiệm token)
       .populate("category", "name")
       .select("name salePrice originalPrice stock rating sizes description category brand");
 
@@ -52,7 +54,7 @@ QUY TẮC TƯ VẤN CỦA STYLIST:
    Ở cuối câu trả lời, hãy đính kèm cú pháp OUTFIT COMBO chứa chính xác tên 2 hoặc 3 sản phẩm có trong danh mục để hệ thống tự động hiển thị thẻ tương tác mua trọn bộ:
    [OUTFIT_COMBO: Tên Phong Cách | Tên sản phẩm 1 | Tên sản phẩm 2 | Tên sản phẩm 3]
    Ví dụ:
-   [OUTFIT_COMBO: Quý Ông Thành Đạt Gặp Đối Tác | Áo Sơ Mi Nam Oxford Slimfit Chống Nhăn | Quần Tây Nam Ống Đứng Cạp Chun Thông Minh | Thắt Lưng Da Nam Khóa Tự Động Cao Cấp]
+   [OUTFIT_COMBO: Quý Ông Thành Đạt Gặp Đối Tác | Áo Sơ Mi Nam Oxford Slimfit Chống Nhăn | Quần Tây Nam Ống Đứng Cạp Chun Thông Minh | Thắt Lưng Nam Da Bò Thật Khóa Tự Động Sang Trọng]
 5. CHỈ giới thiệu các sản phẩm có thật trong danh sách trên, nêu chính xác giá bán và số lượng size còn lại.
 `;
 
@@ -102,7 +104,7 @@ QUY TẮC TƯ VẤN CỦA STYLIST:
         `• **Quần Tây May Đo Cạp Chun:** Tôn dáng thẳng thớm, thoải mái tối đa khi ngồi họp hay đàm phán.\n` +
         `• **Thắt Lưng Da Bò Khóa Tự Động:** Điểm nhấn sang trọng hoàn thiện vẻ ngoài phong độ.\n\n` +
         `Anh có thể bấm nút **"Thêm Toàn Bộ Outfit"** bên dưới để đặt mua trọn bộ combo này nhé ạ!`;
-      comboTag = `\n\n[OUTFIT_COMBO: Quý Ông Thành Đạt Gặp Đối Tác | Áo Sơ Mi Nam Oxford Slimfit Chống Nhăn | Quần Tây Nam Ống Đứng Cạp Chun Thông Minh | Thắt Lưng Da Nam Khóa Tự Động Cao Cấp]`;
+      comboTag = `\n\n[OUTFIT_COMBO: Quý Ông Thành Đạt Gặp Đối Tác | Áo Sơ Mi Nam Oxford Slimfit Chống Nhăn | Quần Tây Nam Ống Đứng Cạp Chun Thông Minh | Thắt Lưng Nam Da Bò Thật Khóa Tự Động Sang Trọng]`;
     } else if (lowerMsg.includes("hẹn hò") || lowerMsg.includes("tiệc") || lowerMsg.includes("dạ tiệc") || lowerMsg.includes("lãng mạn")) {
       reply = `Dạ em chào anh! Cho một buổi tối hẹn hò lãng mạn hoặc dạ tiệc sang trọng, bí quyết chính là phong cách **"Relaxed Elegance"** – lịch thiệp nhưng quyến rũ, không gò bó:\n\n` +
         `• **Áo Khoác Blazer Nam 2 Cúc Hàn Quốc:** Phom dáng may đo tôn bờ vai rộng vững chãi.\n` +
@@ -116,8 +118,8 @@ QUY TẮC TƯ VẤN CỦA STYLIST:
         `• **Quần Short Đũi Nam Dạo Phố:** Chất đũi tự nhiên thoáng nhiệt tuyệt đối, giải nhiệt ngày nắng.\n` +
         `• **Ví Da Nam Cầm Tay YKK:** Phụ kiện thời thượng giữ chìa khóa, điện thoại gọn gàng.\n\n` +
         `Mời anh xem set đồ phối sẵn bên dưới nhé!`;
-      comboTag = `\n\n[OUTFIT_COMBO: Smart Casual Năng Động Dạo Phố | Áo Polo Nam Bo Cổ Dệt Kim Pique Cao Cấp | Quần Short Đũi Nam Dạo Phố Thoáng Khí | Ví Da Nam Cầm Tay Dáng Dài Khóa Kéo YKK]`;
-    } else if (lowerMsg.includes("size") || lowerMsg.includes("cao") || lowerMsg.includes("nặng") || lowerMsg.includes("kg")) {
+      comboTag = `\n\n[OUTFIT_COMBO: Smart Casual Năng Động Dạo Phố | Áo Polo Nam Bo Cổ Dệt Kim Pique Cao Cấp | Quần Short Đũi Nam Dạo Phố Thoáng Khí | Ví Da Nam Dáng Ngang Nhỏ Gọn Da Bò Sáp]`;
+    } else if (lowerMsg.includes("size") || lowerMsg.includes("chiều cao") || /1m\d{1,2}/.test(lowerMsg) || lowerMsg.includes("nặng") || lowerMsg.includes("kg")) {
       reply = `Dạ em chào anh! Về việc chọn size chuẩn phom người Việt tại MENSTYLE, em xin tư vấn chuẩn xác cho anh:\n\n` +
         `📏 **BẢNG ĐO THỂ HÌNH CHUẨN:**\n` +
         `• **Size M:** Thích hợp chiều cao dưới 1m68, cân nặng 50 - 59kg (Dáng gầy hoặc vừa vặn).\n` +
@@ -130,7 +132,9 @@ QUY TẮC TƯ VẤN CỦA STYLIST:
       let matched = products.filter((p) => {
         const pName = p.name.toLowerCase();
         const pCat = p.category ? p.category.name.toLowerCase() : "";
-        return pName.includes(lowerMsg) || pCat.includes(lowerMsg);
+        // So khớp theo từng từ khóa (>= 3 ký tự) thay vì cả câu hỏi
+        const words = lowerMsg.split(/[^\p{L}\p{N}]+/u).filter((w) => w.length >= 3);
+        return words.some((w) => pName.includes(w) || pCat.includes(w));
       });
       const suggestions = matched.length > 0 ? matched.slice(0, 3) : products.slice(0, 3);
       reply = "Dạ em chào anh! MENSTYLE Stylist xin gợi ý cho anh những mẫu trang phục cao cấp tôn dáng hàng đầu tại shop:\n\n";

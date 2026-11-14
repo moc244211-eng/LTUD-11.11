@@ -11,7 +11,6 @@ const isLocal =
    window.location.origin === 'null');
 
 let API_BASE_URL = isLocal ? 'http://localhost:5000/api' : '/api';
-const RENDER_FALLBACK_API = 'https://men-style.onrender.com/api';
 
 const API = {
   // ================= 1. XÁC THỰC & NGƯỜI DÙNG =================

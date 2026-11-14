@@ -64,6 +64,24 @@ exports.createOrder = async (req, res) => {
       });
     }
 
+    if (
+      typeof customerName !== "string" ||
+      typeof customerPhone !== "string" ||
+      typeof customerEmail !== "string" ||
+      typeof shippingAddress !== "string"
+    ) {
+      return res.status(400).json({ success: false, message: "Thông tin giao hàng không hợp lệ!" });
+    }
+    if (customerName.trim().length > 100 || shippingAddress.trim().length > 300) {
+      return res.status(400).json({ success: false, message: "Họ tên hoặc địa chỉ quá dài!" });
+    }
+    if (!/^[0-9+\-\s().]{8,20}$/.test(customerPhone.trim())) {
+      return res.status(400).json({ success: false, message: "Số điện thoại không hợp lệ!" });
+    }
+    if (customerEmail.trim().length > 120 || !/^[^\s@<>"']+@[^\s@<>"']+\.[^\s@<>"']+$/.test(customerEmail.trim())) {
+      return res.status(400).json({ success: false, message: "Email không hợp lệ!" });
+    }
+
     let subtotal = 0;
     const verifiedItems = [];
     const comboLines = []; // các dòng khách đánh dấu mua theo Combo (Mix & Match)
@@ -638,7 +656,7 @@ exports.getDashboardAnalytics = async (req, res) => {
       .select("orderStatus paymentStatus totalAmount items customerEmail customerName customerPhone createdAt")
       .sort({ createdAt: -1 });
 
-    const products = await Product.find({}).select("name stock category price salePrice");
+    const products = await Product.find({}).select("name stock category salePrice");
     const totalCustomers = await User.countDocuments({ role: "customer" });
 
     // 1. Doanh thu & Tình trạng đơn
@@ -714,20 +732,22 @@ exports.getDashboardAnalytics = async (req, res) => {
 
     // 5. Thống kê theo 6 tháng gần nhất để vẽ biểu đồ
     const monthlyStats = [];
-    const now = new Date();
+    // Múi giờ Việt Nam (UTC+7) để đơn sát nửa đêm không bị tính sai tháng khi server chạy UTC
+    const VN_OFFSET_MS = 7 * 60 * 60 * 1000;
+    const nowVN = new Date(Date.now() + VN_OFFSET_MS);
     for (let i = 5; i >= 0; i--) {
-      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      const monthLabel = `Tháng ${d.getMonth() + 1}`;
-      const year = d.getFullYear();
-      const month = d.getMonth();
+      const d = new Date(Date.UTC(nowVN.getUTCFullYear(), nowVN.getUTCMonth() - i, 1));
+      const monthLabel = `Tháng ${d.getUTCMonth() + 1}`;
+      const year = d.getUTCFullYear();
+      const month = d.getUTCMonth();
 
       let rev = 0;
       let count = 0;
       orders.forEach((o) => {
-        const orderDate = new Date(o.createdAt);
+        const orderDate = new Date(new Date(o.createdAt).getTime() + VN_OFFSET_MS);
         if (
-          orderDate.getFullYear() === year &&
-          orderDate.getMonth() === month &&
+          orderDate.getUTCFullYear() === year &&
+          orderDate.getUTCMonth() === month &&
           o.orderStatus !== "CANCELLED"
         ) {
           count++;
