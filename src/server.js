@@ -45,16 +45,10 @@ app.use(
           "'unsafe-inline'",
           "https://fonts.googleapis.com",
         ],
-        fontSrc: ["'self'", "https://fonts.gstatic.com"],
-        imgSrc: [
-          "'self'",
-          "data:",
-          "blob:",
-          "https://images.unsplash.com",
-          "https://img.vietqr.io",
-          "https://api.qrserver.com",
-          "https://placehold.co",
-        ],
+        scriptSrcAttr: ["'unsafe-inline'"],
+        fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
+        // Ảnh sản phẩm do admin nhập URL từ nhiều nguồn -> cho phép mọi https
+        imgSrc: ["'self'", "data:", "blob:", "https:"],
         connectSrc: [
           "'self'",
           "https://men-style.onrender.com",
