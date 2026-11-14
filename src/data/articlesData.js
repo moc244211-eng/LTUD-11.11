@@ -1,557 +1,613 @@
 /**
- * MENSTYLE MAGAZINE - 8 BÀI VIẾT CHUYÊN SÂU CHUẨN SEO TOP 1 GOOGLE & GOOGLE AI OVERVIEWS (GEO)
- * Định dạng: AI Quick-Answer snippet, bảng dữ liệu so sánh, hướng dẫn chọn size, FAQ Schema và Call-to-Action.
+ * MENSTYLE - 8 bài viết chuẩn SEO
+ * Nguồn: MENSTYLE_8_bai_viet_chuan_SEO.md
+ * Cập nhật: 2026-11-15
  */
 
 const articlesData = [
+  // ============================================================
+  // BÀI 1: XU HƯỚNG THỜI TRANG NAM 2026
+  // ============================================================
   {
-    title: "Xu Hướng Thời Trang Nam 2026: Phong Cách Tối Giản Minimalist & Smart Casual Lên Ngôi",
+    title: "Xu Hướng Thời Trang Nam 2026: Minimalist & Smart Casual",
     slug: "xu-huong-thoi-trang-nam-2026-minimalist-smart-casual",
     category: "Xu hướng thời trang",
-    excerpt: "Năm 2026 chứng kiến bước chuyển dịch mạnh mẽ của thời trang phái mạnh: Rời bỏ sự phô trương để hướng tới vẻ đẹp tối giản tinh tế (Minimalism) và tính ứng dụng linh hoạt của Smart Casual may đo cao cấp.",
+    excerpt: "Khám phá xu hướng thời trang nam 2026 với Minimalist, Quiet Luxury và Smart Casual. Gợi ý màu sắc, cách phối đồ thanh lịch cho quý ông hiện đại.",
     image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=1200",
-    author: "Hoàng Nam - Giám đốc Sáng tạo",
-    tags: ["Xu hướng 2026", "Minimalist", "Smart Casual", "Thời trang nam", "May đo cao cấp"],
-    views: 3420,
+    author: "MENSTYLE Editorial Team",
+    tags: ["Xu hướng 2026", "Minimalist", "Smart Casual", "Quiet Luxury", "Phối đồ nam"],
+    views: 0,
     readTime: "7 phút đọc",
     isFeatured: true,
     status: "PUBLISHED",
-    content: `
-<div class="editorial-ai-snippet">
-  <div class="ai-snippet-badge">✦ GOOGLE AI OVERVIEWS (GEO)</div>
-  <p>
-    <strong>💡 Tóm tắt xu hướng:</strong> Xu hướng thời trang nam 2026 tập trung vào 3 trụ cột: <em>(1) Chủ nghĩa tối giản Quiet Luxury & Minimalist</em> với đường cắt may may đo hoàn hảo; <em>(2) Bảng màu trung tính ấm</em> (Sand beige, Than chì Graphite, Xanh Navy sâu); và <em>(3) Tinh thần Smart Casual đa năng</em> cho phép quý ông chuyển đổi mượt mà từ môi trường công sở sang dạ tiệc chỉ bằng cách thay đổi lớp áo khoác hoặc phụ kiện.
-  </p>
-</div>
+    content: `<h2>Xu hướng thời trang nam 2026: Vì sao phong cách tối giản vẫn được yêu thích?</h2>
+<p>Xu hướng thời trang nam 2026 tiếp tục dành nhiều sự chú ý cho những thiết kế dễ mặc, có tính ứng dụng cao và không phụ thuộc quá nhiều vào logo hay họa tiết nổi bật. Thay vì sở hữu thật nhiều món đồ theo trào lưu, nhiều người chọn xây dựng tủ quần áo gọn gàng với màu sắc hài hòa, phom dáng vừa vặn và chất liệu phù hợp.</p>
+<p>Trong số đó, Minimalist, Quiet Luxury và Smart Casual là những phong cách đáng tham khảo. Mỗi phong cách có cách thể hiện riêng nhưng đều hướng đến vẻ ngoài chỉn chu, linh hoạt và dễ ứng dụng trong cuộc sống hằng ngày.</p>
 
-<h2>1. Sự Trỗi Dậy Của Chủ Nghĩa Tinh Giản (Minimalist & Quiet Luxury)</h2>
-<p>Bước sang năm 2026, thời trang nam toàn cầu không còn chỗ cho những logo khổ lớn hay họa tiết cầu kỳ. Thay vào đó, giới mộ điệu hướng về triết lý <strong>"Quiet Luxury"</strong> – sự xa xỉ thầm lặng được định nghĩa bởi chất liệu thượng hạng, đường kim mũi chỉ chuẩn may đo và phom dáng tôn vinh đường nét cơ thể nam giới.</p>
-<p>Một chiếc áo sơ mi Oxford trắng dệt sợi tự nhiên, kết hợp cùng quần âu xếp ly phẳng phiu và blazer nhẹ không đệm vai, chính là tuyên ngôn rõ nét nhất cho bản lĩnh và địa vị của một quý ông hiện đại: điềm tĩnh, đĩnh đạc và không cần gắng gượng.</p>
-
-<h2>2. Bảng Màu Thống Trị Năm 2026: Sắc Thái Trầm Ấm Của Tự Nhiên</h2>
-<p>Các chuyên gia màu sắc thời trang quốc tế khẳng định bảng màu 2026 chịu ảnh hưởng sâu sắc từ thiên nhiên bền vững:</p>
+<h2>1. Minimalist — Đơn giản nhưng không đơn điệu</h2>
+<p>Minimalist là phong cách đề cao sự tinh giản trong thiết kế. Trang phục thường có ít chi tiết trang trí, màu sắc dễ kết hợp và đường nét gọn gàng.</p>
+<p>Một bộ trang phục tối giản không có nghĩa là chỉ mặc áo thun trắng và quần đen. Điểm quan trọng nằm ở cách lựa chọn phom dáng, độ dài tay áo, chiều dài quần và sự hài hòa giữa các món đồ.</p>
+<p><strong>Gợi ý phối đồ:</strong></p>
 <ul>
-  <li><strong>Sand & Warm Beige (Màu cát sa mạc):</strong> Mang lại vẻ đẹp nhã nhặn, phóng khoáng, cực kỳ ăn ý khi phối cùng áo polo dệt kim hoặc quần chinos.</li>
-  <li><strong>Graphite & Charcoal (Màu than chì):</strong> Lựa chọn quyền lực thay thế cho sắc đen truyền thống, tạo chiều sâu thị giác khi diện các bộ âu phục công sở.</li>
-  <li><strong>Deep Ocean Navy (Xanh biển sâu):</strong> Gam màu vĩnh cửu của phái mạnh, mang đến sự tin cậy trong các cuộc đàm phán kinh doanh.</li>
-  <li><strong>Sage Green (Màu xanh xô thơm):</strong> Làn gió mới cho trang phục dạo phố cuối tuần, vừa trẻ trung vừa giữ trọn nét thanh lịch.</li>
+  <li>Áo thun trơn màu trắng hoặc xám kết hợp quần tây ống đứng.</li>
+  <li>Sơ mi Oxford trắng phối cùng quần Chinos màu be.</li>
+  <li>Áo Polo trơn đi cùng quần jeans xanh đậm và sneaker tối giản.</li>
 </ul>
+<p>Khi mới thử phong cách này, bạn nên bắt đầu với những món đồ cơ bản có thể phối lại nhiều lần.</p>
 
-<h2>3. So Sánh: Âu Phục Truyền Thống vs Smart Casual May Đo 2026</h2>
-<div class="mag-table-responsive">
-  <table class="mag-styled-table">
-    <thead>
-      <tr>
-        <th>Đặc Điểm</th>
-        <th>Âu Phục Cổ Điển</th>
-        <th>Smart Casual MENSTYLE 2026</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><strong>Áo Khoác</strong></td>
-        <td>Suit jacket độn vai dày, gò bó</td>
-        <td>Blazer 2 cúc không lót, co giãn 4 chiều nhẹ nhàng</td>
-      </tr>
-      <tr>
-        <td><strong>Áo Mặc Trong</strong></td>
-        <td>Bắt buộc sơ mi cứng kèm cà vạt</td>
-        <td>Polo dệt kim bo cổ hoặc áo thun Supima cổ tròn</td>
-      </tr>
-      <tr>
-        <td><strong>Quần Đi Kèm</strong></td>
-        <td>Quần âu ống rộng, cạp cố định</td>
-        <td>Quần tây ống đứng cạp chun ẩn thông minh co giãn 4cm</td>
-      </tr>
-      <tr>
-        <td><strong>Giày Phối Cùng</strong></td>
-        <td>Chỉ giày Oxford buộc dây bóng</td>
-        <td>Loafer da bò trơn hoặc Sneaker trắng tối giản</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+<h2>2. Quiet Luxury — Tập trung vào chất lượng và sự tinh tế</h2>
+<p>Quiet Luxury thường được hiểu là phong cách sang trọng kín đáo. Trang phục không cần logo lớn hay chi tiết gây chú ý; thay vào đó, người mặc chú trọng chất liệu, độ hoàn thiện và sự vừa vặn.</p>
+<p>Bạn có thể tham khảo áo Polo dệt kim, sơ mi trơn, quần âu đứng phom hoặc Blazer thiết kế đơn giản. Tuy nhiên, vẻ ngoài chỉn chu không tự động đến từ giá tiền cao. Một món đồ có mức giá vừa phải nhưng vừa vặn, sạch sẽ và được phối hợp hợp lý vẫn có thể tạo ấn tượng tốt.</p>
 
-<h2>4. Câu Hỏi Thường Gặp Về Phong Cách 2026 (FAQ)</h2>
-<div class="mag-faq-card">
-  <h4>Q1: Người có vóc dáng hơi đậm hoặc thấp có mặc được phong cách Minimalist không?</h4>
-  <p><strong>Trả lời:</strong> Hoàn toàn phù hợp! Nguyên tắc phối màu đơn sắc (monochrome) của phong cách Minimalist giúp tạo ảo giác cơ thể thon gọn và cao ráo hơn. Hãy chọn quần tây ống đứng cạp cao và áo vừa vặn dáng Slim-fit.</p>
-  
-  <h4>Q2: Đi gặp đối tác ký hợp đồng có được diện Smart Casual không?</h4>
-  <p><strong>Trả lời:</strong> Được, miễn là bạn giữ được tính chỉn chu: Kết hợp Blazer tối màu, Sơ mi Oxford trắng cài nút gọn gàng và quần tây cùng tông màu tối, kèm giày da sạch bóng.</p>
-</div>
+<h2>3. Smart Casual — Linh hoạt giữa công sở và đời thường</h2>
+<p>Smart Casual kết hợp sự lịch sự của trang phục công sở với sự thoải mái của phong cách thường ngày. Đây là lựa chọn phù hợp trong những môi trường không yêu cầu mặc suit hoàn chỉnh.</p>
+<p>Một số công thức dễ áp dụng:</p>
+<div class="mag-table-responsive"><table class="mag-styled-table">
+  <thead><tr><th>Hoàn cảnh</th><th>Gợi ý trang phục</th></tr></thead>
+  <tbody>
+    <tr><td>Đi làm</td><td>Sơ mi Oxford, quần Chinos, giày Loafer</td></tr>
+    <tr><td>Gặp khách hàng thân quen</td><td>Blazer, áo Polo trơn, quần tây</td></tr>
+    <tr><td>Đi cà phê</td><td>Áo thun trơn, sơ mi khoác ngoài, jeans</td></tr>
+    <tr><td>Ăn tối</td><td>Polo dệt kim, quần âu, giày da tối giản</td></tr>
+  </tbody>
+</table></div>
+<p>Hãy tìm hiểu trước quy định trang phục của nơi làm việc hoặc sự kiện. Smart Casual không phải lúc nào cũng thay thế được âu phục trong những dịp trang trọng.</p>
 
-<div class="mag-product-cta-banner">
-  <div class="cta-banner-content">
-    <span class="cta-banner-icon">🛍️</span>
-    <div>
-      <h4>Khám Phá Bộ Sưu Tập Smart Casual 2026 Tại MENSTYLE</h4>
-      <p>Sơ mi Oxford dệt sợi rổ, Quần âu cạp chun và Blazer may đo cao cấp với chính sách đổi trả 30 ngày.</p>
-    </div>
-  </div>
-  <a href="index.html#catalogSection" class="cta-banner-btn">Xem Sản Phẩm Ngay ➔</a>
-</div>
-    `,
+<h2>4. Bảng màu nam giới nên thử trong năm 2026</h2>
+<p>Các gam trung tính là nền tảng dễ phối và ít lỗi mốt: trắng, đen, xám, xanh navy, be và nâu. Nếu muốn trang phục có điểm nhấn, bạn có thể thêm xanh rêu hoặc xanh sage với tỷ lệ vừa phải.</p>
+<p>Một nguyên tắc đơn giản là chọn một màu chủ đạo, một màu bổ trợ và tối đa một màu tạo điểm nhấn. Cách phối này giúp tổng thể gọn mắt mà không quá đơn điệu.</p>
+
+<h2>5. Cách bắt đầu xây dựng phong cách cá nhân</h2>
+<p>Trước khi mua thêm quần áo, hãy xem lại tủ đồ hiện tại. Giữ lại những món vừa vặn, dễ phối và phù hợp với sinh hoạt của bạn. Sau đó, xác định ba hoàn cảnh thường gặp nhất như đi học/đi làm, gặp gỡ và đi chơi để ưu tiên mua sắm.</p>
+<p>Đừng chọn một xu hướng chỉ vì nó đang phổ biến. Hãy cân nhắc vóc dáng, môi trường sử dụng, khí hậu và ngân sách của bản thân.</p>
+
+<h2>Câu hỏi thường gặp</h2>
+<h3>Người thấp có mặc được phong cách Minimalist không?</h3>
+<p>Có. Bạn nên ưu tiên trang phục vừa vặn, quần có chiều dài phù hợp và hạn chế chia cơ thể thành quá nhiều mảng màu tương phản. Không nên mặc đồ quá rộng nếu khiến tổng thể bị mất cân đối.</p>
+<h3>Smart Casual có bắt buộc phải mặc Blazer không?</h3>
+<p>Không. Sơ mi Oxford, Polo, Chinos và giày phù hợp cũng có thể tạo nên diện mạo Smart Casual. Blazer là một lựa chọn bổ sung khi cần tăng mức độ trang trọng.</p>
+
+<h2>Kết luận</h2>
+<p>Minimalist giúp tủ đồ gọn gàng, Quiet Luxury nhấn mạnh sự tinh tế còn Smart Casual đem lại tính linh hoạt. Bạn không cần thay đổi toàn bộ quần áo để làm mới phong cách; hãy bắt đầu từ những món cơ bản, vừa vặn và phù hợp với nhu cầu thực tế.</p>
+<p><strong>Khám phá thêm:</strong> Tham khảo các mẫu sơ mi, Polo, quần tây và phụ kiện tại MENSTYLE để tìm những món đồ phù hợp với phong cách của bạn.</p>`
   },
+
+  // ============================================================
+  // BÀI 2: CÁCH PHỐI ÁO SƠ MI OXFORD NAM
+  // ============================================================
   {
-    title: "5 Bí Quyết Phối Áo Sơ Mi Oxford Chuẩn Quý Ông Thành Đạt",
-    slug: "5-bi-quyet-phoi-ao-so-mi-oxford-chuan-quy-ong",
+    title: "Cách Phối Áo Sơ Mi Oxford Nam: 5 Công Thức Dễ Mặc",
+    slug: "cach-phoi-ao-so-mi-oxford-nam",
     category: "Bí quyết phối đồ",
-    excerpt: "Áo sơ mi Oxford dệt sợi rổ kinh điển là linh hồn trong tủ đồ của mọi quý ông. Khám phá 5 công thức phối đồ chuẩn mực từ môi trường công sở đến những buổi hẹn hò cuối tuần.",
-    image: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=800",
-    author: "Trần Minh - Stylist MENSTYLE",
-    tags: ["Sơ mi Oxford", "Phối đồ nam", "Ivy League", "Phong cách công sở"],
-    views: 2950,
+    excerpt: "Khám phá 5 cách phối áo sơ mi Oxford nam từ công sở đến dạo phố. Gợi ý chọn quần, giày và phụ kiện để có diện mạo gọn gàng, lịch lãm.",
+    image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=1200",
+    author: "MENSTYLE Editorial Team",
+    tags: ["Áo sơ mi Oxford", "Phối đồ nam", "Bí quyết phối đồ", "Smart Casual", "Công sở"],
+    views: 0,
     readTime: "6 phút đọc",
-    isFeatured: true,
+    isFeatured: false,
     status: "PUBLISHED",
-    content: `
-<div class="editorial-ai-snippet">
-  <div class="ai-snippet-badge">✦ GOOGLE AI OVERVIEWS (GEO)</div>
-  <p>
-    <strong>💡 Tóm tắt phối đồ:</strong> Áo sơ mi Oxford là mẫu áo nam đa năng nhất nhờ chất vải dệt sợi rổ (basket weave) dày dặn và cổ áo cài khuy button-down. 5 công thức phối đẹp nhất gồm: <em>(1) Sơ mi trắng + Quần tây xanh navy xếp ly; (2) Sơ mi xanh nhạt + Quần kaki chinos màu be; (3) Layer khoác ngoài áo thun trắng trơn; (4) Phối trong áo len cổ tròn dệt kim; và (5) Kết hợp cùng Blazer 2 cúc xắn tay áo kiểu Master Roll</em>.
-  </p>
-</div>
+    content: `<h2>Cách phối áo sơ mi Oxford nam: 5 công thức phù hợp nhiều hoàn cảnh</h2>
+<p>Áo sơ mi Oxford là món đồ đáng có trong tủ quần áo nam vì dễ kết hợp với quần tây, Chinos, jeans và cả áo khoác. Đặc trưng thường thấy của Oxford là bề mặt vải có kết cấu dệt nổi, tạo cảm giác casual hơn một số loại sơ mi công sở trơn mịn.</p>
+<p>Tùy màu áo, phom dáng và hoàn cảnh, bạn có thể mặc Oxford theo hướng lịch sự hoặc thoải mái. Dưới đây là 5 công thức dễ áp dụng.</p>
 
-<h2>1. Bản Chất Độc Bản Của Vải Dệt Oxford</h2>
-<p>Không giống vải poplin phẳng lì có phần trang trọng cứng nhắc, vải Oxford được dệt từ hai sợi chỉ màu đan xen cùng sợi chỉ trắng theo cấu trúc đan rổ. Cấu trúc này tạo nên bề mặt vải có kết cấu hạt nổi tinh tế, bền chắc phi thường và thoáng khí tự nhiên. Càng giặt nhiều, sợi bông Oxford càng mềm mại và lên phom ôm vai đẹp hơn.</p>
+<h2>1. Sơ mi Oxford trắng và quần tây xanh navy</h2>
+<p>Đây là cách phối phù hợp khi đi làm, gặp khách hàng hoặc tham dự buổi gặp mặt cần vẻ ngoài chỉn chu. Áo trắng tạo cảm giác sáng sủa, trong khi quần navy giúp tổng thể cân bằng.</p>
+<p>Bạn có thể sơ vin, thêm thắt lưng có màu gần với giày và chọn giày Derby hoặc Loafer. Nếu môi trường làm việc trang trọng, hãy cài khuy cổ ngay ngắn và chọn áo có độ rộng vừa phải.</p>
 
-<h2>2. 5 Công Thức Phối Đồ Kinh Điển Chuẩn Quý Ông</h2>
-<h3>Công thức 1: Chuẩn mực Doanh Nhân (Executive Formal)</h3>
-<p>Chọn một chiếc sơ mi Oxford trắng tinh khôi, kết hợp cùng quần tây âu màu than chì hoặc xanh navy đậm. Quy tắc vàng là sơ vin gọn gàng và sử dụng thắt lưng da bò tiệp màu với giày Loafer hoặc Derby. Đây là diện mạo hoàn hảo cho các cuộc họp hội đồng và đàm phán quan trọng.</p>
+<h2>2. Sơ mi Oxford xanh nhạt và quần Chinos màu be</h2>
+<p>Xanh nhạt và be là hai gam màu dễ kết hợp, tạo cảm giác nhẹ nhàng. Công thức này phù hợp với môi trường công sở thoải mái, đi cà phê hoặc gặp gỡ bạn bè.</p>
+<p>Có thể sơ vin toàn bộ để tăng vẻ lịch sự hoặc sơ vin kiểu casual tùy hoàn cảnh. Giày Loafer, sneaker trắng hoặc giày da lộn đều có thể phù hợp nếu màu sắc hài hòa.</p>
 
-<h3>Công thức 2: Smart Casual Công Sở Hiện Đại</h3>
-<p>Chiếc áo sơ mi Oxford màu xanh baby blue đi cùng quần Chinos màu be cát (sand beige). Mở 1 chiếc cúc cổ áo trên cùng để tạo nét tự tin, thân thiện nhưng vẫn giữ nguyên sự chỉn chu cần thiết.</p>
+<h2>3. Mặc Oxford khoác ngoài áo thun</h2>
+<p>Nếu muốn một bộ trang phục trẻ trung, hãy chọn áo thun trơn bên trong và mặc Oxford mở cúc bên ngoài. Áo thun trắng hoặc xám thường dễ phối với sơ mi xanh nhạt, xanh navy hoặc màu trung tính.</p>
+<p>Kết hợp cùng jeans tối màu và sneaker để tạo diện mạo thoải mái. Lưu ý chọn hai lớp áo có độ dày phù hợp, tránh khiến phần thân trên trông quá cồng kềnh.</p>
 
-<h3>Công thức 3: Phong Cách Layer Cuối Tuần Năng Động</h3>
-<p>Mở toàn bộ khuy áo sơ mi Oxford và mặc khoác ngoài chiếc áo thun Cotton Compact 100% màu trắng. Đi cùng quần jean tối màu và giày sneaker trắng sạch sẽ. Bạn đã có ngay một outfit dạo phố hoặc đi cà phê cùng bạn bè đầy phóng khoáng.</p>
+<h2>4. Phối Oxford cùng áo Blazer</h2>
+<p>Khi cần tăng độ lịch sự, bạn có thể mặc sơ mi Oxford bên trong Blazer. Một chiếc Oxford trắng hoặc xanh nhạt phối với Blazer navy và quần tây xám là lựa chọn dễ ứng dụng.</p>
+<p>Nếu áo Oxford có cổ button-down, phần cổ áo có thể tạo nét casual đặc trưng. Hãy thử trực tiếp với Blazer để kiểm tra cổ áo có nằm gọn bên trong ve áo khoác hay không.</p>
 
-<h3>Công thức 4: Phối Cùng Áo Blazer Không Lót</h3>
-<p>Khi thời tiết chuyển mùa, hãy mặc áo sơ mi Oxford bên trong chiếc Blazer 2 cúc phong cách Hàn Quốc của MENSTYLE. Điểm đặc biệt của sơ mi Oxford là cổ áo cài nút (button-down) giữ cho ve cổ luôn đứng thẳng tắp, không bị bẹp dúm khi lồng vào ve áo khoác.</p>
+<h2>5. Xắn tay áo đúng cách</h2>
+<p>Xắn tay áo giúp trang phục bớt cứng nhắc khi đi làm trong môi trường thoải mái hoặc khi đi chơi. Mở khuy cổ tay, gấp phần cổ tay áo lên một đến hai lần rồi tiếp tục điều chỉnh đến độ cao bạn thấy cân đối.</p>
+<p>Không nên xắn quá chặt khiến tay áo bị căng hoặc tạo nhiều nếp nhăn. Hai bên tay nên có độ cao tương đối đồng đều.</p>
 
-<h3>Công thức 5: Nghệ Thuật Xắn Tay Áo Kiểu Ý (Master Roll)</h3>
-<p>Xắn tay áo cẩu thả sẽ làm mất phom áo. Hãy áp dụng kỹ thuật <strong>Master Roll</strong>: Kéo cổ tay áo lên đến ngang khuỷu tay, sau đó gấp phần vải thân dưới lên che 2/3 cổ tay áo, để lộ một phần viền khuy. Kiểu xắn này vừa chắc chắn, không bị tuột, vừa tôn lên vẻ nam tính rắn rỏi.</p>
+<h2>Bảng chọn quần và giày đi cùng sơ mi Oxford</h2>
+<div class="mag-table-responsive"><table class="mag-styled-table">
+  <thead><tr><th>Kiểu phối</th><th>Quần phù hợp</th><th>Giày gợi ý</th></tr></thead>
+  <tbody>
+    <tr><td>Công sở</td><td>Quần tây navy, xám</td><td>Derby, Loafer</td></tr>
+    <tr><td>Smart Casual</td><td>Chinos be, olive</td><td>Loafer, sneaker tối giản</td></tr>
+    <tr><td>Dạo phố</td><td>Jeans xanh đậm</td><td>Sneaker</td></tr>
+    <tr><td>Có Blazer</td><td>Quần tây cùng tông hoặc tương phản nhẹ</td><td>Derby, Loafer</td></tr>
+  </tbody>
+</table></div>
 
-<h2>3. Bảng Hướng Dẫn Chọn Cỡ Sơ Mi Oxford Theo Chiều Cao & Cân Nặng</h2>
-<div class="mag-table-responsive">
-  <table class="mag-styled-table">
-    <thead>
-      <tr>
-        <th>Size Áo</th>
-        <th>Chiều Cao (cm)</th>
-        <th>Cân Nặng (kg)</th>
-        <th>Rộng Vai (cm)</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><strong>Size M</strong></td>
-        <td>1m60 – 1m68</td>
-        <td>50 – 59 kg</td>
-        <td>43 – 44 cm</td>
-      </tr>
-      <tr>
-        <td><strong>Size L</strong></td>
-        <td>1m68 – 1m74</td>
-        <td>60 – 69 kg</td>
-        <td>45 – 46 cm</td>
-      </tr>
-      <tr>
-        <td><strong>Size XL</strong></td>
-        <td>1m74 – 1m80</td>
-        <td>70 – 78 kg</td>
-        <td>47 – 48 cm</td>
-      </tr>
-      <tr>
-        <td><strong>Size 2XL</strong></td>
-        <td>Trên 1m80</td>
-        <td>79 – 88 kg</td>
-        <td>49 – 50 cm</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+<h2>Cách chọn áo Oxford vừa vặn</h2>
+<ul>
+  <li><strong>Vai áo:</strong> Đường may vai nên nằm gần điểm kết thúc tự nhiên của vai.</li>
+  <li><strong>Ngực và thân áo:</strong> Có đủ khoảng cử động, không kéo căng hàng nút khi cài.</li>
+  <li><strong>Tay áo:</strong> Chiều dài phù hợp khi thả tay tự nhiên, không che quá nhiều bàn tay.</li>
+  <li><strong>Chiều dài áo:</strong> Nếu thường sơ vin, chọn áo đủ dài để giữ gọn trong quần; nếu mặc ngoài, ưu tiên chiều dài cân đối với thân người.</li>
+</ul>
+<p>Bảng size của mỗi thương hiệu có thể khác nhau. Hãy ưu tiên số đo thực tế và bảng kích thước do cửa hàng cung cấp thay vì chỉ chọn theo cân nặng.</p>
 
-<h2>4. Hỏi & Đáp Nhanh Cùng Chuyên Gia (FAQ)</h2>
-<div class="mag-faq-card">
-  <p><strong>Hỏi: Áo sơ mi Oxford có mặc cùng cà vạt được không?</strong><br>
-  <strong>Đáp:</strong> Được, nhưng nên chọn cà vạt dệt kim (knit tie) hoặc cà vạt lụa bản nhỏ không bóng (matte silk) để đồng điệu với kết cấu mộc mạc của vải Oxford.</p>
-</div>
+<h2>Câu hỏi thường gặp</h2>
+<h3>Áo sơ mi Oxford có mặc với quần jeans được không?</h3>
+<p>Có. Oxford trắng hoặc xanh nhạt kết hợp jeans xanh đậm là công thức đơn giản, phù hợp khi đi chơi hoặc làm việc trong môi trường thoải mái.</p>
+<h3>Có thể đeo cà vạt với sơ mi Oxford không?</h3>
+<p>Có thể, nhưng nên cân nhắc tính chất sự kiện và kiểu cổ áo. Với cổ button-down, cà vạt dệt kim hoặc kiểu ít bóng thường tạo cảm giác hài hòa hơn cà vạt quá trang trọng.</p>
 
-<div class="mag-product-cta-banner">
-  <div class="cta-banner-content">
-    <span class="cta-banner-icon">👔</span>
-    <div>
-      <h4>Áo Sơ Mi Oxford May Đo Chống Nhăn Easy-Iron</h4>
-      <p>Chất liệu 100% Cotton Compact cao cấp, form Slim-fit chuẩn quý ông. Chỉ 289.000 đ.</p>
-    </div>
-  </div>
-  <a href="index.html#catalogSection" class="cta-banner-btn">Đặt Mua Ngay ➔</a>
-</div>
-    `,
+<h2>Kết luận</h2>
+<p>Một chiếc sơ mi Oxford có thể đáp ứng nhiều hoàn cảnh nếu bạn biết chọn quần, giày và cách mặc phù hợp. Hãy bắt đầu với màu trắng hoặc xanh nhạt, sau đó bổ sung màu sắc khác khi đã xác định được phong cách thường ngày.</p>
+<p><strong>Khám phá thêm:</strong> Tham khảo các mẫu sơ mi nam và quần phối cùng tại MENSTYLE.</p>`
   },
+
+  // ============================================================
+  // BÀI 3: CAPSULE WARDROBE NAM
+  // ============================================================
   {
-    title: "Nghệ Thuật Xây Dựng Capsule Wardrobe Tối Giản Cho Quý Ông (15 Món Tạo 40 Outfit)",
-    slug: "nghe-thuat-xay-dung-capsule-wardrobe-toi-gian",
+    title: "Capsule Wardrobe Nam: 15 Món Đồ Cơ Bản Dễ Phối",
+    slug: "capsule-wardrobe-nam-tu-do-toi-gian",
     category: "Phong cách nam",
-    excerpt: "Chỉ với đúng 15 món đồ nền tảng chuẩn may đo, bạn hoàn toàn có thể kiến tạo nên hơn 40 set đồ biến hóa linh hoạt cho cả tháng làm việc, công tác và nghỉ dưỡng mà không tốn thời gian đắn đo mỗi sáng.",
-    image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800",
-    author: "Đức Trí - Senior Editor",
-    tags: ["Capsule Wardrobe", "Tối giản", "Tủ đồ con nhộng", "Phong cách sống"],
-    views: 2480,
-    readTime: "8 phút đọc",
-    isFeatured: true,
+    excerpt: "Hướng dẫn xây dựng Capsule Wardrobe nam với 15 món đồ cơ bản. Gợi ý chọn màu sắc và phối áo quần linh hoạt cho công việc, đi chơi và cuối tuần.",
+    image: "https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?w=1200",
+    author: "MENSTYLE Editorial Team",
+    tags: ["Capsule Wardrobe", "Tủ đồ tối giản", "Phong cách nam", "Phối đồ cơ bản", "Thời trang nam"],
+    views: 0,
+    readTime: "7 phút đọc",
+    isFeatured: false,
     status: "PUBLISHED",
-    content: `
-<div class="editorial-ai-snippet">
-  <div class="ai-snippet-badge">✦ GOOGLE AI OVERVIEWS (GEO)</div>
-  <p>
-    <strong>💡 Tóm tắt Capsule Wardrobe:</strong> Tủ đồ con nhộng nam giới là tập hợp 15–20 món đồ thiết yếu có khả năng phối chéo 100% với nhau nhờ bảng màu trung tính (Trắng, Đen, Xám, Navy, Be). Lợi ích lớn nhất là tiết kiệm 15 phút mỗi sáng, tối ưu hóa ngân sách mua sắm và luôn đảm bảo phom dáng lịch lãm, nhất quán trong mọi hoàn cảnh.
-  </p>
-</div>
+    content: `<h2>Capsule Wardrobe nam là gì?</h2>
+<p>Capsule Wardrobe là cách xây dựng tủ quần áo tinh gọn, trong đó các món đồ được lựa chọn để có thể kết hợp với nhau theo nhiều cách. Mục tiêu không phải giới hạn bản thân trong đúng một số lượng quần áo cố định, mà là giảm những món ít sử dụng và ưu tiên trang phục phù hợp với nhu cầu thật.</p>
+<p>Với nam giới thường xuyên đi học, đi làm hoặc gặp gỡ bạn bè, một tủ đồ có màu sắc hài hòa và phom dáng dễ phối sẽ giúp việc chọn trang phục mỗi ngày đơn giản hơn.</p>
 
-<h2>1. Triết Lý Đằng Sau Tủ Đồ Nhộng (Capsule Wardrobe)</h2>
-<p>Một quý ông thành đạt không đo lường đẳng cấp bằng số lượng quần áo chật ních trong tủ mà bằng <em>sự sắc nét và tính tương thích</em> của từng món đồ họ sở hữu. Hiện tượng "nghẽn quyết định" (decision fatigue) khi đứng trước tủ đồ mỗi sáng tiêu hao đáng kể năng lượng tinh thần. Capsule Wardrobe ra đời để giải phóng tâm trí bạn.</p>
+<h2>1. Chọn bảng màu làm nền tảng</h2>
+<p>Trước tiên, hãy chọn khoảng ba đến năm màu chủ đạo. Trắng, đen, xám, navy và be là những gam màu dễ kết hợp. Bạn có thể thêm xanh rêu hoặc nâu nếu muốn tủ đồ có điểm nhấn.</p>
+<p>Không nhất thiết tất cả quần áo đều phải cùng màu. Điều quan trọng là màu sắc có thể phối chéo mà không tạo cảm giác rối mắt.</p>
 
-<h2>2. Danh Sách 15 Món Đồ Nền Tảng Tại MENSTYLE</h2>
-<div class="mag-capsule-box" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin-bottom: 24px;">
-  <h3 style="margin-top: 0; color: #0f172a;">Nhóm 1: Áo Mặc Trên (7 món)</h3>
-  <ul>
-    <li><strong>02 Áo Sơ Mi Oxford:</strong> 1 Trắng kinh điển & 1 Xanh nhạt baby blue (Form Slimfit chống nhăn).</li>
-    <li><strong>02 Áo Polo Pique Dệt Kim:</strong> 1 Đen tuyền & 1 Xanh Navy (Bo cổ dệt viền sắc nét).</li>
-    <li><strong>02 Áo Thun Cotton 100% 250gsm:</strong> 1 Trắng trơn & 1 Xám tiêu (Mềm mát, thoáng khí).</li>
-    <li><strong>01 Áo Khoác Blazer 2 Cúc:</strong> Tone màu Xanh Navy hoặc Đen than chì (Form Hàn Quốc tôn vai).</li>
-  </ul>
+<h2>2. Danh sách 15 món đồ gợi ý</h2>
+<p>Danh sách dưới đây là một bộ khung tham khảo. Bạn có thể thay đổi số lượng tùy công việc, khí hậu, ngân sách và sở thích.</p>
 
-  <h3 style="color: #0f172a;">Nhóm 2: Quần Mặc Dưới (4 món)</h3>
-  <ul>
-    <li><strong>02 Quần Tây Âu Ống Đứng:</strong> 1 Đen tuyền & 1 Xám tro (Cạp chun ẩn co giãn thông minh).</li>
-    <li><strong>01 Quần Kaki Chinos:</strong> Màu be cát vintage (Dáng suông trẻ trung).</li>
-    <li><strong>01 Quần Jeans Selvedge:</strong> Màu chàm đậm (Slim-fit co giãn 4 chiều).</li>
-  </ul>
+<h3>Nhóm áo — 7 món</h3>
+<ol>
+  <li>Sơ mi Oxford trắng.</li>
+  <li>Sơ mi Oxford xanh nhạt.</li>
+  <li>Polo màu navy.</li>
+  <li>Polo màu đen hoặc xám.</li>
+  <li>Áo thun trắng trơn.</li>
+  <li>Áo thun xám hoặc đen.</li>
+  <li>Blazer màu navy hoặc xám đậm.</li>
+</ol>
 
-  <h3 style="color: #0f172a;">Nhóm 3: Giày & Phụ Kiện (4 món)</h3>
-  <ul>
-    <li><strong>01 Đôi Giày Loafer Da Bò:</strong> Màu nâu sô-cô-la hoặc đen trơn bóng.</li>
-    <li><strong>01 Đôi Sneaker Trắng Tối Giản:</strong> Da mềm đế khâu bền bỉ.</li>
-    <li><strong>01 Thắt Lưng Da Bò 2 Mặt:</strong> Khóa kim loại mạ crom mờ.</li>
-    <li><strong>01 Ví Da Nam Cầm Tay:</strong> Đựng card và smartphone gọn gàng.</li>
-  </ul>
-</div>
+<h3>Nhóm quần — 4 món</h3>
+<ol start="8">
+  <li>Quần tây màu đen.</li>
+  <li>Quần tây màu xám.</li>
+  <li>Quần Chinos màu be.</li>
+  <li>Quần jeans xanh đậm.</li>
+</ol>
 
-<h2>3. Ma Trận Biến Hóa 4 Tuần Làm Việc</h2>
-<p>Với 7 chiếc áo và 4 chiếc quần nói trên, theo công thức toán học tổ hợp, bạn có thể tạo ra <strong>7 x 4 = 28 outfit hoàn toàn khác biệt</strong>. Nếu tính thêm các lớp phối layer (khoác sơ mi ngoài áo thun, mặc blazer ngoài polo), tổng số outfit tăng vọt lên hơn <strong>40 phong cách</strong>.</p>
-<p>Bạn có thể tự tin đi làm nguyên tháng mà đồng nghiệp không bao giờ thấy bạn lặp lại cùng một hình ảnh đơn điệu.</p>
+<h3>Nhóm giày và phụ kiện — 4 món</h3>
+<ol start="12">
+  <li>Sneaker màu trắng hoặc trung tính.</li>
+  <li>Giày Loafer hoặc Derby.</li>
+  <li>Thắt lưng màu đen hoặc nâu phù hợp với giày.</li>
+  <li>Đồng hồ hoặc phụ kiện đơn giản phù hợp phong cách cá nhân.</li>
+</ol>
+<p>Nếu bạn ít khi tham dự sự kiện trang trọng, có thể thay Blazer bằng áo khoác nhẹ. Nếu công việc yêu cầu trang phục lịch sự, hãy ưu tiên thêm quần tây và sơ mi.</p>
 
-<h2>4. Lời Khuyên Về Ngân Sách Đầu Tư</h2>
-<p>Thay vì mua 20 chiếc áo rẻ tiền nhanh bai nhão sau 3 lần giặt, hãy đầu tư vào những món đồ có độ bền từ 2–3 năm của MENSTYLE với chất liệu vải may đo chống nhăn công nghệ mới. Chi phí trên mỗi lần mặc (Cost-Per-Wear) sẽ rẻ hơn gấp 3 lần so với đồ thời trang mì ăn liền.</p>
+<h2>3. Gợi ý phối đồ từ tủ đồ cơ bản</h2>
+<div class="mag-table-responsive"><table class="mag-styled-table">
+  <thead><tr><th>Hoàn cảnh</th><th>Công thức phối</th></tr></thead>
+  <tbody>
+    <tr><td>Đi học hoặc đi làm</td><td>Áo thun trơn + Chinos + sneaker</td></tr>
+    <tr><td>Công sở</td><td>Oxford trắng + quần tây xám + Loafer</td></tr>
+    <tr><td>Gặp gỡ</td><td>Polo navy + quần tây + giày da</td></tr>
+    <tr><td>Cuối tuần</td><td>Oxford khoác ngoài áo thun + jeans</td></tr>
+    <tr><td>Sự kiện bán trang trọng</td><td>Blazer + sơ mi + quần tây</td></tr>
+  </tbody>
+</table></div>
+<p>Từ các món đồ có sẵn, bạn có thể thay đổi màu áo, quần và giày để tạo nhiều diện mạo khác nhau. Tuy nhiên, số outfit thực tế phụ thuộc vào mức độ tương thích của màu sắc, kiểu dáng và hoàn cảnh sử dụng; không nên mặc định mọi món đều phối được với nhau.</p>
 
-<div class="mag-product-cta-banner">
-  <div class="cta-banner-content">
-    <span class="cta-banner-icon">✨</span>
-    <div>
-      <h4>Combo Capsule Wardrobe Quý Ông Tại MENSTYLE</h4>
-      <p>Nhận ngay ưu đãi 15% khi mua trọn bộ combo 3 món thiết yếu (Sơ mi + Quần tây + Blazer).</p>
-    </div>
-  </div>
-  <a href="index.html#catalogSection" class="cta-banner-btn">Khám Phá Combo ➔</a>
-</div>
-    `,
+<h2>4. Cách mua sắm để tránh lãng phí</h2>
+<p>Trước khi mua, hãy tự hỏi: Món đồ này có phối được với ít nhất ba món đang có không? Tôi có hoàn cảnh phù hợp để mặc nó không? Kích thước có vừa vặn không? Chất liệu có phù hợp khí hậu và cách chăm sóc của tôi không?</p>
+<p>Nên ưu tiên món đồ đang thiếu thay vì mua thêm một phiên bản gần giống món đã có. Khi thử quần áo, hãy kiểm tra tư thế đứng, ngồi và đi lại để chắc chắn trang phục không chỉ đẹp khi đứng yên.</p>
+
+<h2>5. Bảo quản tủ đồ tối giản</h2>
+<p>Đọc nhãn hướng dẫn giặt trên từng sản phẩm, phân loại đồ sáng và tối màu, cất áo dệt kim theo cách hạn chế bai dão và treo những món cần giữ phom. Việc bảo quản đúng cách giúp quần áo duy trì trạng thái sử dụng tốt lâu hơn.</p>
+
+<h2>Câu hỏi thường gặp</h2>
+<h3>Capsule Wardrobe có bắt buộc chỉ có 15 món không?</h3>
+<p>Không. Con số 15 trong bài là gợi ý để bắt đầu. Tủ đồ phù hợp có thể nhiều hoặc ít hơn tùy nhu cầu và môi trường sống.</p>
+<h3>Người thích màu sắc có áp dụng được không?</h3>
+<p>Có. Bạn vẫn có thể giữ một nhóm màu nền trung tính và thêm một vài món màu nổi làm điểm nhấn.</p>
+
+<h2>Kết luận</h2>
+<p>Capsule Wardrobe không phải cuộc thi xem ai có ít quần áo nhất. Đây là cách lựa chọn có chủ đích để mỗi món đồ đều có lý do tồn tại trong tủ. Hãy bắt đầu từ những trang phục bạn thường mặc nhất và mở rộng dần khi thật sự cần.</p>
+<p><strong>Khám phá thêm:</strong> Tham khảo sơ mi, Polo, quần tây và Chinos tại MENSTYLE để hoàn thiện tủ đồ cơ bản.</p>`
   },
+
+  // ============================================================
+  // BÀI 4: CÁCH CHỌN SIZE QUẦN TÂY VÀ QUẦN JEANS NAM
+  // ============================================================
   {
-    title: "Cẩm Nang Chọn Size Quần Tây & Quần Jeans Vừa Vặn Từng Điểm Cơ Thể",
-    slug: "huong-dan-chon-size-quan-tay-quan-jeans-chuan-voc-dang",
+    title: "Cách Chọn Size Quần Tây Và Quần Jeans Nam Chuẩn Vóc Dáng",
+    slug: "cach-chon-size-quan-tay-quan-jeans-nam",
     category: "Mẹo chọn trang phục",
-    excerpt: "3 thông số vàng quyết định một chiếc quần nam hoàn hảo: Vòng eo, Đũng quần và Độ rơi gấu quần (The Break). Bí quyết khắc phục triệt để nhược điểm chân cong, đùi to hoặc bụng bia.",
-    image: "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=800",
-    author: "Đội ngũ Đo may MENSTYLE",
-    tags: ["Mẹo chọn size", "Quần tây nam", "Quần jeans", "Tôn dáng"],
-    views: 3120,
-    readTime: "7 phút đọc",
+    excerpt: "Hướng dẫn cách chọn size quần tây và quần jeans nam theo vòng eo, vòng mông, đùi và chiều dài ống. Mẹo chọn quần phù hợp từng vóc dáng.",
+    image: "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=1200",
+    author: "MENSTYLE Editorial Team",
+    tags: ["Chọn size quần", "Quần tây nam", "Quần jeans nam", "Bảng size", "Vóc dáng"],
+    views: 0,
+    readTime: "8 phút đọc",
     isFeatured: false,
     status: "PUBLISHED",
-    content: `
-<div class="editorial-ai-snippet">
-  <div class="ai-snippet-badge">✦ GOOGLE AI OVERVIEWS (GEO)</div>
-  <p>
-    <strong>💡 Tóm tắt chọn size quần nam:</strong> Khi chọn size quần tây và jeans cho nam giới Việt Nam: <em>(1) Cạp quần chuẩn phải luồn vừa khít 2 ngón tay</em> khi đứng thẳng mà không cần siết thắt lưng; <em>(2) Đáy đũng quần không được xệ quá 3cm</em>; và <em>(3) Độ rơi gấu (The Break) lý tưởng nhất là Half-break</em> (gấu quần chạm nhẹ phần thân trên của giày tạo một nếp gấp nhẹ duy nhất), giúp đôi chân trông thẳng và dài hơn.
-  </p>
-</div>
+    content: `<h2>Cách chọn size quần nam: Đừng chỉ dựa vào chiều cao và cân nặng</h2>
+<p>Một chiếc quần vừa vặn giúp tổng thể trang phục gọn gàng và tạo cảm giác thoải mái khi vận động. Tuy nhiên, cùng chiều cao và cân nặng, mỗi người vẫn có thể có vòng eo, vòng mông và tỷ lệ đùi khác nhau. Vì vậy, cách chọn size quần nam chính xác hơn là dựa vào số đo cơ thể kết hợp với bảng size của từng thương hiệu.</p>
+<p>Bài viết này hướng dẫn cách đo, cách đọc bảng size và những điểm cần kiểm tra khi thử quần tây hoặc quần jeans.</p>
 
-<h2>1. Tầm Quan Trọng Của Độ Rơi Gấu Quần (The Break)</h2>
-<p>Một chiếc quần dù đắt tiền đến đâu nhưng gấu quần dồn ứ nhiều nếp gấp lùng bùng sẽ biến đôi chân bạn thành ngắn tũn và trông luộm thuộm. Hãy ghi nhớ 3 mức độ rơi của gấu quần:</p>
+<h2>1. Những số đo cần biết trước khi chọn quần</h2>
 <ul>
-  <li><strong>No-Break (Gấu chạm mí giày):</strong> Gấu quần cắt vừa chạm mép trên của giày hoặc để lộ nhẹ mắt cá chân. Phù hợp với phong cách trẻ trung năng động, đi giày Loafer không tất.</li>
-  <li><strong>Half-Break (Chuẩn mực quý ông):</strong> Gấu quần trùm nhẹ lên mu giày khoảng 1–2cm, tạo một nếp gấp nhẹ duy nhất ở đằng trước. Đây là quy chuẩn vàng cho mọi môi trường công sở lịch lãm.</li>
-  <li><strong>Full-Break (Gấu gãy sâu):</strong> Gấu trùm nhiều nếp, phù hợp với phong cách cổ điển của thập niên 80 nhưng ít được ưa chuộng trong thời trang hiện đại 2026.</li>
+  <li><strong>Vòng eo:</strong> Đo quanh vị trí bạn thường đeo cạp quần. Giữ thước dây vừa sát cơ thể, không siết chặt.</li>
+  <li><strong>Vòng mông:</strong> Đo quanh phần đầy nhất của mông, giữ thước dây nằm ngang.</li>
+  <li><strong>Vòng đùi:</strong> Đo quanh phần lớn nhất của một bên đùi nếu thương hiệu có cung cấp thông số này.</li>
+  <li><strong>Chiều dài trong ống:</strong> Đo từ điểm đáy quần đến vị trí mong muốn ở gấu quần.</li>
+  <li><strong>Chiều cao và cân nặng:</strong> Dùng để tham khảo thêm, không thay thế số đo vòng cơ thể.</li>
+</ul>
+<p>Khi đo, nên mặc trang phục mỏng và đứng ở tư thế tự nhiên. Nếu không chắc cách đo, hãy nhờ người khác hỗ trợ để thước dây không bị lệch.</p>
+
+<h2>2. Bảng size quần nam tham khảo</h2>
+<p>Bảng dưới đây được giữ theo dữ liệu tham khảo trong nội dung gốc của MENSTYLE. Đây không phải bảng size áp dụng cho mọi thương hiệu hoặc mọi kiểu quần.</p>
+<div class="mag-table-responsive"><table class="mag-styled-table">
+  <thead><tr><th>Size</th><th>Vòng bụng</th><th>Vòng mông</th><th>Chiều cao gợi ý</th><th>Cân nặng gợi ý</th></tr></thead>
+  <tbody>
+    <tr><td>29</td><td>74–76 cm</td><td>88–90 cm</td><td>1m60–1m67</td><td>50–57 kg</td></tr>
+    <tr><td>30</td><td>77–79 cm</td><td>91–93 cm</td><td>1m65–1m72</td><td>58–64 kg</td></tr>
+    <tr><td>31</td><td>80–82 cm</td><td>94–96 cm</td><td>1m68–1m75</td><td>65–70 kg</td></tr>
+    <tr><td>32</td><td>83–85 cm</td><td>97–99 cm</td><td>1m72–1m78</td><td>71–76 kg</td></tr>
+    <tr><td>34</td><td>88–92 cm</td><td>102–106 cm</td><td>1m75–1m85</td><td>77–86 kg</td></tr>
+  </tbody>
+</table></div>
+<p><strong>Lưu ý:</strong> Bảng cần được đối chiếu với thông số thực tế của từng sản phẩm MENSTYLE trước khi đăng. Nếu số đo nằm giữa hai size, hãy xem thêm vòng mông, vòng đùi, độ co giãn và chính sách đổi size của cửa hàng.</p>
+
+<h2>3. Cách kiểm tra quần tây có vừa hay không</h2>
+<p>Khi thử quần tây, đừng chỉ nhìn vào vòng eo. Hãy kiểm tra cả phần mông, đùi, đáy quần và chiều dài ống.</p>
+<ul>
+  <li><strong>Cạp quần:</strong> Cài nút dễ dàng, không gây đau hoặc tạo vết hằn khi ngồi. Không nên phụ thuộc hoàn toàn vào thắt lưng để giữ chiếc quần quá rộng.</li>
+  <li><strong>Mông:</strong> Vải không bị kéo căng thành nhiều đường ngang và cũng không thừa quá nhiều vải.</li>
+  <li><strong>Đùi:</strong> Có đủ khoảng cử động khi bước đi và ngồi xuống.</li>
+  <li><strong>Đáy quần:</strong> Không bị kéo căng gây khó chịu, cũng không trễ thấp làm mất phom.</li>
+  <li><strong>Ống quần:</strong> Độ rộng nên cân đối với vóc dáng và kiểu giày thường mang.</li>
 </ul>
 
-<h2>2. Bảng Quy Đổi Size Quần Nam Chuẩn Vóc Dáng Việt</h2>
-<div class="mag-table-responsive">
-  <table class="mag-styled-table">
-    <thead>
-      <tr>
-        <th>Size Số</th>
-        <th>Vòng Bụng (cm)</th>
-        <th>Vòng Mông (cm)</th>
-        <th>Chiều Cao Gợi Ý</th>
-        <th>Cân Nặng Gợi Ý</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><strong>Size 29</strong></td>
-        <td>74 – 76 cm</td>
-        <td>88 – 90 cm</td>
-        <td>1m60 – 1m67</td>
-        <td>50 – 57 kg</td>
-      </tr>
-      <tr>
-        <td><strong>Size 30</strong></td>
-        <td>77 – 79 cm</td>
-        <td>91 – 93 cm</td>
-        <td>1m65 – 1m72</td>
-        <td>58 – 64 kg</td>
-      </tr>
-      <tr>
-        <td><strong>Size 31</strong></td>
-        <td>80 – 82 cm</td>
-        <td>94 – 96 cm</td>
-        <td>1m68 – 1m75</td>
-        <td>65 – 70 kg</td>
-      </tr>
-      <tr>
-        <td><strong>Size 32</strong></td>
-        <td>83 – 85 cm</td>
-        <td>97 – 99 cm</td>
-        <td>1m72 – 1m78</td>
-        <td>71 – 76 kg</td>
-      </tr>
-      <tr>
-        <td><strong>Size 34</strong></td>
-        <td>88 – 92 cm</td>
-        <td>102 – 106 cm</td>
-        <td>1m75 – 1m85</td>
-        <td>77 – 86 kg</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+<h2>4. Chọn chiều dài gấu quần theo phong cách</h2>
+<p>Độ rơi gấu quần thường được gọi là <em>break</em>. Đây là phần vải tạo nếp khi gấu quần chạm hoặc nằm trên giày.</p>
+<ul>
+  <li><strong>No-break:</strong> Gấu quần gần như không tạo nếp trên giày. Phù hợp phong cách hiện đại, gọn gàng.</li>
+  <li><strong>Half-break:</strong> Gấu chạm giày và tạo một nếp gấp nhẹ. Đây là lựa chọn cân bằng, dễ ứng dụng.</li>
+  <li><strong>Full-break:</strong> Gấu tạo nhiều nếp hơn trên giày, thường mang cảm giác cổ điển.</li>
+</ul>
+<p>Không có một kiểu break duy nhất phù hợp với tất cả mọi người. Hãy cân nhắc chiều dài chân, độ rộng ống, kiểu giày và sở thích cá nhân.</p>
 
-<h2>3. Giải Pháp Cho Người Bụng Bia Hoặc Đùi To</h2>
-<p>Nếu bạn có phần đùi vạm vỡ do tập gym hoặc vòng 2 lớn do ngồi văn phòng nhiều, việc chọn quần thông thường sẽ rất dễ bị chật bụng hoặc bó sát đùi gây phản cảm.</p>
-<p>Dòng <strong>Quần Tây Ống Đứng Cạp Chun Thông Minh</strong> của MENSTYLE được thiết kế riêng với dải chun co giãn ẩn 4cm ở hai bên hông. Bạn sẽ có cảm giác êm ái tuyệt đối khi ngồi làm việc liên tục 8 tiếng, đứng lên ngồi xuống thoải mái mà form quần bên ngoài vẫn phẳng phiu 100% như may đo.</p>
+<h2>5. Chọn quần theo vóc dáng</h2>
+<h3>Người có bụng lớn</h3>
+<p>Ưu tiên cạp quần nằm ở vị trí thoải mái, không siết bụng khi ngồi. Chọn phom ống đứng hoặc regular fit nếu phù hợp; tránh chọn size quá nhỏ chỉ để quần ôm sát.</p>
+<h3>Người có đùi to</h3>
+<p>Kiểm tra vòng đùi và khả năng ngồi xổm nhẹ hoặc bước dài. Quần straight fit hoặc regular fit thường đáng thử hơn kiểu skinny bó sát.</p>
+<h3>Người có chiều cao khiêm tốn</h3>
+<p>Có thể thử quần ống đứng, chiều dài gấu vừa phải và hạn chế phần vải dồn nhiều ở mắt cá. Phối màu quần và giày gần nhau cũng giúp tổng thể liền mạch hơn.</p>
+<h3>Người có chân cong</h3>
+<p>Chọn ống quần có độ rộng vừa đủ, tránh kiểu quá bó làm lộ rõ đường nét chân. Nên thử trực tiếp và quan sát cả phía trước lẫn bên hông.</p>
 
-<div class="mag-product-cta-banner">
-  <div class="cta-banner-content">
-    <span class="cta-banner-icon">👖</span>
-    <div>
-      <h4>Quần Tây Âu Ống Đứng Cạp Chun Ẩn Thông Minh</h4>
-      <p>Co giãn linh hoạt 4cm, vải Tuysi cao cấp không nhăn, không xù. Chỉ 329.000 đ.</p>
-    </div>
-  </div>
-  <a href="index.html#catalogSection" class="cta-banner-btn">Mua Quần Tây ➔</a>
-</div>
-    `,
+<h2>6. Quần tây và quần jeans có chọn cùng một size không?</h2>
+<p>Không nhất thiết. Quần jeans có thể có độ co giãn khác nhau tùy thành phần vải; quần tây cũng khác nhau về cạp, độ rộng đùi và cấu trúc may. Vì vậy, bạn không nên mặc định size jeans đang mặc sẽ luôn tương ứng với size quần tây.</p>
+<p>Khi mua online, hãy so số đo cơ thể với bảng size riêng của sản phẩm. Nếu có thể, đo một chiếc quần đang mặc vừa để so sánh vòng eo, vòng mông, đùi và chiều dài.</p>
+
+<h2>Câu hỏi thường gặp</h2>
+<h3>Nếu số đo nằm giữa hai size thì nên chọn size nào?</h3>
+<p>Hãy xem số đo nào quan trọng nhất với kiểu quần đó. Với quần không co giãn, cần ưu tiên vòng eo, mông và đùi đủ thoải mái. Đồng thời kiểm tra hướng dẫn chọn size của thương hiệu hoặc hỏi nhân viên tư vấn.</p>
+<h3>Quần mới mua hơi dài có phải chọn size lớn hơn không?</h3>
+<p>Không. Chiều dài ống và kích thước vòng eo là hai yếu tố khác nhau. Nếu quần vừa ở eo, mông và đùi nhưng dài, bạn có thể cân nhắc lên lai.</p>
+
+<h2>Kết luận</h2>
+<p>Để chọn size quần nam phù hợp, hãy bắt đầu bằng việc đo vòng eo, vòng mông và kiểm tra phần đùi. Sau đó đối chiếu bảng size của đúng sản phẩm và thử các chuyển động cơ bản như ngồi, đứng, bước đi. Một chiếc quần đẹp trước hết phải vừa vặn và thoải mái.</p>
+<p><strong>Khám phá thêm:</strong> Xem các mẫu quần tây và quần jeans tại MENSTYLE. Nếu phân vân giữa hai size, hãy gửi số đo để được tư vấn trước khi đặt hàng.</p>`
   },
+
+  // ============================================================
+  // BÀI 5: CÁCH GIẶT VÀ BẢO QUẢN QUẦN ÁO NAM
+  // ============================================================
   {
-    title: "Bí Quyết Giặt Ủi & Bảo Quản Áo Sơ Mi Cao Cấp, Đồ Len & Polo Dệt Kim",
-    slug: "bi-quyet-giat-ui-va-bao-quan-so-mi-do-len-cao-cap",
+    title: "Cách Giặt Và Bảo Quản Áo Sơ Mi, Đồ Len Và Polo Dệt Kim",
+    slug: "cach-giat-va-bao-quan-quan-ao-nam",
     category: "Chăm sóc và bảo quản",
-    excerpt: "Hướng dẫn chuyên sâu cách giặt ủi và bảo quản trang phục may đo nam: Giữ cổ áo luôn phẳng phiu, sợi dệt không bị xù lông, bai dão và bền màu nguyên bản sau hàng trăm lần giặt.",
-    image: "https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=800",
-    author: "MENSTYLE Care Team",
-    tags: ["Bảo quản quần áo", "Mẹo giặt ủi", "Độ bền thời trang"],
-    views: 1890,
-    readTime: "6 phút đọc",
-    isFeatured: false,
-    status: "PUBLISHED",
-    content: `
-<div class="editorial-ai-snippet">
-  <div class="ai-snippet-badge">✦ GOOGLE AI OVERVIEWS (GEO)</div>
-  <p>
-    <strong>💡 Tóm tắt bảo quản:</strong> Để giữ áo sơ mi và polo dệt kim bền đẹp trọn đời: <em>(1) Luôn giặt bằng nước lạnh dưới 30°C và lộn trái áo; (2) Sử dụng túi giặt mắt nhỏ nếu giặt máy; (3) Tuyệt đối không sấy ở nhiệt độ cao vì sẽ làm co rút sợi cotton; và (4) Phơi ngang trên giàn phơi râm mát, dùng móc gỗ bản to có đệm vai</em> để không làm biến dạng cầu vai áo.
-  </p>
-</div>
-
-<h2>1. Quy Tắc Vàng Khi Giặt Áo Sơ Mi May Đo</h2>
-<p>Chiếc áo sơ mi đắt giá nhất ở phần mùng ép cổ và măng sét tay. Khi giặt sai cách, lớp keo mùng bên trong sẽ bị phồng rộp, tạo nên những vết nhăn gợn sóng không thể ủi phẳng.</p>
-<ul>
-  <li>Cài hết khuy áo trước khi giặt để áo không bị vặn xoắn lồng vào các quần áo khác.</li>
-  <li>Dùng bàn chải lông mềm hoặc đầu ngón tay xoa nhẹ xà phòng lên vành cổ và cổ tay áo trước khi cho vào máy.</li>
-  <li>Chọn chế độ giặt nhẹ (Delicate/Gentle) với tốc độ vắt tối đa 600 - 800 vòng/phút.</li>
-</ul>
-
-<h2>2. Bí Quyết Riêng Cho Áo Polo Dệt Kim (Knitwear) & Đồ Len</h2>
-<p>Chất liệu dệt kim có cấu trúc mắt lưới co giãn tự nhiên. Nếu bạn treo móc ướt lên dây phơi, trọng lượng nước sẽ kéo áo dài thượt xuống và làm mất hoàn toàn phom ban đầu.</p>
-<p><strong>Cách phơi chuẩn:</strong> Trải phẳng áo trên mặt lưới phơi đồ nằm ngang hoặc vắt ngang qua thanh sào đôi ở nơi thoáng gió, tránh ánh nắng gắt trực tiếp của buổi trưa.</p>
-
-<h2>3. Trình Tự Ủi Áo Sơ Mi Chuẩn Chuyên Gia Khách Sạn 5 Sao</h2>
-<ol>
-  <li><strong>Cổ áo:</strong> Ủi mặt sau từ hai góc ngoài vuốt dần vào giữa, sau đó lật lại ủi mặt trước.</li>
-  <li><strong>Cầu vai (Yoke):</strong> Luồn cầu vai vào mũi nhọn bàn ủi để là phẳng.</li>
-  <li><strong>Cổ tay áo:</strong> Mở khuy măng sét, ủi phẳng mặt trong rồi sang mặt ngoài.</li>
-  <li><strong>Tay áo:</strong> Kéo phẳng đường chỉ nách tay áo, ủi từ nách xuống cổ tay.</li>
-  <li><strong>Thân áo:</strong> Ủi thân trước có hàng cúc trước, sau đó đến lưng áo và thân còn lại.</li>
-</ol>
-    `,
-  },
-  {
-    title: "MENSTYLE Ra Mắt Bộ Sưu Tập Xuân Hè 2026: 'Urban Elegance' – Tinh Hoa May Đo",
-    slug: "menstyle-ra-mat-bo-suu-tap-xuan-he-2026-urban-elegance",
-    category: "Tin tức MENSTYLE",
-    excerpt: "MENSTYLE chính thức trình làng BST 'Urban Elegance' 2026: Sự hòa quyện đỉnh cao giữa kỹ nghệ may đo thủ công và công nghệ xử lý sợi chống nhăn Easy-Iron 24/7 dành riêng cho phái mạnh năng động.",
-    image: "https://images.unsplash.com/photo-1490114538077-0a7f8cb49891?w=800",
-    author: "Ban Biên Tập MENSTYLE",
-    tags: ["Bộ sưu tập mới", "Urban Elegance", "Lookbook 2026", "MENSTYLE"],
-    views: 3840,
-    readTime: "5 phút đọc",
-    isFeatured: false,
-    status: "PUBLISHED",
-    content: `
-<div class="editorial-ai-snippet">
-  <div class="ai-snippet-badge">✦ GOOGLE AI OVERVIEWS (GEO)</div>
-  <p>
-    <strong>💡 Tóm tắt BST mới:</strong> BST 'Urban Elegance' 2026 của thương hiệu MENSTYLE mang đến giải pháp trang phục toàn diện cho quý ông đô thị với 3 công nghệ đột phá: <em>(1) Vải Oxford & Tuysi chống nhăn Easy-Iron; (2) Công nghệ dệt sợi thoáng khí Heat-Release phù hợp khí hậu nhiệt đới; và (3) Form dáng Slim-fit may đo tôn bờ vai chữ V rắn rỏi</em>.
-  </p>
-</div>
-
-<h2>1. Cảm Hứng Thiết Kế: Nhịp Sống Đô Thị Hiện Đại</h2>
-<p>Lấy cảm hứng từ vẻ đẹp kiến trúc tân cổ điển hòa quyện cùng nhịp sống hối hả tại các đô thị lớn, 'Urban Elegance' là lời khẳng định về phong thái của người đàn ông làm chủ cuộc đời mình: bận rộn nhưng luôn xuất hiện với vẻ ngoài chỉn chu, đĩnh đạc và cuốn hút.</p>
-
-<h2>2. Ba Thiết Kế Trọng Tâm Của Bộ Sưu Tập</h2>
-<h3>1. Áo Sơ Mi Oxford Chống Nhăn Easy-Iron (Giá: 289.000 đ)</h3>
-<p>Được dệt từ 100% sợi Cotton Compact nhập khẩu, kết hợp xử lý nhiệt chống nhăn tiên tiến. Chiếc áo giữ được bề mặt phẳng phiu suốt ngày dài làm việc, kể cả khi bạn ngồi ghế ôtô hay gập tay nhiều giờ trước máy tính.</p>
-
-<h3>2. Quần Tây Ống Đứng Cạp Chun Thông Minh (Giá: 329.000 đ)</h3>
-<p>Sự đột phá về công năng khi giấu khéo léo dải chun co giãn 4cm bên trong cạp quần. Phom đứng sắc sảo của quần âu may đo kết hợp cùng sự êm ái của chiếc quần thể thao.</p>
-
-<h3>3. Áo Khoác Blazer 2 Cúc Hàn Quốc (Giá: 589.000 đ)</h3>
-<p>Bỏ đi lớp đệm vai dày cộm truyền thống, chiếc Blazer của MENSTYLE nhẹ tênh như một lớp áo khoác gió, ôm lấy khuôn vai tự nhiên và dễ dàng gấp gọn vào vali khi đi công tác.</p>
-
-<h2>3. Đặc Quyền Dành Cho Khách Hàng MENSTYLE</h2>
-<p>Toàn bộ sản phẩm trong BST 'Urban Elegance' được áp dụng chính sách: <strong>Miễn phí giao hàng toàn quốc cho đơn từ 500.000 đ</strong>, hỗ trợ <strong>đổi trả tận nhà miễn phí trong 30 ngày</strong> và quyền đồng kiểm tra hàng trước khi thanh toán.</p>
-
-<div class="mag-product-cta-banner">
-  <div class="cta-banner-content">
-    <span class="cta-banner-icon">🌟</span>
-    <div>
-      <h4>Trải Nghiệm BST 'Urban Elegance' 2026</h4>
-      <p>Nhận ngay Voucher giảm 50.000 đ khi đặt mua đơn hàng đầu tiên hôm nay.</p>
-    </div>
-  </div>
-  <a href="index.html#catalogSection" class="cta-banner-btn">Mua BST 2026 ➔</a>
-</div>
-    `,
-  },
-  {
-    title: "Áo Polo Knitwear Dệt Kim: Biểu Tượng Phong Thái Của Quý Ông Đương Đại",
-    slug: "ao-polo-knitwear-lan-gio-moi-trong-tu-do-quy-ong",
-    category: "Xu hướng thời trang",
-    excerpt: "Vì sao chiếc áo Polo dệt kim (Knitwear Polo) lại vượt qua áo polo thể thao thông thường để trở thành biểu tượng mới của phong cách Quiet Luxury và Old Money được các quý ông săn đón nhất năm 2026?",
-    image: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=800",
-    author: "Hoàng Nam - Giám đốc Sáng tạo",
-    tags: ["Polo dệt kim", "Knitwear", "Quiet Luxury", "Old Money"],
-    views: 2650,
-    readTime: "6 phút đọc",
-    isFeatured: false,
-    status: "PUBLISHED",
-    content: `
-<div class="editorial-ai-snippet">
-  <div class="ai-snippet-badge">✦ GOOGLE AI OVERVIEWS (GEO)</div>
-  <p>
-    <strong>💡 Tóm tắt Polo Knitwear:</strong> Áo Polo dệt kim (Knitwear Polo) khác biệt với áo polo cotton pique thông thường nhờ kỹ thuật dệt sợi len mịn hoặc cotton tơ tằm nguyên khối. Áo sở hữu bề mặt gân sọc hoặc mắt chim sang trọng, bo gấu ôm nhẹ eo tôn dáng chữ V, mang đậm tinh thần thẩm mỹ cổ điển Ý (Sprezzatura) và phong cách Quiet Luxury thịnh hành.
-  </p>
-</div>
-
-<h2>1. Nguồn Gốc Của Chiếc Áo Xa Xỉ Thầm Lặng</h2>
-<p>Xuất phát từ giới quý tộc vùng Riviera nước Ý trong những kỳ nghỉ dưỡng bên bờ biển Địa Trung Hải, áo Polo dệt kim luôn gắn liền với hình ảnh những người đàn ông có gu thẩm mỹ sâu sắc. Họ không cần mặc comple cà vạt nhưng vẫn toát lên khí chất thượng lưu nhờ chất liệu vải thượng hạng.</p>
-
-<h2>2. Bốn Cách Phối Đồ Chuẩn Phong Thái Quý Tộc</h2>
-<ul>
-  <li><strong>Phối cùng quần âu màu kem/be xếp ly đôi:</strong> Bản phối kinh điển mang đậm màu sắc Old Money.</li>
-  <li><strong>Mặc trong áo Blazer không lót:</strong> Thay thế hoàn hảo cho áo sơ mi truyền thống, giảm bớt vẻ nghiêm nghị nhưng tăng gấp đôi sự quyến rũ.</li>
-  <li><strong>Phối cùng quần Chinos và giày Penny Loafer da bóng:</strong> Hoàn hảo cho các buổi họp chiều hoặc ăn tối tại nhà hàng cao cấp.</li>
-  <li><strong>Diện cùng quần Shorts đũi/linen:</strong> Tối giản, thanh lịch cho những chuyến du ngoạn cuối tuần.</li>
-</ul>
-
-<h2>3. Hỏi & Đáp: Mặc Polo Dệt Kim Mùa Hè Có Nóng Không?</h2>
-<div class="mag-faq-card">
-  <p><strong>Trả lời:</strong> Hoàn toàn không nóng! Dòng Polo Knitwear của MENSTYLE sử dụng sợi <em>Cotton Compact dệt thoáng khí</em> với độ xốp tự nhiên cao hơn vải dệt thoi thông thường, cho phép luồng gió lưu thông liên tục làm mát cơ thể tức thì.</p>
-</div>
-
-<div class="mag-product-cta-banner">
-  <div class="cta-banner-content">
-    <span class="cta-banner-icon">💎</span>
-    <div>
-      <h4>Áo Polo Dệt Kim Cao Cấp MENSTYLE Knitwear</h4>
-      <p>Sợi bông chải kỹ mềm mịn như lụa, bo gấu tôn dáng chữ V. Chỉ 269.000 đ.</p>
-    </div>
-  </div>
-  <a href="index.html#catalogSection" class="cta-banner-btn">Mua Ngay ➔</a>
-</div>
-    `,
-  },
-  {
-    title: "Nguyên Tắc Phối Đồ Lịch Lãm Cho Buổi Gặp Gỡ Đối Tác & Hẹn Hò Buổi Tối",
-    slug: "phong-cach-lich-lam-cho-buoi-gap-go-doi-tac-va-hen-ho",
-    category: "Phong cách nam",
-    excerpt: "Bí quyết kiến tạo diện mạo đầy quyền lực và cuốn hút trong những dịp quan trọng: Từ bữa tối lãng mạn đến cuộc đàm phán hợp đồng, ghi điểm tuyệt đối trong 7 giây đầu tiên.",
-    image: "https://images.unsplash.com/photo-1516257984-b1b4d707412e?w=800",
-    author: "Đức Trí - Senior Editor",
-    tags: ["Hẹn hò", "Gặp gỡ đối tác", "Lịch lãm", "Phong cách phái mạnh"],
-    views: 3100,
+    excerpt: "Hướng dẫn cách giặt, ủi và bảo quản áo sơ mi, áo len, Polo dệt kim đúng cách. Mẹo hạn chế nhăn, bai dão và giữ trang phục bền đẹp.",
+    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200",
+    author: "MENSTYLE Editorial Team",
+    tags: ["Bảo quản quần áo", "Giặt áo sơ mi", "Giặt áo len", "Polo dệt kim", "Chăm sóc trang phục"],
+    views: 0,
     readTime: "7 phút đọc",
     isFeatured: false,
     status: "PUBLISHED",
-    content: `
-<div class="editorial-ai-snippet">
-  <div class="ai-snippet-badge">✦ GOOGLE AI OVERVIEWS (GEO)</div>
-  <p>
-    <strong>💡 Tóm tắt trang phục gặp gỡ:</strong> Để tạo ấn tượng xuất sắc trong 7 giây đầu tiên: <em>(1) Gặp đối tác:</em> Ưu tiên trang phục cấu trúc chuẩn mực với Blazer xanh Navy, Sơ mi Oxford trắng tinh, Quần tây xám tro và Giày da buộc dây; <em>(2) Hẹn hò tối:</em> Chọn phong cách lôi cuốn, mềm mại hơn với Polo dệt kim đen, Quần tây cạp cao xếp ly và Giày Loafer bóng; <em>(3) Điểm mấu chốt:</em> Thắt lưng và giày bắt buộc phải tiệp màu da và chất liệu.
-  </p>
-</div>
+    content: `<h2>Cách giặt và bảo quản quần áo nam để trang phục luôn gọn gàng</h2>
+<p>Áo sơ mi, áo len và Polo dệt kim có cấu trúc vải khác nhau nên không phải lúc nào cũng có thể giặt chung một cách. Giặt sai chế độ, dùng nhiệt độ không phù hợp hoặc phơi không đúng cách có thể khiến quần áo co rút, bai dão, phai màu hoặc mất phom.</p>
+<p>Cách an toàn nhất là đọc nhãn chăm sóc trên sản phẩm trước khi giặt. Những hướng dẫn dưới đây là nguyên tắc tham khảo; hãy ưu tiên chỉ dẫn riêng của nhà sản xuất.</p>
 
-<h2>1. Tâm Lý Học 7 Giây Đầu Tiên</h2>
-<p>Các nghiên cứu tâm lý học hành vi chứng minh rằng đối tác hoặc người đối diện định hình đến 80% ấn tượng về năng lực, sự thành đạt và độ đáng tin cậy của bạn chỉ trong 7 giây đầu tiên tiếp xúc. Trang phục của bạn chính là thông điệp không lời mạnh mẽ nhất.</p>
-
-<h2>2. Set 1: Cuộc Gặp Đối Tác Kinh Doanh (Power Dressing)</h2>
-<p>Mục tiêu là sự tin cậy, sắc bén và tôn trọng đối phương:</p>
-<ul>
-  <li><strong>Áo khoác:</strong> Blazer 2 cúc màu Xanh Navy đậm (tone màu kích thích tâm lý tin tưởng trong kinh doanh).</li>
-  <li><strong>Áo trong:</strong> Sơ mi Oxford trắng may đo slimfit, cổ áo đứng cứng cáp.</li>
-  <li><strong>Quần:</strong> Quần tây may đo màu xám tro ống đứng gấu Half-break.</li>
-  <li><strong>Phụ kiện:</strong> Đồng hồ dây da mặt kính sapphire, thắt lưng da bò khóa kim loại cao cấp.</li>
-</ul>
-
-<h2>3. Set 2: Buổi Hẹn Hò Lãng Mạn (Charming Sophistication)</h2>
-<p>Mục tiêu là sự gần gũi, tinh tế và nam tính đầy quyến rũ:</p>
-<ul>
-  <li><strong>Trang phục chủ đạo:</strong> Áo Polo dệt kim màu đen than chì hoặc xanh rêu trầm, mở 1 cúc cổ khoe bờ xương quai xanh nam tính.</li>
-  <li><strong>Quần:</strong> Quần Chinos màu be ấm hoặc quần tây ống suông xếp ly nhẹ.</li>
-  <li><strong>Giày:</strong> Loafer da lộn hoặc da bóng không tất.</li>
-  <li><strong>Mùi hương:</strong> Nước hoa hương gỗ tuyết tùng (cedarwood) hoặc hổ phách (amber) nồng ấm.</li>
-</ul>
-
-<h2>4. Ba Lỗi Trang Phục Khiến Quý Ông Mất Điểm Trầm Trọng</h2>
+<h2>1. Chuẩn bị quần áo trước khi giặt</h2>
+<p>Trước khi cho quần áo vào máy, hãy:</p>
 <ol>
-  <li><strong>Lệch tông Da:</strong> Mang giày da đen nhưng thắt lưng lại màu nâu sáng. Quy tắc bắt buộc: Giày và thắt lưng phải cùng một gia đình màu sắc.</li>
-  <li><strong>Tất (Vớ) quá ngắn:</strong> Khi ngồi vắt chân, ống quần kéo lên để lộ khoảng da chân trắng bệch hoặc rậm lông. Hãy luôn chọn tất cổ cao qua bắp chân có màu tiệp với màu quần.</li>
-  <li><strong>Quần áo nhăn nhúm:</strong> Một chiếc áo sơ mi đắt tiền nhưng nhăn nhúm ở lưng và khuỷu tay sẽ biến bạn thành người cẩu thả. Hãy chọn dòng vải chống nhăn Easy-Iron của MENSTYLE để luôn phẳng phiu 24/7.</li>
+  <li>Phân loại đồ sáng màu và tối màu.</li>
+  <li>Kiểm tra túi áo, túi quần và đóng khóa kéo.</li>
+  <li>Lộn trái quần áo có màu đậm hoặc bề mặt dễ ma sát.</li>
+  <li>Xử lý vết bẩn sớm bằng sản phẩm phù hợp với chất liệu.</li>
+  <li>Kiểm tra nhãn để biết sản phẩm có được giặt máy hay cần giặt tay.</li>
 </ol>
+<p>Không nên nhồi quá nhiều quần áo vào máy vì đồ có thể không được làm sạch đồng đều và dễ ma sát mạnh hơn.</p>
 
-<div class="mag-product-cta-banner">
-  <div class="cta-banner-content">
-    <span class="cta-banner-icon">👞</span>
-    <div>
-      <h4>Hoàn Thiện Phong Thái Quý Ông Lịch Lãm</h4>
-      <p>Trang phục may đo, phụ kiện da thật cao cấp chuẩn quý ông thành đạt.</p>
-    </div>
-  </div>
-  <a href="index.html#catalogSection" class="cta-banner-btn">Khám Phá Cửa Hàng ➔</a>
-</div>
-    `,
+<h2>2. Cách giặt áo sơ mi</h2>
+<p>Áo sơ mi thường có cổ, nẹp nút và măng sét cần giữ phom. Khi giặt, bạn nên cài hoặc mở khuy theo hướng dẫn của nhãn sản phẩm, xử lý nhẹ vùng cổ và cổ tay nếu có vết bẩn, sau đó chọn chế độ giặt phù hợp.</p>
+<ul>
+  <li>Dùng lượng nước giặt theo khuyến nghị, tránh đổ quá nhiều.</li>
+  <li>Chọn chế độ nhẹ nếu chất liệu hoặc nhãn chăm sóc yêu cầu.</li>
+  <li>Có thể dùng túi giặt để hạn chế ma sát với các món đồ khác.</li>
+  <li>Lấy áo ra sau khi giặt và giũ nhẹ để giảm nếp nhăn trước khi phơi.</li>
+</ul>
+
+<h2>3. Cách giặt và phơi áo len, Polo dệt kim</h2>
+<p>Đồ len và Polo dệt kim có cấu trúc vòng sợi. Một số loại dễ bị kéo dài khi treo lúc còn ướt, vì vậy cần chú ý cách làm khô.</p>
+<ul>
+  <li>Ưu tiên giặt tay hoặc chế độ dành cho đồ len nếu nhãn cho phép.</li>
+  <li>Dùng chất giặt phù hợp với chất liệu.</li>
+  <li>Không vắt xoắn mạnh vì có thể làm biến dạng cấu trúc sợi.</li>
+  <li>Nếu sản phẩm có thể phơi phẳng, đặt áo lên mặt phẳng hoặc lưới phơi ở nơi thông thoáng.</li>
+  <li>Tránh treo áo ướt bằng móc mảnh nếu chất liệu dễ bai dão.</li>
+</ul>
+<p>Không phải mọi áo Polo dệt kim đều có cùng thành phần sợi. Hãy kiểm tra nhãn để biết cách giặt và phơi phù hợp.</p>
+
+<h2>4. Cách ủi áo sơ mi đúng trình tự</h2>
+<p>Trước tiên, kiểm tra mức nhiệt trên nhãn. Nếu không chắc, hãy thử ở vùng khuất và bắt đầu với nhiệt độ thấp hơn.</p>
+<p>Có thể ủi theo thứ tự:</p>
+<ol>
+  <li>Cổ áo: trải phẳng và ủi nhẹ từ hai bên vào giữa.</li>
+  <li>Cầu vai: đặt phần vai lên đầu bàn ủi để thao tác dễ hơn.</li>
+  <li>Cổ tay: mở khuy và ủi phẳng từng mặt.</li>
+  <li>Tay áo: vuốt phẳng vải trước khi đưa bàn ủi.</li>
+  <li>Thân áo: xử lý lần lượt hai thân và phần lưng.</li>
+</ol>
+<p>Với chất liệu nhạy nhiệt, hãy dùng khăn lót hoặc chế độ hơi nước nếu nhãn sản phẩm cho phép. Không đặt bàn ủi quá lâu tại một điểm.</p>
+
+<h2>5. Cất giữ quần áo đúng cách</h2>
+<ul>
+  <li><strong>Sơ mi:</strong> Cài một vài khuy để áo giữ dáng, dùng móc có kích thước phù hợp với vai áo.</li>
+  <li><strong>Áo len:</strong> Gấp và đặt trên kệ nếu chất liệu dễ giãn khi treo.</li>
+  <li><strong>Polo dệt kim:</strong> Làm khô hoàn toàn trước khi cất; tránh để áo bị đè ép quá lâu.</li>
+  <li><strong>Quần áo theo mùa:</strong> Giặt sạch, phơi khô hoàn toàn rồi mới cất vào nơi khô thoáng.</li>
+</ul>
+<p>Nếu tủ đồ có độ ẩm cao, hãy kiểm tra định kỳ để phát hiện mùi ẩm hoặc dấu hiệu nấm mốc.</p>
+
+<h2>6. Những lỗi nên tránh</h2>
+<ul>
+  <li>Giặt tất cả chất liệu ở cùng một chế độ.</li>
+  <li>Dùng nước quá nóng khi nhãn không cho phép.</li>
+  <li>Phơi trực tiếp dưới nắng gắt trong thời gian dài nếu chất liệu dễ phai màu.</li>
+  <li>Treo áo len nặng khi còn ướt.</li>
+  <li>Ủi ở nhiệt độ cao mà không kiểm tra nhãn.</li>
+  <li>Cất quần áo khi chưa khô hoàn toàn.</li>
+</ul>
+
+<h2>Câu hỏi thường gặp</h2>
+<h3>Có nên giặt áo sơ mi sau mỗi lần mặc không?</h3>
+<p>Tùy mức độ vận động, thời tiết và tình trạng áo. Nếu áo đã thấm mồ hôi hoặc có mùi, nên giặt trước khi cất. Với áo chỉ mặc trong thời gian ngắn và chưa bẩn, có thể thông thoáng áo trước khi quyết định.</p>
+<h3>Áo Polo dệt kim có nên treo bằng móc không?</h3>
+<p>Tùy chất liệu và trọng lượng áo. Nếu áo dễ bai dão, nên gấp hoặc phơi phẳng theo hướng dẫn chăm sóc.</p>
+
+<h2>Kết luận</h2>
+<p>Muốn quần áo bền đẹp, hãy bắt đầu từ việc đọc nhãn chăm sóc và phân loại chất liệu. Giặt đúng cách, làm khô phù hợp và cất giữ cẩn thận sẽ giúp bạn hạn chế những hư hỏng không đáng có.</p>
+<p><strong>Khám phá thêm:</strong> Tham khảo các mẫu sơ mi, Polo và trang phục nam tại MENSTYLE; nhớ xem kỹ thông tin chất liệu và hướng dẫn chăm sóc của từng sản phẩm.</p>`
   },
+
+  // ============================================================
+  // BÀI 6: MENSTYLE GIỚI THIỆU BỘ SƯU TẬP XUÂN HÈ 2026
+  // ============================================================
+  {
+    title: "MENSTYLE Giới Thiệu BST Xuân Hè 2026: Urban Elegance",
+    slug: "menstyle-bo-suu-tap-xuan-he-2026-urban-elegance",
+    category: "Tin tức MENSTYLE",
+    excerpt: "Khám phá tinh thần Urban Elegance trong bộ sưu tập Xuân Hè 2026 của MENSTYLE với sơ mi, quần tây và Blazer dành cho phong cách nam đô thị.",
+    image: "https://images.unsplash.com/photo-1617137968427-85924c800a22?w=1200",
+    author: "MENSTYLE Editorial Team",
+    tags: ["Urban Elegance", "BST Xuân Hè 2026", "Tin tức MENSTYLE", "Thời trang đô thị", "Smart Casual"],
+    views: 0,
+    readTime: "6 phút đọc",
+    isFeatured: true,
+    status: "PUBLISHED",
+    content: `<h2>Urban Elegance — Cảm hứng thời trang nam đô thị từ MENSTYLE</h2>
+<p>Một ngày của người đàn ông hiện đại có thể bắt đầu ở văn phòng, tiếp nối bằng buổi gặp gỡ đối tác và kết thúc tại một cuộc hẹn sau giờ làm. Trang phục vì thế cần đủ chỉn chu để phù hợp nhiều hoàn cảnh, nhưng cũng cần thoải mái để người mặc tự tin vận động.</p>
+<p>Với tinh thần đó, MENSTYLE giới thiệu chủ đề bộ sưu tập Xuân Hè 2026 mang tên <strong>Urban Elegance</strong>. Bộ sưu tập hướng đến hình ảnh quý ông đô thị: gọn gàng, linh hoạt và chú trọng sự vừa vặn.</p>
+<blockquote><strong>Ghi chú biên tập:</strong> Bài viết giới thiệu định hướng bộ sưu tập dựa trên nội dung gốc. Trước khi đăng, MENSTYLE cần xác nhận bộ sưu tập thực tế, hình ảnh sản phẩm, tên chất liệu, công nghệ và tình trạng kinh doanh.</blockquote>
+
+<h2>1. Cảm hứng từ nhịp sống thành thị</h2>
+<p>Urban Elegance kết hợp tinh thần thanh lịch với tính ứng dụng thường ngày. Thay vì tập trung vào những chi tiết quá cầu kỳ, định hướng này ưu tiên thiết kế dễ phối, màu sắc linh hoạt và phom dáng phù hợp với nhiều hoạt động.</p>
+<p>Những gam màu như navy, trắng, xám và be có thể tạo nên nền tảng trang phục dễ sử dụng. Người mặc có thể thay đổi áo khoác, giày hoặc phụ kiện để điều chỉnh mức độ trang trọng.</p>
+
+<h2>2. Ba nhóm trang phục trọng tâm</h2>
+<h3>Sơ mi Oxford — Nền tảng của vẻ ngoài chỉn chu</h3>
+<p>Sơ mi Oxford phù hợp với những ngày cần diện mạo lịch sự nhưng không quá cứng nhắc. Bạn có thể mặc cùng quần tây khi đi làm hoặc kết hợp Chinos khi tham gia hoạt động ngoài giờ.</p>
+<p>Khi lựa chọn, hãy chú ý độ vừa vai, vòng ngực và chiều dài tay áo. Thông tin về thành phần vải và khả năng chống nhăn cần được kiểm tra theo từng sản phẩm cụ thể.</p>
+<h3>Quần tây ống đứng — Dễ phối trong nhiều hoàn cảnh</h3>
+<p>Quần tây ống đứng có thể kết hợp với sơ mi, Polo hoặc Blazer. Độ rộng ống nên cân đối với vóc dáng, trong khi chiều dài gấu cần phù hợp với loại giày thường mang.</p>
+<p>Nếu sản phẩm có chi tiết cạp co giãn hoặc thiết kế đặc biệt, MENSTYLE nên công bố thông số và hình ảnh thực tế để khách hàng dễ đánh giá.</p>
+<h3>Blazer — Hoàn thiện phong cách Smart Casual</h3>
+<p>Blazer giúp tăng mức độ chỉn chu mà không nhất thiết phải mặc nguyên bộ suit. Có thể phối Blazer navy với áo thun trơn, Polo hoặc sơ mi Oxford và quần tây màu trung tính.</p>
+<p>Khi chọn Blazer, hãy kiểm tra đường vai, độ dài thân áo và khả năng cử động khi cài nút.</p>
+
+<h2>3. Gợi ý phối đồ theo lịch trình</h2>
+<div class="mag-table-responsive"><table class="mag-styled-table">
+  <thead><tr><th>Hoàn cảnh</th><th>Gợi ý phối</th></tr></thead>
+  <tbody>
+    <tr><td>Đi làm</td><td>Sơ mi Oxford + quần tây + giày Loafer</td></tr>
+    <tr><td>Gặp khách hàng</td><td>Blazer + sơ mi + quần tây</td></tr>
+    <tr><td>Đi cà phê</td><td>Polo + Chinos + sneaker</td></tr>
+    <tr><td>Ăn tối</td><td>Polo dệt kim + quần âu + giày da</td></tr>
+  </tbody>
+</table></div>
+<p>Một bộ trang phục phù hợp không chỉ phụ thuộc vào kiểu dáng mà còn ở việc người mặc cảm thấy thoải mái và tự tin.</p>
+
+<h2>4. Thông tin khách hàng cần kiểm tra trước khi đặt mua</h2>
+<p>Trước khi công bố sản phẩm trong bộ sưu tập, MENSTYLE nên hiển thị rõ:</p>
+<ul>
+  <li>Tên và mã sản phẩm.</li>
+  <li>Thành phần chất liệu và hướng dẫn bảo quản.</li>
+  <li>Bảng size kèm số đo thực tế.</li>
+  <li>Giá bán và tình trạng còn hàng.</li>
+  <li>Hình ảnh sản phẩm ở nhiều góc.</li>
+  <li>Phí giao hàng, thời gian dự kiến và điều kiện đổi trả.</li>
+</ul>
+<p>Không nên đưa ra cam kết như chống nhăn tuyệt đối, miễn phí giao hàng, đổi trả 30 ngày hoặc voucher nếu chưa có chính sách chính thức đang áp dụng.</p>
+
+<h2>Kết luận</h2>
+<p>Urban Elegance hướng đến tủ đồ nam hiện đại với những món cơ bản có thể phối linh hoạt giữa công việc và đời sống cá nhân. Sơ mi Oxford, quần tây và Blazer là ba lựa chọn đáng cân nhắc để xây dựng phong cách này.</p>
+<p><strong>Khám phá thêm:</strong> Theo dõi website MENSTYLE để xem hình ảnh, thông tin sản phẩm và cập nhật chính thức về bộ sưu tập Xuân Hè 2026.</p>`
+  },
+
+  // ============================================================
+  // BÀI 7: ÁO POLO DỆT KIM NAM
+  // ============================================================
+  {
+    title: "Áo Polo Dệt Kim Nam: Phong Cách Thanh Lịch Và Hiện Đại",
+    slug: "ao-polo-det-kim-nam-phong-cach-quiet-luxury",
+    category: "Xu hướng thời trang",
+    excerpt: "Tìm hiểu áo Polo dệt kim nam, điểm khác biệt với Polo thông thường và 4 cách phối cùng quần âu, Blazer, Chinos hoặc Shorts.",
+    image: "https://images.unsplash.com/photo-1625910513503-2bece9c99e9d?w=1200",
+    author: "MENSTYLE Editorial Team",
+    tags: ["Polo dệt kim", "Áo Polo nam", "Quiet Luxury", "Phối đồ Polo", "Thời trang nam"],
+    views: 0,
+    readTime: "6 phút đọc",
+    isFeatured: false,
+    status: "PUBLISHED",
+    content: `<h2>Áo Polo dệt kim nam có gì đặc biệt?</h2>
+<p>Áo Polo dệt kim nam là lựa chọn đáng cân nhắc khi bạn muốn kết hợp sự thoải mái của áo Polo với vẻ ngoài chỉn chu hơn. Bề mặt dệt, kết cấu sợi và cách hoàn thiện cổ áo có thể tạo nên diện mạo khác biệt so với Polo thể thao thông thường.</p>
+<p>Tùy chất liệu và kiểu dệt, áo có thể phù hợp với thời tiết nóng hoặc mát. Vì vậy, đừng chỉ nhìn vào tên gọi "dệt kim"; hãy xem thành phần sợi, độ dày và hướng dẫn chăm sóc của sản phẩm.</p>
+
+<h2>1. Phân biệt Polo dệt kim và Polo Pique</h2>
+<p>Polo Pique thường có bề mặt dệt nổi dạng mắt lưới hoặc hạt nhỏ. Trong khi đó, Polo dệt kim có thể có nhiều kiểu kết cấu như gân, mịn hoặc họa tiết dệt khác nhau.</p>
+<div class="mag-table-responsive"><table class="mag-styled-table">
+  <thead><tr><th>Tiêu chí</th><th>Polo Pique</th><th>Polo dệt kim</th></tr></thead>
+  <tbody>
+    <tr><td>Bề mặt</td><td>Thường có kết cấu mắt lưới nổi</td><td>Đa dạng kiểu dệt và kết cấu</td></tr>
+    <tr><td>Phong cách</td><td>Thể thao, casual</td><td>Có thể casual hoặc thanh lịch</td></tr>
+    <tr><td>Cách phối</td><td>Jeans, Chinos, Shorts</td><td>Quần âu, Chinos, Blazer</td></tr>
+    <tr><td>Chăm sóc</td><td>Tùy thành phần sợi</td><td>Cần chú ý nguy cơ bai dão tùy cấu trúc</td></tr>
+  </tbody>
+</table></div>
+<p>Không thể kết luận loại nào mát hơn hoặc bền hơn nếu chưa biết thành phần sợi, mật độ dệt và cách hoàn thiện.</p>
+
+<h2>2. Vì sao Polo dệt kim phù hợp phong cách tối giản?</h2>
+<p>Polo dệt kim thường có thiết kế tập trung vào bề mặt chất liệu và đường nét thay vì họa tiết lớn. Khi chọn màu trung tính như navy, đen, trắng ngà hoặc be, bạn có thể phối áo với nhiều loại quần khác nhau.</p>
+<p>Để trang phục trông gọn gàng, hãy chọn áo vừa vai, phần thân không quá bó và chiều dài phù hợp với cách mặc sơ vin hoặc thả ngoài.</p>
+
+<h2>3. Bốn cách phối áo Polo dệt kim nam</h2>
+<h3>Phối cùng quần âu</h3>
+<p>Polo màu navy hoặc đen kết hợp quần âu xám, be hoặc đen tạo nên diện mạo phù hợp cho bữa tối, buổi gặp mặt hoặc môi trường làm việc thoải mái. Có thể hoàn thiện bằng Loafer hoặc Derby.</p>
+<h3>Mặc bên trong Blazer</h3>
+<p>Một chiếc Polo trơn mặc cùng Blazer giúp tổng thể bớt cứng nhắc so với sơ mi và cà vạt. Nên chọn áo có cổ nằm gọn bên trong ve áo khoác, tránh phần cổ bị cuộn hoặc nhăn.</p>
+<h3>Phối cùng quần Chinos</h3>
+<p>Đây là công thức dễ ứng dụng khi đi làm, đi cà phê hoặc gặp bạn bè. Polo xanh navy phối Chinos màu be là lựa chọn an toàn; sneaker tối giản hoặc Loafer đều có thể phù hợp.</p>
+<h3>Phối cùng Shorts</h3>
+<p>Trong những dịp nghỉ ngơi, Polo dệt kim có thể kết hợp với Shorts có độ dài cân đối. Ưu tiên chất liệu và phom dáng phù hợp thời tiết; đi cùng sneaker hoặc giày lười đơn giản.</p>
+
+<h2>4. Cách chọn Polo dệt kim phù hợp</h2>
+<ul>
+  <li><strong>Chất liệu:</strong> Đọc thành phần sợi để hiểu đặc tính và cách chăm sóc.</li>
+  <li><strong>Độ dày:</strong> Chọn theo thời tiết và môi trường sử dụng.</li>
+  <li><strong>Phom áo:</strong> Vai áo nên vừa, thân áo không kéo căng khi cài nút.</li>
+  <li><strong>Cổ và bo áo:</strong> Kiểm tra độ hoàn thiện, độ đàn hồi và tình trạng đường may.</li>
+  <li><strong>Màu sắc:</strong> Nếu mới bắt đầu, ưu tiên navy, đen, trắng ngà hoặc be.</li>
+</ul>
+
+<h2>5. Cách bảo quản áo Polo dệt kim</h2>
+<p>Đọc nhãn trước khi giặt. Với sản phẩm có nguy cơ bai dão, tránh vắt xoắn mạnh và hạn chế treo khi áo còn nặng nước. Có thể phơi phẳng nếu nhãn chăm sóc cho phép. Khi cất, đảm bảo áo khô hoàn toàn.</p>
+
+<h2>Câu hỏi thường gặp</h2>
+<h3>Áo Polo dệt kim có mặc vào mùa hè được không?</h3>
+<p>Có thể, nhưng còn tùy thành phần sợi, độ dày và cấu trúc dệt. Hãy ưu tiên sản phẩm có thông tin chất liệu rõ ràng và cảm giác mặc phù hợp với thời tiết.</p>
+<h3>Polo dệt kim có mặc với quần jeans được không?</h3>
+<p>Được. Chọn jeans tối màu hoặc xanh vừa, phom dáng gọn và giày đơn giản để tạo diện mạo cân đối.</p>
+
+<h2>Kết luận</h2>
+<p>Polo dệt kim là lựa chọn linh hoạt cho người muốn làm mới tủ đồ mà vẫn giữ phong cách gọn gàng. Hãy ưu tiên chất liệu phù hợp, phom áo vừa vặn và phối cùng những món đồ bạn thường sử dụng.</p>
+<p><strong>Khám phá thêm:</strong> Tham khảo các mẫu Polo nam tại MENSTYLE và kiểm tra kỹ thông tin chất liệu, size trước khi đặt hàng.</p>`
+  },
+
+  // ============================================================
+  // BÀI 8: CÁCH PHỐI ĐỒ NAM LỊCH LÃM KHI GẶP ĐỐI TÁC VÀ HẸN HÒ
+  // ============================================================
+  {
+    title: "Cách Phối Đồ Nam Lịch Lãm Khi Gặp Đối Tác Và Hẹn Hò",
+    slug: "cach-phoi-do-nam-lich-lam-gap-doi-tac-hen-ho",
+    category: "Phong cách nam",
+    excerpt: "Khám phá cách phối đồ nam lịch lãm khi gặp gỡ đối tác và hẹn hò buổi tối. Gợi ý trang phục, màu sắc, giày và phụ kiện phù hợp từng hoàn cảnh.",
+    image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1200",
+    author: "MENSTYLE Editorial Team",
+    tags: ["Phối đồ lịch lãm", "Outfit gặp đối tác", "Outfit hẹn hò", "Blazer nam", "Phong cách nam"],
+    views: 0,
+    readTime: "6 phút đọc",
+    isFeatured: false,
+    status: "PUBLISHED",
+    content: `<h2>Cách phối đồ nam lịch lãm cho hai hoàn cảnh quan trọng</h2>
+<p>Gặp đối tác và hẹn hò đều là những dịp bạn muốn xuất hiện với vẻ ngoài chỉn chu. Tuy nhiên, hai hoàn cảnh này có yêu cầu khác nhau. Trang phục gặp đối tác thường cần thể hiện sự chuyên nghiệp và tôn trọng; trong khi buổi hẹn hò có thể thoải mái, gần gũi hơn nhưng vẫn nên gọn gàng.</p>
+<p>Điều quan trọng không phải mặc thật đắt tiền mà là chọn trang phục phù hợp địa điểm, thời gian và tính chất cuộc gặp.</p>
+
+<h2>1. Outfit nam khi gặp đối tác</h2>
+<p>Với buổi họp hoặc gặp khách hàng quan trọng, bạn có thể chọn Blazer navy, sơ mi Oxford trắng, quần tây xám và giày da. Đây là cách phối có mức độ trang trọng vừa phải, phù hợp với nhiều môi trường kinh doanh.</p>
+<p>Nếu cuộc gặp yêu cầu trang phục formal, hãy cân nhắc suit đồng bộ và cà vạt theo quy định của đơn vị hoặc sự kiện.</p>
+<p><strong>Các điểm cần kiểm tra:</strong></p>
+<ul>
+  <li>Áo sơ mi sạch, phẳng và vừa vai.</li>
+  <li>Blazer không bị căng khi cài nút.</li>
+  <li>Quần tây có chiều dài phù hợp với giày.</li>
+  <li>Giày sạch và được chăm sóc tốt.</li>
+  <li>Phụ kiện đơn giản, không gây phân tán sự chú ý.</li>
+</ul>
+
+<h2>2. Outfit nam cho buổi hẹn hò buổi tối</h2>
+<p>Buổi hẹn hò thường cho phép bạn thể hiện cá tính rõ hơn. Nếu địa điểm là nhà hàng hoặc quán cà phê có không khí lịch sự, Polo dệt kim màu tối phối cùng quần âu hoặc Chinos là lựa chọn dễ ứng dụng.</p>
+<p>Nếu buổi hẹn diễn ra ở nơi thoải mái, bạn có thể chọn sơ mi Oxford, jeans tối màu và giày sneaker sạch. Tránh mặc quá trang trọng nếu điều đó không phù hợp với địa điểm và phong cách chung của buổi hẹn.</p>
+
+<h2>3. Bảng phối đồ theo địa điểm</h2>
+<div class="mag-table-responsive"><table class="mag-styled-table">
+  <thead><tr><th>Hoàn cảnh</th><th>Áo</th><th>Quần</th><th>Giày</th></tr></thead>
+  <tbody>
+    <tr><td>Họp đối tác</td><td>Sơ mi + Blazer</td><td>Quần tây</td><td>Derby hoặc Oxford</td></tr>
+    <tr><td>Gặp khách hàng thân quen</td><td>Oxford hoặc Polo</td><td>Quần tây/Chinos</td><td>Loafer</td></tr>
+    <tr><td>Hẹn hò nhà hàng</td><td>Polo dệt kim hoặc sơ mi</td><td>Quần âu</td><td>Loafer</td></tr>
+    <tr><td>Hẹn hò cà phê</td><td>Sơ mi khoác ngoài hoặc Polo</td><td>Jeans/Chinos</td><td>Sneaker</td></tr>
+    <tr><td>Dạo phố cuối tuần</td><td>Áo thun trơn</td><td>Jeans</td><td>Sneaker</td></tr>
+  </tbody>
+</table></div>
+
+<h2>4. Chọn màu sắc và phụ kiện</h2>
+<p>Navy, xám, trắng, đen và be là những màu dễ phối. Khi kết hợp nhiều màu, hãy chọn một màu chủ đạo và giữ các màu còn lại ở vai trò bổ trợ.</p>
+<p>Thắt lưng nên hài hòa với giày, đặc biệt trong những bộ trang phục trang trọng. Đồng hồ, vòng tay hoặc nước hoa có thể là điểm nhấn, nhưng nên sử dụng vừa phải. Không cần mang quá nhiều phụ kiện cùng lúc.</p>
+
+<h2>5. Ba lỗi trang phục nên tránh</h2>
+<ol>
+  <li><strong>Quần áo không vừa:</strong> Áo quá rộng, quần quá bó hoặc tay áo quá dài đều khiến tổng thể thiếu gọn gàng.</li>
+  <li><strong>Giày dép không phù hợp:</strong> Sneaker thể thao quá nổi bật có thể không hợp với buổi gặp trang trọng; ngược lại, giày quá formal có thể tạo cảm giác gượng ép trong buổi hẹn casual.</li>
+  <li><strong>Trang phục nhăn hoặc chưa sạch:</strong> Hãy kiểm tra cổ áo, tay áo, gấu quần và giày trước khi ra ngoài.</li>
+</ol>
+<p>Ngoài quần áo, sự đúng giờ, thái độ lịch sự và cách giao tiếp cũng góp phần tạo nên ấn tượng tốt.</p>
+
+<h2>Câu hỏi thường gặp</h2>
+<h3>Gặp đối tác có nhất thiết phải mặc suit không?</h3>
+<p>Không phải lúc nào cũng cần. Hãy căn cứ vào ngành nghề, vị trí người gặp, địa điểm và yêu cầu của cuộc hẹn. Blazer phối sơ mi và quần tây có thể phù hợp với nhiều buổi gặp bán trang trọng.</p>
+<h3>Đi hẹn hò có nên mặc áo Polo không?</h3>
+<p>Có. Polo trơn hoặc Polo dệt kim là lựa chọn cân bằng giữa thoải mái và lịch sự. Hãy chọn màu phù hợp, áo sạch và phom vừa vặn.</p>
+
+<h2>Kết luận</h2>
+<p>Cách phối đồ nam lịch lãm bắt đầu từ việc hiểu hoàn cảnh và chọn trang phục vừa vặn. Với cuộc gặp đối tác, ưu tiên sự chỉn chu; với buổi hẹn hò, có thể linh hoạt hơn để thể hiện cá tính. Dù chọn phong cách nào, sự sạch sẽ và thoải mái vẫn là yếu tố quan trọng.</p>
+<p><strong>Khám phá thêm:</strong> Tham khảo sơ mi, Polo, Blazer, quần tây và phụ kiện tại MENSTYLE để hoàn thiện trang phục cho những dịp quan trọng.</p>`
+  }
 ];
 
 module.exports = articlesData;
