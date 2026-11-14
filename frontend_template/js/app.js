@@ -1180,27 +1180,27 @@ async function handleCheckoutSubmit(e) {
   };
 
   let createdOrder = null;
+  let failMessage = "";
   try {
     const res = await API.createOrder(orderData, authToken);
     if (res && res.success && res.data) {
       createdOrder = res.data;
+    } else {
+      failMessage = (res && res.message) || "";
     }
   } catch (err) {
     console.warn("Không kết nối được server backend:", err);
+    failMessage = "Không kết nối được máy chủ. Vui lòng kiểm tra mạng và thử lại.";
   }
 
-  // Fallback an toàn: nếu chưa bật backend, vẫn tạo đơn để hiển thị ngay mã VietQR chính chủ
+  // BUG-01: KHÔNG tạo đơn giả. Nếu server không tạo được đơn thì báo lỗi, giữ nguyên giỏ hàng.
   if (!createdOrder) {
-    createdOrder = {
-      _id: "order_" + Date.now(),
-      orderCode: "MS" + Date.now().toString().slice(-8),
-      totalAmount: finalTotal,
-      customerName,
-      customerPhone,
-      customerEmail,
-      shippingAddress,
-      paymentMethod,
-    };
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerText = "Xác Nhận Đặt Hàng";
+    }
+    alert("❌ Đặt hàng chưa thành công!\n\n" + (failMessage || "Không thể đặt hàng, vui lòng thử lại.") + "\n\nGiỏ hàng của bạn vẫn được giữ nguyên.");
+    return;
   }
 
   if (submitBtn) {
@@ -1476,7 +1476,7 @@ function renderTrackingCard(ord) {
             <img src="${item.image || 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=200'}" alt="${escapeHtml(item.name)}" class="tracking-item-thumb">
             <div class="tracking-item-info">
               <div class="tracking-item-name">${escapeHtml(item.name)}</div>
-              <div class="tracking-item-meta">Size: <strong>${item.size || 'L'}</strong> • SL: <strong>x${item.quantity}</strong></div>
+              <div class="tracking-item-meta">Size: <strong>${escapeHtml(item.size || 'L')}</strong> • SL: <strong>x${item.quantity}</strong></div>
             </div>
             <div style="text-align:right; font-size:13.5px; font-weight:700; color:#0f172a;">
               ${Number(item.price * item.quantity).toLocaleString('vi-VN')} đ
@@ -1518,14 +1518,14 @@ function initAuthUI() {
   if (currentUser && authToken) {
     const firstName = currentUser.name ? currentUser.name.split(" ").pop() : "Khách";
     area.innerHTML = `
-      <div class="user-profile-chip" onclick="openMyOrdersModal()" title="Xem đơn hàng của ${currentUser.name}">
+      <div class="user-profile-chip" onclick="openMyOrdersModal()" title="Xem đơn hàng của ${escapeHtml(currentUser.name)}">
         <span class="user-chip-avatar">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
             <circle cx="12" cy="7" r="4"/>
           </svg>
         </span>
-        <span class="user-chip-name">${firstName}</span>
+        <span class="user-chip-name">${escapeHtml(firstName)}</span>
         <button type="button" class="user-chip-logout" onclick="event.stopPropagation(); handleLogout();" title="Đăng xuất tài khoản">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
@@ -1605,7 +1605,7 @@ async function handleLoginSubmit(e) {
     localStorage.setItem("MENSTYLE_USER", JSON.stringify(currentUser));
     initAuthUI();
     closeAuthModal();
-    showToast(`🎉 Xin chào ${currentUser.name}!`);
+    showToast(`🎉 Xin chào ${escapeHtml(currentUser.name)}!`);
   } else {
     alert("❌ Đăng nhập thất bại: " + (res.message || "Email hoặc mật khẩu không đúng"));
   }
@@ -1629,7 +1629,7 @@ async function handleRegisterSubmit(e) {
     localStorage.setItem("MENSTYLE_USER", JSON.stringify(currentUser));
     initAuthUI();
     closeAuthModal();
-    showToast(`🎉 Tạo tài khoản thành công! Xin chào ${currentUser.name}`);
+    showToast(`🎉 Tạo tài khoản thành công! Xin chào ${escapeHtml(currentUser.name)}`);
   } else {
     alert("❌ Đăng ký thất bại: " + (res.message || "Lỗi tạo tài khoản"));
   }
@@ -1668,7 +1668,7 @@ async function openMyOrdersModal() {
             <span style="font-size: 12px; color: #64748b;">${new Date(o.createdAt).toLocaleString("vi-VN")}</span>
           </div>
           <div style="font-size: 13.5px; color: #334155; margin-bottom: 6px;">
-            ${(o.items || []).map((it) => `<div>• ${it.name} (x${it.quantity}, Size ${it.size || "L"})</div>`).join("")}
+            ${(o.items || []).map((it) => `<div>• ${escapeHtml(it.name)} (x${Number(it.quantity) || 0}, Size ${escapeHtml(it.size || "L")})</div>`).join("")}
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed #cbd5e1; pt: 8px;">
             <div>Tổng: <strong style="color:var(--accent-red);">${Number(o.totalAmount).toLocaleString("vi-VN")} đ</strong> (${o.paymentMethod})</div>

@@ -95,7 +95,7 @@ QUY TẮC TƯ VẤN CỦA STYLIST:
         `• **Áo Sơ Mi Oxford Slimfit:** Dệt sợi tự nhiên chống nhăn, cổ đứng chuẩn mực tạo ấn tượng sắc nét.\n` +
         `• **Quần Tây May Đo Cạp Chun:** Tôn dáng thẳng thớm, thoải mái tối đa khi ngồi họp hay đàm phán.\n` +
         `• **Thắt Lưng Da Bò Khóa Tự Động:** Điểm nhấn sang trọng hoàn thiện vẻ ngoài phong độ.\n\n` +
-        `Anh có thể bấm nút **"Thêm Toàn Bộ Outfit"** bên dưới để đặt mua trọn bộ combo này với giá ưu đãi tiết kiệm 10% nhé ạ!`;
+        `Anh có thể bấm nút **"Thêm Toàn Bộ Outfit"** bên dưới để đặt mua trọn bộ combo này nhé ạ!`;
       comboTag = `\n\n[OUTFIT_COMBO: Quý Ông Thành Đạt Gặp Đối Tác | Áo Sơ Mi Nam Oxford Slimfit Chống Nhăn | Quần Tây Nam Ống Đứng Cạp Chun Thông Minh | Thắt Lưng Da Nam Khóa Tự Động Cao Cấp]`;
     } else if (lowerMsg.includes("hẹn hò") || lowerMsg.includes("tiệc") || lowerMsg.includes("dạ tiệc") || lowerMsg.includes("lãng mạn")) {
       reply = `Dạ em chào anh! Cho một buổi tối hẹn hò lãng mạn hoặc dạ tiệc sang trọng, bí quyết chính là phong cách **"Relaxed Elegance"** – lịch thiệp nhưng quyến rũ, không gò bó:\n\n` +

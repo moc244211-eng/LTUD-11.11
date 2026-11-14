@@ -2619,7 +2619,7 @@
             </td>
             <td style="text-align:center;">
               <div style="display:inline-flex; gap:6px;">
-                <a href="tel:${c.phone}" class="btn-action btn-act-ship" title="Gọi điện cho khách">
+                <a href="tel:${escapeHtml(c.phone)}" class="btn-action btn-act-ship" title="Gọi điện cho khách">
                   📞 Gọi
                 </a>
                 <button class="btn-action btn-act-del" onclick="handleDeleteContact('${c._id}')" title="Xóa yêu cầu">

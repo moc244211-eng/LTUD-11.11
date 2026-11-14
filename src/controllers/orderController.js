@@ -60,6 +60,27 @@ exports.createOrder = async (req, res) => {
         });
       }
 
+      // SEC-03: size phải thuộc danh sách size của sản phẩm (kiểm tra TRƯỚC khi trừ kho)
+      const productSizes = Array.isArray(product.sizes) ? product.sizes.map(String) : [];
+      let validatedSize;
+      if (productSizes.length > 0) {
+        const reqSize = typeof item.size === "string" ? item.size.trim() : "";
+        if (!productSizes.includes(reqSize)) {
+          for (const dec of decrementedProducts) {
+            await Product.findByIdAndUpdate(dec.productId, {
+              $inc: { stock: dec.quantity },
+            }).catch(() => {});
+          }
+          return res.status(400).json({
+            success: false,
+            message: `Size không hợp lệ cho sản phẩm "${product.name}". Vui lòng chọn: ${productSizes.join(", ")}.`,
+          });
+        }
+        validatedSize = reqSize;
+      } else {
+        validatedSize = "FREE";
+      }
+
       // Trừ kho nguyên tử với điều kiện stock >= quantity
       const quantityToBuy = Math.max(1, parseInt(item.quantity, 10) || 1);
       const updatedProduct = await Product.findOneAndUpdate(
@@ -99,7 +120,7 @@ exports.createOrder = async (req, res) => {
         name: product.name,
         quantity: quantityToBuy,
         price: product.salePrice,
-        size: item.size || "L",
+        size: validatedSize,
         image: product.image || "",
       });
     }
@@ -151,6 +172,21 @@ exports.createOrder = async (req, res) => {
         }
       } catch (cpErr) {
         console.warn("Lỗi xác thực coupon khi đặt hàng:", cpErr.message);
+      }
+
+      // BUG-02: mã giảm giá được gửi lên nhưng không áp dụng được -> báo lỗi rõ ràng
+      // (không âm thầm bỏ qua để tổng tiền khách thấy luôn khớp với đơn thật)
+      if (!appliedCouponCode) {
+        for (const dec of decrementedProducts) {
+          await Product.findByIdAndUpdate(dec.productId, {
+            $inc: { stock: dec.quantity },
+          }).catch(() => {});
+        }
+        return res.status(400).json({
+          success: false,
+          message:
+            "Mã giảm giá không thể áp dụng (không tồn tại, hết hạn, hết lượt hoặc chưa đạt giá trị đơn tối thiểu). Vui lòng bỏ mã hoặc kiểm tra lại.",
+        });
       }
     }
 
@@ -220,12 +256,7 @@ exports.createOrder = async (req, res) => {
 // [GET] /api/orders/myorders - Xem danh sách đơn cá nhân (Yêu cầu Đăng nhập)
 exports.getMyOrders = async (req, res) => {
   try {
-    const orders = await Order.find({
-      $or: [
-        { user: req.user._id },
-        { customerEmail: req.user.email },
-      ],
-    }).sort({ createdAt: -1 });
+    const orders = await Order.find({ user: req.user._id }).sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
@@ -302,12 +333,8 @@ exports.getOrderById = async (req, res) => {
     const isAdmin = req.user && req.user.role === "admin";
     const isOwner =
       order.user && req.user && order.user.toString() === req.user._id.toString();
-    const isCustomerEmail =
-      order.customerEmail &&
-      req.user &&
-      order.customerEmail.toLowerCase() === (req.user.email || "").toLowerCase();
-
-    if (!isAdmin && !isOwner && !isCustomerEmail) {
+    // SEC-04: chỉ khớp theo user (email khách vãng lai chưa được xác thực)
+    if (!isAdmin && !isOwner) {
       return res.status(403).json({
         success: false,
         message: "Bảo mật IDOR: Bạn không có quyền truy cập vào thông tin đơn hàng này!",

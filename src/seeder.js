@@ -9,17 +9,37 @@ const Article = require("./models/Article");
 const articlesData = require("./data/articlesData");
 
 const seedData = async () => {
-  if (process.env.NODE_ENV === "production" && !process.env.FORCE_SEED) {
-    console.error("❌ BẢO VỆ DỮ LIỆU: Nghiêm cấm chạy Seeder xóa sạch Database trên môi trường PRODUCTION!");
-    console.error("💡 Nếu bạn thực sự muốn khởi tạo lại dữ liệu, hãy đặt FORCE_SEED=true trong môi trường.");
+  // OPS-01: seeder XÓA SẠCH dữ liệu -> yêu cầu xác nhận rõ ràng + chỉ chạy trên DB thử nghiệm
+  if (!process.argv.includes("--confirm")) {
+    console.error("[SEED] Seeder se XOA SACH Users/Products/Orders/Coupons/Articles/Categories.");
+    console.error("[SEED] Chay lai voi: node src/seeder.js --confirm (chi tren DB thu nghiem, ten DB chua 'test' hoac 'dev').");
+    process.exit(1);
+  }
+  if (process.env.NODE_ENV === "production") {
+    console.error("[SEED] Nghiem cam chay Seeder tren moi truong PRODUCTION!");
+    process.exit(1);
+  }
+  if (!process.env.ADMIN_PASSWORD || process.env.ADMIN_PASSWORD.length < 10) {
+    console.error("[SEED] Thieu ADMIN_PASSWORD (>= 10 ky tu) trong bien moi truong.");
+    process.exit(1);
+  }
+  const crypto = require("crypto");
+  const randomPassword = () => crypto.randomBytes(12).toString("base64url") + "Aa1@";
+  try {
+    await mongoose.connect(process.env.MONGODB_URI);
+    const dbName = mongoose.connection.name || "";
+    if (!/(test|dev)/i.test(dbName)) {
+      console.error(`[SEED] Tu choi: ten DB "${dbName}" khong chua 'test' hoac 'dev'. Khong xoa du lieu.`);
+      await mongoose.disconnect();
+      process.exit(1);
+    }
+    console.log("[SEED] Da ket noi DB thu nghiem:", dbName);
+  } catch (e) {
+    console.error("[SEED] Khong ket noi duoc MongoDB:", e.message);
     process.exit(1);
   }
 
   try {
-    console.log("⏳ Đang kết nối MongoDB Atlas...");
-    await mongoose.connect(process.env.MONGODB_URI);
-    console.log("✅ Đã kết nối MongoDB Atlas thành công.");
-
     // 1. Dọn dẹp dữ liệu cũ
     console.log("🧹 Đang dọn dẹp dữ liệu cũ...");
     await User.deleteMany({});
@@ -34,7 +54,7 @@ const seedData = async () => {
     const adminUser = await User.create({
       name: "Quản Trị Viên MENSTYLE",
       email: "admin@menstyle.vn",
-      password: process.env.ADMIN_PASSWORD || "AdminSecret2026@",
+      password: process.env.ADMIN_PASSWORD,
       phone: "0901234567",
       role: "admin",
     });
@@ -42,7 +62,7 @@ const seedData = async () => {
     const customerUser1 = await User.create({
       name: "Nguyễn Văn Hùng",
       email: "hung.nguyen@gmail.com",
-      password: "KhachPassword123@",
+      password: randomPassword(),
       phone: "0987654321",
       role: "customer",
       address: "123 Huỳnh Thúc Kháng, TP. Biên Hòa, Đồng Nai",
@@ -51,7 +71,7 @@ const seedData = async () => {
     const customerUser2 = await User.create({
       name: "Lê Hoàng Nam",
       email: "nam.le@gmail.com",
-      password: "KhachPassword123@",
+      password: randomPassword(),
       phone: "0934567890",
       role: "customer",
       address: "88 Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh",
@@ -60,7 +80,7 @@ const seedData = async () => {
     const customerUser3 = await User.create({
       name: "Đặng Quốc Anh",
       email: "quocanh.dang@gmail.com",
-      password: "KhachPassword123@",
+      password: randomPassword(),
       phone: "0918765432",
       role: "customer",
       address: "15 Cầu Giấy, Hà Nội",
@@ -68,8 +88,6 @@ const seedData = async () => {
 
     console.log("✅ Tạo tài khoản thành công:");
     console.log(" 👑 Admin: admin@menstyle.vn / (Mật khẩu bảo mật cá nhân)");
-    console.log(" 👤 Khách 1: hung.nguyen@gmail.com / KhachPassword123@");
-    console.log(" 👤 Khách 2: nam.le@gmail.com / KhachPassword123@");
 
     // 3. Tạo danh mục Thời Trang Nam
     console.log("📁 Đang nạp danh mục Thời Trang Nam...");

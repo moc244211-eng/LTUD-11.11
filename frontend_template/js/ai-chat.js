@@ -127,20 +127,20 @@ function appendMessage(text, sender) {
         })
         .join("");
 
-      const comboTotal = Math.round((rawTotal * 0.90) / 1000) * 1000;
+      const comboTotal = Math.round(rawTotal);
       const idsStr = matchedProducts.map((p) => p._id).join(",");
 
       comboHtml = `
         <div class="ai-outfit-card">
           <div class="ai-outfit-header">
             <div class="ai-outfit-title">🎩 ${escapeHtml(outfitTitle)}</div>
-            <span class="ai-outfit-badge">GIẢM 10% COMBO</span>
+            <span class="ai-outfit-badge">GỢI Ý PHỐI ĐỒ</span>
           </div>
           <div class="ai-outfit-items">
             ${itemsHtml}
           </div>
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; font-size:12px;">
-            <span style="color:#64748b;">Tổng combo (Đã giảm 10%):</span>
+            <span style="color:#64748b;">Tổng combo:</span>
             <strong style="font-size:15px; color:#dc2626;">${comboTotal.toLocaleString("vi-VN")} đ</strong>
           </div>
           <button type="button" class="btn-ai-add-outfit" onclick="addEntireOutfitToCart('${escapeHtml(outfitTitle)}', '${idsStr}')">
@@ -173,7 +173,7 @@ function addEntireOutfitToCart(outfitTitle, idListStr) {
     const p = allProds.find((prod) => prod._id === id);
     if (p) {
       const defaultSize = p.sizes && p.sizes.length > 0 ? p.sizes[0] : "L";
-      const discountedPrice = Math.round(Number(p.salePrice) * 0.9);
+      const discountedPrice = Math.round(Number(p.salePrice));
       if (typeof addToCart === "function") {
         addToCart(p._id, `${p.name} (Combo Outfit)`, discountedPrice, p.image, defaultSize);
         addedCount++;
@@ -185,7 +185,7 @@ function addEntireOutfitToCart(outfitTitle, idListStr) {
     if (typeof showToast === "function") {
       showToast(`🎉 Đã thêm trọn bộ "${outfitTitle}" (${addedCount} món) vào giỏ hàng!`);
     } else {
-      alert(`🎉 Đã thêm trọn bộ "${outfitTitle}" (${addedCount} món) vào giỏ hàng với ưu đãi giảm 10%!`);
+      alert(`🎉 Đã thêm trọn bộ "${outfitTitle}" (${addedCount} món) vào giỏ hàng!`);
     }
     if (typeof openCartDrawer === "function") {
       openCartDrawer();

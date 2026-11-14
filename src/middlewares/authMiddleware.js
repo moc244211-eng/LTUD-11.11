@@ -28,6 +28,12 @@ exports.protect = async (req, res, next) => {
         message: "Tài khoản người dùng không tồn tại!",
       });
     }
+    if (req.user.isBlocked) {
+      return res.status(403).json({
+        success: false,
+        message: "Tài khoản đã bị khóa!",
+      });
+    }
     next();
   } catch (error) {
     return res.status(401).json({
@@ -51,7 +57,8 @@ exports.optionalAuth = async (req, res, next) => {
   if (token) {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      req.user = await User.findById(decoded.id).select("-password");
+      const u = await User.findById(decoded.id).select("-password");
+      if (u && !u.isBlocked) req.user = u;
     } catch (err) {
       // Bỏ qua lỗi token nếu chỉ là optional
     }

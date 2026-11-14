@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Contact = require("../models/Contact");
 
 // Tự động khởi tạo dữ liệu mẫu nếu hộp thư trống để quản trị viên trải nghiệm ngay
@@ -46,7 +47,7 @@ async function ensureSampleContacts() {
 // [POST] /api/contacts - Khách hàng gửi yêu cầu liên hệ hoặc đăng ký nhận tin
 exports.createContact = async (req, res) => {
   try {
-    const { name, phone, email, topic, message } = req.body;
+    const { name, phone, email, topic, message } = req.body || {};
 
     if (!name || !phone || !message) {
       return res.status(400).json({
@@ -55,12 +56,44 @@ exports.createContact = async (req, res) => {
       });
     }
 
+    // SEC-02 / BUG-06: kiểm tra kiểu, độ dài và định dạng
+    if (
+      typeof name !== "string" ||
+      typeof phone !== "string" ||
+      typeof message !== "string" ||
+      (email !== undefined && email !== null && typeof email !== "string") ||
+      (topic !== undefined && topic !== null && typeof topic !== "string")
+    ) {
+      return res.status(400).json({ success: false, message: "Dữ liệu gửi lên không hợp lệ." });
+    }
+    const cleanName = name.trim();
+    const cleanPhone = phone.trim();
+    const cleanEmail = (email || "").trim();
+    const cleanTopic = (topic || "Tư vấn").trim();
+    const cleanMessage = message.trim();
+
+    if (!cleanName || cleanName.length > 100) {
+      return res.status(400).json({ success: false, message: "Họ tên không hợp lệ (tối đa 100 ký tự)." });
+    }
+    if (!/^[0-9+\-\s().]{8,20}$/.test(cleanPhone)) {
+      return res.status(400).json({ success: false, message: "Số điện thoại không hợp lệ." });
+    }
+    if (cleanEmail && (cleanEmail.length > 120 || !/^[^\s@<>"']+@[^\s@<>"']+\.[^\s@<>"']+$/.test(cleanEmail))) {
+      return res.status(400).json({ success: false, message: "Email không hợp lệ." });
+    }
+    if (cleanTopic.length > 100) {
+      return res.status(400).json({ success: false, message: "Chủ đề quá dài." });
+    }
+    if (!cleanMessage || cleanMessage.length > 2000) {
+      return res.status(400).json({ success: false, message: "Nội dung không hợp lệ (tối đa 2000 ký tự)." });
+    }
+
     const newContact = await Contact.create({
-      name: name.trim(),
-      phone: phone.trim(),
-      email: (email || "").trim(),
-      topic: topic || "Tư vấn",
-      message: message.trim(),
+      name: cleanName,
+      phone: cleanPhone,
+      email: cleanEmail,
+      topic: cleanTopic,
+      message: cleanMessage,
       status: "PENDING",
     });
 
@@ -134,13 +167,30 @@ exports.getContacts = async (req, res) => {
 exports.updateContactStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    const { status, notes } = req.body;
+    const { status, notes } = req.body || {};
+
+    if (!mongoose.isValidObjectId(id)) {
+      return res.status(400).json({ success: false, message: "ID liên hệ không hợp lệ." });
+    }
 
     const updateFields = {};
-    if (status) updateFields.status = status;
-    if (notes !== undefined) updateFields.notes = notes;
+    if (status !== undefined) {
+      if (!["PENDING", "CONTACTED", "RESOLVED"].includes(status)) {
+        return res.status(400).json({ success: false, message: "Trạng thái không hợp lệ." });
+      }
+      updateFields.status = status;
+    }
+    if (notes !== undefined) {
+      if (typeof notes !== "string" || notes.length > 2000) {
+        return res.status(400).json({ success: false, message: "Ghi chú không hợp lệ." });
+      }
+      updateFields.notes = notes;
+    }
 
-    const updated = await Contact.findByIdAndUpdate(id, updateFields, { new: true });
+    const updated = await Contact.findByIdAndUpdate(id, updateFields, {
+      new: true,
+      runValidators: true,
+    });
     if (!updated) {
       return res.status(404).json({
         success: false,
